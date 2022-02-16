@@ -1,2 +1,2 @@
 # ZixuanCraft
-Copy of Minecraft using Unreal Engine
+Clone of Minecraft using Unreal Engine
