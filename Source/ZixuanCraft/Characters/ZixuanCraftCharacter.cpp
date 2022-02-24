@@ -122,8 +122,13 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	// Bind fire event
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AZixuanCraftCharacter::OnFire);
+	// Bind attack/destroy event
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AZixuanCraftCharacter::Attack);
+	PlayerInputComponent->BindAction("Destroy", IE_Repeat, this, &AZixuanCraftCharacter::DestroyBlock);
+
+	// Bind use item/place block event
+	PlayerInputComponent->BindAction("PlaceBlock", IE_Pressed, this, &AZixuanCraftCharacter::PlaceBlock);
+	PlayerInputComponent->BindAction("UseItem", IE_Repeat, this, &AZixuanCraftCharacter::UseItem);
 
 	// Change speed event
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AZixuanCraftCharacter::Sprint);
@@ -147,7 +152,22 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AZixuanCraftCharacter::LookUpAtRate);
 }
 
-void AZixuanCraftCharacter::OnFire()
+void AZixuanCraftCharacter::DestroyBlock()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Destroy Block");
+}
+
+void AZixuanCraftCharacter::UseItem()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Use Item");
+}
+
+void AZixuanCraftCharacter::PlaceBlock()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Place Block");
+}
+
+void AZixuanCraftCharacter::Attack()
 {
 	// try and fire a projectile
 	if (ProjectileClass != nullptr)
@@ -209,7 +229,7 @@ void AZixuanCraftCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, cons
 	}
 	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
 	{
-		OnFire();
+		Attack();
 	}
 	TouchItem.bIsPressed = true;
 	TouchItem.FingerIndex = FingerIndex;

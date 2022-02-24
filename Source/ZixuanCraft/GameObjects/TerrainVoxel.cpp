@@ -162,6 +162,17 @@ void ATerrainVoxel::ApplyMaterials()
 	}
 }
 
+void ATerrainVoxel::SetVoxel(FVector LocalPosition, ECubeType NewType)
+{
+	int32 X = LocalPosition.X / CubeLength;
+	int32 Y = LocalPosition.Y / CubeLength;
+	int32 Z = LocalPosition.Z / CubeLength;
+
+	int32 Index = X + (Y * CubeCountXY) + (Z * CubeCountXYSquared);
+	AllCubes[Index] = NewType;
+	UpdateMesh();
+}
+
 void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const int32 MeshIndex, TArray<FMeshSection>& MeshSections)
 {
 	int32 Index = X + (CubeCountXY * Y) + (CubeCountXYSquared * Z);

@@ -98,8 +98,10 @@ public:
 
 protected:
 	
-	/** Fires a projectile. */
-	void OnFire();
+	void Attack();
+	void DestroyBlock();
+	void UseItem();
+	void PlaceBlock();
 
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();

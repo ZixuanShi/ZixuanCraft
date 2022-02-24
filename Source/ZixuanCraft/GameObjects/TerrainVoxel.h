@@ -104,6 +104,9 @@ public:
 
 	virtual void OnConstruction(const FTransform& Transform) override final;
 
+	UFUNCTION(BlueprintCallable)
+	void SetVoxel(FVector LocalPosition, ECubeType NewType);
+
 private:
 	/** Create voxel mesh information and determine the type of a cube */
 	void GenerateChunk();
