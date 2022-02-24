@@ -18,6 +18,15 @@
 			"Name": "VoxelSandbox",
 			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/f5b91a7c3b1a461e9a9592902bdbf7e3"
+		},
+		{
+			"Name": "SteamVR",
+			"Enabled": false,
+			"SupportedTargetPlatforms": [
+				"Win32",
+				"Win64",
+				"Linux"
+			]
 		}
 	]
 }

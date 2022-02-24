@@ -60,6 +60,7 @@ void ATerrainVoxel::GenerateChunk()
 			{
 				int32 Index = X + (Y * CubeCountXY) + (Z * CubeCountXYSquared);
 
+				// Choose a type
 				if (Z == GrassThreshold + 1 + NoiseResult[X + Y * CubeCountXY] && FRNG::Global().FRand() < SpawnObjectChance)
 				{
 					AllCubes[Index] = ECubeType::Spawnable;
@@ -67,6 +68,14 @@ void ATerrainVoxel::GenerateChunk()
 				else if (Z == GrassThreshold + NoiseResult[X + Y * CubeCountXY] && FRNG::Global().FRand() < GenerateTreeChance)
 				{
 					AllCubes[Index] = ECubeType::Tree;
+				}
+				else if (Z < GrassThreshold - StoneOffset + NoiseResult[X + Y * CubeCountXY])
+				{
+					AllCubes[Index] = ECubeType::Stone;
+				}
+				else if (Z < GrassThreshold - 1 + NoiseResult[X + Y * CubeCountXY])
+				{
+					AllCubes[Index] = ECubeType::Dirt;
 				}
 				else if (Z < GrassThreshold + NoiseResult[X + Y * CubeCountXY])
 				{

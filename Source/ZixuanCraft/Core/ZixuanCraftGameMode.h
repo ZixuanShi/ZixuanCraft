@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "ZixuanCraftGameMode.generated.h"
 
 UCLASS(minimalapi)
-class AZixuanCraftGameMode : public AGameModeBase
+class AZixuanCraftGameMode : public AGameMode
 {
 	GENERATED_BODY()
 

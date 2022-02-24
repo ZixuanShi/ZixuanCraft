@@ -70,6 +70,9 @@ protected:
 	int32 GrassThreshold;
 
 	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	int32 StoneOffset;
+
+	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	float GenerateTreeChance;
 
 	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
@@ -102,6 +105,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override final;
 
 private:
+	/** Create voxel mesh information and determine the type of a cube */
 	void GenerateChunk();
 	void UpdateMesh();
 	TArray<FMeshSection> GenerateMeshSections();

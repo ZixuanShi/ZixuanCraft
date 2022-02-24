@@ -71,7 +71,7 @@ void ATerrainManager::AddChunk()
 			// If this location is not in the TerrainLocations map
 			if (!TerrainLocations.Contains(VoxelLocation))
 			{
-				SpawnVoxel(VoxelLocation, X, Y, CubeCountXY, CubeCountZ, CubeLength, GrassThreshold, GenerateTreeChance, Weight, SpawnObjectChance, Seed);
+				SpawnVoxel(VoxelLocation, X, Y);
 				Terrains.Emplace(SpawnedVoxel);
 				TerrainLocations.Emplace(VoxelLocation, true);
 			}

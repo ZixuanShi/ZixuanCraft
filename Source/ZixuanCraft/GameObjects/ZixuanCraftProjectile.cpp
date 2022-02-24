@@ -4,7 +4,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Spawnable.h"
+#include "Characters/SpawnableCharacter.h"
 
 AZixuanCraftProjectile::AZixuanCraftProjectile() 
 	: Damage{ 10.0f }
@@ -39,7 +39,7 @@ void AZixuanCraftProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	// If the other actor is a spawnable, apply damage
 	if (OtherActor && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		if (OtherActor->IsA<ASpawnable>())
+		if (OtherActor->IsA<ASpawnableCharacter>())
 		{
 			UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigator()->GetController(), GetOwner(), UDamageType::StaticClass());
 		}

@@ -34,16 +34,20 @@ private:
 	int32 CubeCountZ = 80;
 
 	/** The threshold to render grass/empty materials. Must not be greater than CubeCountZ */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 GrassThreshold = 30;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	/** The offset to render stones, any thing below GrassThreshold - StoneOffset will be stones */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 StoneOffset = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float GenerateTreeChance = 0.002f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float Weight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float SpawnObjectChance;
 
 	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
@@ -81,5 +85,5 @@ private:
 
 protected:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void SpawnVoxel(FVector InVoxelLocation, int32 X, int32 Y, int32 InCubeCountXY, int32 InCubeCountZ, float InCubeLength, int32 InGrassThreshold, float InGenerateTreeChance, float InWeight, float InSpawnObjectChance, int32 InSeed);
+	void SpawnVoxel(FVector InVoxelLocation, int32 X, int32 Y);
 };
