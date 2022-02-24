@@ -162,11 +162,11 @@ void ATerrainVoxel::ApplyMaterials()
 	}
 }
 
-void ATerrainVoxel::SetVoxel(FVector LocalPosition, ECubeType NewType)
+void ATerrainVoxel::SetVoxel(FVector Location, ECubeType NewType)
 {
-	int32 X = LocalPosition.X / CubeLength;
-	int32 Y = LocalPosition.Y / CubeLength;
-	int32 Z = LocalPosition.Z / CubeLength;
+	int32 X = Location.X / CubeLength;
+	int32 Y = Location.Y / CubeLength;
+	int32 Z = Location.Z / CubeLength;
 
 	int32 Index = X + (Y * CubeCountXY) + (Z * CubeCountXYSquared);
 	AllCubes[Index] = NewType;

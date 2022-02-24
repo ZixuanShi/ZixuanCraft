@@ -2,6 +2,8 @@
 
 #include "ZixuanCraftCharacter.h"
 #include "GameObjects/ZixuanCraftProjectile.h"
+#include "GameObjects/TerrainManager.h"
+#include "GameObjects/TerrainVoxel.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -12,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "DrawDebugHelpers.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
@@ -23,6 +26,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AZixuanCraftCharacter::AZixuanCraftCharacter()
 	: MaxHealth{ 100.0f }
 	, Health{ MaxHealth }
+	, TerrainManager{ nullptr }
+	, DestroyDistance{ 700.0f }
 	, BaseTurnRate{ 45.0f }
 	, BaseLookUpRate{ 45.0f }
 	, GunOffset{ 100.0f, 0.0f, 10.0f }
@@ -108,6 +113,10 @@ void AZixuanCraftCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+
+	// Find Terrain Manager
+	TerrainManager = Cast<ATerrainManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATerrainManager::StaticClass()));
+	check(TerrainManager);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -154,7 +163,20 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Destroy Block");
+	// Find the block to destroy
+	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	FVector Start = PlayerCameraManager->GetCameraLocation();
+	FVector End = PlayerCameraManager->GetActorForwardVector() * DestroyDistance + Start;
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, true);
+
+	// Hit a block to destroy
+	if (HitResult.Actor != nullptr && HitResult.Actor->IsA<ATerrainVoxel>())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Hit something to destroy");
+		Cast<ATerrainVoxel>(HitResult.Actor)->SetVoxel(HitResult.Location, ECubeType::Empty);
+	}
 }
 
 void AZixuanCraftCharacter::UseItem()
@@ -248,41 +270,40 @@ void AZixuanCraftCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const 
 
 //Commenting this section out to be consistent with FPS BP template.
 //This allows the user to turn without using the right virtual joystick
-
-//void AZixuanCraftCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-//	{
-//		if (TouchItem.bIsPressed)
-//		{
-//			if (GetWorld() != nullptr)
-//			{
-//				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-//				if (ViewportClient != nullptr)
-//				{
-//					FVector MoveDelta = Location - TouchItem.Location;
-//					FVector2D ScreenSize;
-//					ViewportClient->GetViewportSize(ScreenSize);
-//					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-//					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.X * BaseTurnRate;
-//						AddControllerYawInput(Value);
-//					}
-//					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.Y * BaseTurnRate;
-//						AddControllerPitchInput(Value);
-//					}
-//					TouchItem.Location = Location;
-//				}
-//				TouchItem.Location = Location;
-//			}
-//		}
-//	}
-//}
+void AZixuanCraftCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
+{
+	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
+	{
+		if (TouchItem.bIsPressed)
+		{
+			if (GetWorld() != nullptr)
+			{
+				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
+				if (ViewportClient != nullptr)
+				{
+					FVector MoveDelta = Location - TouchItem.Location;
+					FVector2D ScreenSize;
+					ViewportClient->GetViewportSize(ScreenSize);
+					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
+					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
+					{
+						TouchItem.bMoved = true;
+						float Value = ScaledDelta.X * BaseTurnRate;
+						AddControllerYawInput(Value);
+					}
+					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
+					{
+						TouchItem.bMoved = true;
+						float Value = ScaledDelta.Y * BaseTurnRate;
+						AddControllerPitchInput(Value);
+					}
+					TouchItem.Location = Location;
+				}
+				TouchItem.Location = Location;
+			}
+		}
+	}
+}
 
 void AZixuanCraftCharacter::MoveForward(float Value)
 {
@@ -334,7 +355,7 @@ bool AZixuanCraftCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &AZixuanCraftCharacter::EndTouch);
 
 		//Commenting this out to be more consistent with FPS BP template.
-		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AZixuanCraftCharacter::TouchUpdate);
+		PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AZixuanCraftCharacter::TouchUpdate);
 		return true;
 	}
 	

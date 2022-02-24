@@ -9,10 +9,10 @@ ATerrainManager::ATerrainManager()
 	: Weight{ 4.0f }
 	, SpawnObjectChance{ 0.003f }
 	, CubeLength{ 100.0f }
+	, VoxelLength{ TNumericLimits<float>::Max() }
 	, PlayerAtCubeX{ TNumericLimits<int32>::Max() }
 	, PlayerAtCubeY{ TNumericLimits<int32>::Max() }
 	, SpawnedVoxel{ nullptr }
-	, VoxelLength{ TNumericLimits<float>::Max() }
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -73,7 +73,7 @@ void ATerrainManager::AddChunk()
 			{
 				SpawnVoxel(VoxelLocation, X, Y);
 				Terrains.Emplace(SpawnedVoxel);
-				TerrainLocations.Emplace(VoxelLocation, true);
+				TerrainLocations.Emplace(VoxelLocation, Terrains.Num() - 1);
 			}
 		}
 	}
@@ -91,6 +91,7 @@ void ATerrainManager::RemoveChunk()
 		if (DistanceToPlayer > RenderRadius * 2 * VoxelLength)
 		{
 			FVector VoxelLocation = Terrains[i]->GetActorLocation() * FVector(1.0f, 1.0f, 0.0f);
+			TerrainLocations[Terrains.Last()->GetActorLocation() * FVector(1.0f, 1.0f, 0.0f)] = i;	// Update terrains location's index
 			TerrainLocations.Remove(VoxelLocation);
 
 			Swap(Terrains[i], Terrains.Last());

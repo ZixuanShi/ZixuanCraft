@@ -50,8 +50,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float SpawnObjectChance;
 
+	/** Length of a single cube for XY axis */
 	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
 	float CubeLength;
+
+	/** Length of an entire voxel for XY axis */
+	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
+	float VoxelLength;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 PlayerAtCubeX;
@@ -62,20 +67,26 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<ATerrainVoxel*> Terrains;
 
+	/** 
+	* FVector for the voxel's location as key, int32 as the index in Terrains TArray as value. 
+	* Used when adding/removing voxels when the player moves and when the player place/destroy a cube
+	*/
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TMap<FVector, bool> TerrainLocations;
+	TMap<FVector, int32> TerrainLocations;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	ATerrainVoxel* SpawnedVoxel;
-
-	UPROPERTY()
-	float VoxelLength;
 
 public:
 	ATerrainManager();
 
 	virtual void BeginPlay() override final;
 	virtual void Tick(float DeltaTime) override final;
+
+	float GetCubeLength() const { return CubeLength; }
+	float GetVoxelLength() const { return VoxelLength; }
+	const TMap<FVector, int32>& GetTerrainLocations() const { return TerrainLocations; }
+	const TArray<ATerrainVoxel*>& GetTerrains() const { return Terrains; }
 
 private:
 	bool UpdatedPosition();

@@ -13,12 +13,14 @@ class UCameraComponent;
 class UMotionControllerComponent;
 class UAnimMontage;
 class USoundBase;
+class ATerrainManager;
 
 UCLASS(config=Game)
 class AZixuanCraftCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+private:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -57,11 +59,11 @@ class AZixuanCraftCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float Health;
 
-public:
-	AZixuanCraftCharacter();
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	ATerrainManager* TerrainManager;
 
-protected:
-	virtual void BeginPlay();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float DestroyDistance;
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -96,12 +98,40 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint8 bUsingMotionControllers : 1;
 
+	AZixuanCraftCharacter();
+
+	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
 protected:
-	
+	virtual void BeginPlay();
+
+	/** Touch */
+	struct TouchData
+	{
+		bool bIsPressed;
+		ETouchIndex::Type FingerIndex;
+		FVector Location;
+		bool bMoved;
+
+		TouchData()
+		{
+			bIsPressed = false;
+			Location = FVector::ZeroVector;
+		}
+	};
+	TouchData	TouchItem;
+	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
+	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
+	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
+
+	/** Inputs */
 	void Attack();
 	void DestroyBlock();
 	void UseItem();
 	void PlaceBlock();
+	void Sprint();
+	void SlowDown();
 
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();
@@ -123,25 +153,7 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
-
-	/** Change speed */
-	void Sprint();
-	void SlowDown();
-
-	struct TouchData
-	{
-		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
-		bool bIsPressed;
-		ETouchIndex::Type FingerIndex;
-		FVector Location;
-		bool bMoved;
-	};
-	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
-	TouchData	TouchItem;
 	
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -153,12 +165,5 @@ protected:
 	 * @returns true if touch controls were enabled.
 	 */
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
-
-public:
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	/** Returns FirstPersonCameraComponent subobject **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
 };
 
