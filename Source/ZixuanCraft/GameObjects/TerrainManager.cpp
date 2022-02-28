@@ -6,13 +6,6 @@
 
 // Sets default values
 ATerrainManager::ATerrainManager()
-	: Weight{ 4.0f }
-	, SpawnObjectChance{ 0.003f }
-	, CubeLength{ 100.0f }
-	, VoxelLength{ TNumericLimits<float>::Max() }
-	, PlayerAtCubeX{ TNumericLimits<int32>::Max() }
-	, PlayerAtCubeY{ TNumericLimits<int32>::Max() }
-	, SpawnedVoxel{ nullptr }
 {
 	PrimaryActorTick.bCanEverTick = true;
 }

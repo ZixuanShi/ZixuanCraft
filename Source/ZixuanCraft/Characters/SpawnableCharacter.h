@@ -23,7 +23,8 @@ enum class EAgentState : uint8
 };
 
 /**
-* Holds all the necessary details of a spawnable*/
+* Holds all the necessary details of a spawnable
+*/
 USTRUCT(BlueprintType)
 struct FSpawnableParam
 {

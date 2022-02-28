@@ -45,37 +45,37 @@ private:
 	float GenerateTreeChance = 0.002f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float Weight;
+	float Weight = 4.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float SpawnObjectChance;
+	float SpawnObjectChance = 0.003f;
 
 	/** Length of a single cube for XY axis */
-	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
-	float CubeLength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float CubeLength = 100.0f;
 
 	/** Length of an entire voxel for XY axis */
-	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
-	float VoxelLength;
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
+	float VoxelLength = TNumericLimits<float>::Max();
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 PlayerAtCubeX;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 PlayerAtCubeX = TNumericLimits<int32>::Max();
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 PlayerAtCubeY;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 PlayerAtCubeY = TNumericLimits<int32>::Max();
 	
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<ATerrainVoxel*> Terrains;
 
 	/** 
-	* FVector for the voxel's location as key, int32 as the index in Terrains TArray as value. 
-	* Used when adding/removing voxels when the player moves and when the player place/destroy a cube
-	*/
+	 * FVector for the voxel's location as key, int32 as the index in Terrains TArray as value. 
+	 * Used when adding/removing voxels when the player moves and when the player place/destroy a cube
+	 */
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<FVector, int32> TerrainLocations;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	ATerrainVoxel* SpawnedVoxel;
+	ATerrainVoxel* SpawnedVoxel = nullptr;
 
 public:
 	ATerrainManager();
