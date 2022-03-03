@@ -26,7 +26,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AZixuanCraftCharacter::AZixuanCraftCharacter()
 	: MaxHealth{ 100.0f }
 	, Health{ MaxHealth }
-	, TerrainManager{ nullptr }
 	, DestroyDistance{ 700.0f }
 	, BaseTurnRate{ 45.0f }
 	, BaseLookUpRate{ 45.0f }
@@ -113,10 +112,6 @@ void AZixuanCraftCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
-
-	// Find Terrain Manager
-	TerrainManager = Cast<ATerrainManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATerrainManager::StaticClass()));
-	check(TerrainManager);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,20 +158,20 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	// Find the block to destroy
-	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-	FVector Start = PlayerCameraManager->GetCameraLocation();
-	FVector End = PlayerCameraManager->GetActorForwardVector() * DestroyDistance + Start;
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, true);
+	//// Find the block to destroy
+	//APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	//FVector Start = PlayerCameraManager->GetCameraLocation();
+	//FVector End = PlayerCameraManager->GetActorForwardVector() * DestroyDistance + Start;
+	//FHitResult HitResult;
+	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, true);
 
-	// Hit a block to destroy
-	if (HitResult.Actor != nullptr && HitResult.Actor->IsA<ATerrainVoxel>())
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Hit something to destroy");
-		Cast<ATerrainVoxel>(HitResult.Actor)->SetVoxel(HitResult.Location, ECubeType::Empty);
-	}
+	//// Hit a block to destroy
+	//if (HitResult.Actor != nullptr && HitResult.Actor->IsA<ATerrainVoxel>())
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Hit something to destroy");
+	//	Cast<ATerrainVoxel>(HitResult.Actor)->SetVoxel(HitResult.Location, ECubeType::Empty);
+	//}
 }
 
 void AZixuanCraftCharacter::UseItem()

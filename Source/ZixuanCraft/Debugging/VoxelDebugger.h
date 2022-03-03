@@ -18,4 +18,20 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 CubeCountZ = 3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float CubeLength = 100.0f;
+
+protected:
+	/** Returns Index of cube in AllCubes by X Y Z index */
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	int32 GetIndex(int32 X, int32 Y, int32 Z) const;
+
+	/** Returns X Y Z index of cube in AllCubes by world location */
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	FIntVector GetXYZFromLocation(FVector Location) const;
+
+	/** Returns index of cube in AllCubes by world location */
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	int32 GetIndexFromLocation(FVector Location) const;
 };

@@ -5,15 +5,50 @@
 #include "ProceduralMeshComponent.h"
 #include "SimplexNoiseBPLibrary.h"
 
-static const int32 bTriangles[] = { 2, 1, 0, 0, 3, 2 };
-static const FVector2D bUVs[] = { FVector2D(0.000000, 0.000000), FVector2D(0.000000, 1.000000), FVector2D(1.000000, 1.000000), FVector2D(1.000000, 0.000000) };
-static const FVector bNormals0[] = { FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1) };
-static const FVector bNormals1[] = { FVector(0, 0, -1), FVector(0, 0, -1), FVector(0, 0, -1), FVector(0, 0, -1) };
-static const FVector bNormals2[] = { FVector(0, 1, 0), FVector(0, 1, 0), FVector(0, 1, 0), FVector(0, 1, 0) };
-static const FVector bNormals3[] = { FVector(0, -1, 0), FVector(0, -1, 0), FVector(0, -1, 0), FVector(0, -1, 0) };
-static const FVector bNormals4[] = { FVector(1, 0, 0), FVector(1, 0, 0), FVector(1, 0, 0), FVector(1, 0, 0) };
-static const FVector bNormals5[] = { FVector(-1, 0, 0), FVector(-1, 0, 0), FVector(-1, 0, 0), FVector(-1, 0, 0) };
-static const FVector bMask[] = { FVector(0.000000, 0.000000, 1.000000), FVector(0.000000, 0.000000, -1.000000), FVector(0.000000, 1.000000, 0.000000), FVector(0.000000, -1.000000, 0.000000), FVector(1.000000, 0.000000, 0.000000), FVector(-1.000000, 0.000000, 0.000000) };
+static const int32 bTriangles[] = { 2, 1, 0, 
+									0, 3, 2 };
+
+static const FVector2D bUVs[] = { FVector2D(0.000000, 0.000000), 
+								  FVector2D(0.000000, 1.000000), 
+								  FVector2D(1.000000, 1.000000), 
+								  FVector2D(1.000000, 0.000000) };
+
+static const FVector bNormals0[] = { FVector(0, 0, 1), 
+									 FVector(0, 0, 1), 
+									 FVector(0, 0, 1), 
+									 FVector(0, 0, 1) };
+
+static const FVector bNormals1[] = { FVector(0, 0, -1), 
+									 FVector(0, 0, -1), 
+									 FVector(0, 0, -1), 
+									 FVector(0, 0, -1) };
+
+static const FVector bNormals2[] = { FVector(0, 1, 0), 
+									 FVector(0, 1, 0), 
+									 FVector(0, 1, 0), 
+									 FVector(0, 1, 0) };
+
+static const FVector bNormals3[] = { FVector(0, -1, 0),
+									 FVector(0, -1, 0), 
+									 FVector(0, -1, 0), 
+									 FVector(0, -1, 0) };
+
+static const FVector bNormals4[] = { FVector(1, 0, 0), 
+									 FVector(1, 0, 0),
+									 FVector(1, 0, 0), 
+									 FVector(1, 0, 0) };
+
+static const FVector bNormals5[] = { FVector(-1, 0, 0),
+									 FVector(-1, 0, 0), 
+									 FVector(-1, 0, 0),
+									 FVector(-1, 0, 0) };
+
+static const FVector bMask[] = { FVector( 0.000000,  0.000000,  1.000000), 
+								 FVector( 0.000000,  0.000000, -1.000000), 
+								 FVector( 0.000000,  1.000000,  0.000000), 
+								 FVector( 0.000000, -1.000000,  0.000000), 
+								 FVector( 1.000000,  0.000000,  0.000000), 
+								 FVector(-1.000000,  0.000000,  0.000000) };
 
 ATerrainVoxel::ATerrainVoxel()
 	: VoxelX{ 0 }
@@ -187,7 +222,7 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const int32 Me
 
 	// add faces, verticies, UVS and Normals
 	int32 TriangleNum = 0;
-	for (int32 CubeSideIndex = 0; CubeSideIndex < 6; CubeSideIndex++)
+	for (int32 CubeSideIndex = 0; CubeSideIndex < 6; ++CubeSideIndex)
 	{
 		int32 NewIndex = Index + bMask[CubeSideIndex].X + (bMask[CubeSideIndex].Y * CubeCountXY) + (bMask[CubeSideIndex].Z * CubeCountXYSquared);
 
