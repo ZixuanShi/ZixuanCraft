@@ -1,2 +1,2 @@
 # ZixuanCraft
-Clone of Minecraft using Unreal Engine
+Minecraft clone using Unreal Engine. Available on Windows and Android
