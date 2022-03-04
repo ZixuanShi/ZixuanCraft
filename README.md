@@ -17,7 +17,6 @@ Minecraft clone using Unreal Engine.
 - Keyboard & Mouse
 - XBox Controller
 
-<<<<<<< HEAD
 ## Controls
 #### Keyboard & Mouse
 | Action        | Keyboard & Mouse   | Status             |
@@ -45,8 +44,3 @@ Minecraft clone using Unreal Engine.
 - There are some tree leaves in the air which don't attach to any tree trunks.
 - The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
 
-=======
-# Known Issues
-- There are some tree leaves in the air which don't attach to any tree trunks.
-- The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
->>>>>>> e67ca725df90bb07f77206a448a093ef1d0eaf64
