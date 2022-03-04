@@ -11,4 +11,5 @@ Minecraft clone using Unreal Engine.
 - Phone touches (In development)
 
 # Known Issues
-- The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path
+- There are some tree leaves in the air which don't attach to any tree trunks.
+- The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
