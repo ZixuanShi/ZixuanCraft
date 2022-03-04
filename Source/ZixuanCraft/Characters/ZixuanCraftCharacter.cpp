@@ -3,7 +3,6 @@
 #include "ZixuanCraftCharacter.h"
 #include "GameObjects/ZixuanCraftProjectile.h"
 #include "GameObjects/TerrainManager.h"
-#include "GameObjects/TerrainVoxel.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -17,27 +16,17 @@
 #include "DrawDebugHelpers.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
-
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
-//////////////////////////////////////////////////////////////////////////
-// AZixuanCraftCharacter
-
 AZixuanCraftCharacter::AZixuanCraftCharacter()
-	: MaxHealth{ 100.0f }
-	, Health{ MaxHealth }
-	, DestroyDistance{ 700.0f }
-	, BaseTurnRate{ 45.0f }
-	, BaseLookUpRate{ 45.0f }
-	, GunOffset{ 100.0f, 0.0f, 10.0f }
 {
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(45.0f, 96.0f);
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-33.8f, -6.96f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
@@ -98,6 +87,8 @@ void AZixuanCraftCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	TerrainManager = Cast<ATerrainManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATerrainManager::StaticClass()));
+
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 
@@ -114,9 +105,6 @@ void AZixuanCraftCharacter::BeginPlay()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
 void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -128,7 +116,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	// Bind attack/destroy event
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AZixuanCraftCharacter::Attack);
-	PlayerInputComponent->BindAction("Destroy", IE_Repeat, this, &AZixuanCraftCharacter::DestroyBlock);
+	PlayerInputComponent->BindAction("Destroy", IE_Pressed, this, &AZixuanCraftCharacter::DestroyBlock);
 
 	// Bind use item/place block event
 	PlayerInputComponent->BindAction("PlaceBlock", IE_Pressed, this, &AZixuanCraftCharacter::PlaceBlock);
@@ -158,20 +146,8 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	//// Find the block to destroy
-	//APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-	//FVector Start = PlayerCameraManager->GetCameraLocation();
-	//FVector End = PlayerCameraManager->GetActorForwardVector() * DestroyDistance + Start;
-	//FHitResult HitResult;
-	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, true);
-
-	//// Hit a block to destroy
-	//if (HitResult.Actor != nullptr && HitResult.Actor->IsA<ATerrainVoxel>())
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Hit something to destroy");
-	//	Cast<ATerrainVoxel>(HitResult.Actor)->SetVoxel(HitResult.Location, ECubeType::Empty);
-	//}
+	CurrentAction = EActionType::Destroy;
+	InteractVoxel(ECubeType::Empty);
 }
 
 void AZixuanCraftCharacter::UseItem()
@@ -181,7 +157,8 @@ void AZixuanCraftCharacter::UseItem()
 
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Place Block");
+	CurrentAction = EActionType::PlaceCube;
+	InteractVoxel(ECubeType::Grass);
 }
 
 void AZixuanCraftCharacter::Attack()
@@ -355,6 +332,36 @@ bool AZixuanCraftCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 	}
 	
 	return false;
+}
+
+float AZixuanCraftCharacter::GetOffset() const
+{
+	switch (CurrentAction)
+	{
+	case EActionType::Destroy: return -1.0f;
+	case EActionType::PlaceCube: return 1.0f;
+	default: return 0.0f;
+	}
+}
+
+void AZixuanCraftCharacter::InteractVoxel(ECubeType NewType) const
+{
+	// Find the block to interact
+	const APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	const FVector Start = PlayerCameraManager->GetCameraLocation();
+	const FVector End = (PlayerCameraManager->GetActorForwardVector() * DestroyDistance) + Start;
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+
+	// Hit a voxel to interact
+	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.Actor))
+	{
+		const FVector ReversedVoxelLocation = HitVoxel->GetActorLocation() * -1.0f;
+		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * GetOffset();
+		const FVector RelativePostion = ReversedVoxelLocation + UnitDirection;
+		const FVector CubeLocation = RelativePostion + HitResult.Location + (FVector(0.5f, 0.5f, 0.5f) * TerrainManager->GetCubeLength());
+		HitVoxel->SetVoxel(CubeLocation, NewType);
+	}
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

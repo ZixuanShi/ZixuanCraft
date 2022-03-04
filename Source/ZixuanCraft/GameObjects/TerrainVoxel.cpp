@@ -3,7 +3,11 @@
 
 #include "TerrainVoxel.h"
 #include "ProceduralMeshComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "TerrainManager.h"
 #include "SimplexNoiseBPLibrary.h"
+
+PRAGMA_DISABLE_OPTIMIZATION
 
 static const int32 bTriangles[] = { 2, 1, 0, 
 									0, 3, 2 };
@@ -43,16 +47,14 @@ static const FVector bNormals5[] = { FVector(-1, 0, 0),
 									 FVector(-1, 0, 0),
 									 FVector(-1, 0, 0) };
 
-static const FVector bMask[] = { FVector( 0.000000,  0.000000,  1.000000), 
-								 FVector( 0.000000,  0.000000, -1.000000), 
-								 FVector( 0.000000,  1.000000,  0.000000), 
-								 FVector( 0.000000, -1.000000,  0.000000), 
-								 FVector( 1.000000,  0.000000,  0.000000), 
-								 FVector(-1.000000,  0.000000,  0.000000) };
+static const FVector bMasks[] = { FVector( 0.000000,  0.000000,  1.000000),	  // Top
+								  FVector( 0.000000,  0.000000, -1.000000),	  // Bottom
+								  FVector( 0.000000,  1.000000,  0.000000),	  // Front
+								  FVector( 0.000000, -1.000000,  0.000000),	  // Back
+								  FVector( 1.000000,  0.000000,  0.000000),	  // Right
+								  FVector(-1.000000,  0.000000,  0.000000) }; // Left
 
 ATerrainVoxel::ATerrainVoxel()
-	: VoxelX{ 0 }
-	, VoxelY{ 0 }
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
@@ -61,18 +63,19 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
+	if(!TerrainManager)
+	{
+		return;
+	}
+
 	// Init members
-	CubeLengthHalf = CubeLength / 2.0f;
-	CubeCountXYSquared = CubeCountXY * CubeCountXY;
-	TotalCubeCount = CubeCountXYSquared * CubeCountZ;
-	NoiseResult.SetNum(CubeCountXYSquared);
-	AllCubes.SetNum(TotalCubeCount);
-	USimplexNoiseBPLibrary::setNoiseSeed(Seed);
+	NoiseResult.SetNum(TerrainManager->CubeCountXYSquared);
+	AllCubes.SetNum(TerrainManager->CubeCountXYSquared * TerrainManager->CubeCountZ);
+	USimplexNoiseBPLibrary::setNoiseSeed(TerrainManager->Seed);
 
 	// Set voxel name in the editor
-	FString Str = "Voxel_" + FString::FromInt(VoxelX) + "_" + FString::FromInt(VoxelY);
-	FName Name = FName(*Str);
-	ProceduralMeshComponent = NewObject<UProceduralMeshComponent>(this, Name);
+	const FString Str = "Voxel_" + FString::FromInt(VoxelX) + "_" + FString::FromInt(VoxelY);
+	ProceduralMeshComponent = NewObject<UProceduralMeshComponent>(this, *Str);
 	ProceduralMeshComponent->RegisterComponent();
 
 	// Procedural component
@@ -85,34 +88,39 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 
 void ATerrainVoxel::GenerateChunk()
 {
+	TArray<FIntVector> TreeRoots;
+
 	CalculateNoise();
 
-	for (int32 X = 0; X < CubeCountXY; ++X)
+	// Set type for each cube. Spawn npc if so
+	for (int32 X = 0; X < TerrainManager->CubeCountXY; ++X)
 	{
-		for (int32 Y = 0; Y < CubeCountXY; ++Y)
+		for (int32 Y = 0; Y < TerrainManager->CubeCountXY; ++Y)
 		{
-			for (int32 Z = 0; Z < CubeCountZ; ++Z)
+			for (int32 Z = 0; Z < TerrainManager->CubeCountZ; ++Z)
 			{
-				int32 Index = X + (Y * CubeCountXY) + (Z * CubeCountXYSquared);
+				const int32 Index = GetIndexFromXYZ(X, Y, Z);
 
-				// Choose a type
-				if (Z == GrassThreshold + 1 + NoiseResult[X + Y * CubeCountXY] && FRNG::Global().FRand() < SpawnObjectChance)
+				if (Z == TerrainManager->GrassThreshold + 1 + NoiseResult[X + Y * TerrainManager->CubeCountXY] && 
+					FRNG::Global().FRand() < TerrainManager->SpawnObjectChance)
 				{
-					AllCubes[Index] = ECubeType::Spawnable;
+					FVector Location{ X * TerrainManager->CubeLength, Y * TerrainManager->CubeLength, Z * TerrainManager->CubeLength };
+					SpawnNPC(Location + GetActorLocation());
 				}
-				else if (Z == GrassThreshold + NoiseResult[X + Y * CubeCountXY] && FRNG::Global().FRand() < GenerateTreeChance)
+				else if (Z == TerrainManager->GrassThreshold + NoiseResult[X + Y * TerrainManager->CubeCountXY] &&
+						 FRNG::Global().FRand() < TerrainManager->SpawnTreeChance)
 				{
-					AllCubes[Index] = ECubeType::Tree;
+					TreeRoots.Emplace(X, Y, Z);
 				}
-				else if (Z < GrassThreshold - StoneOffset + NoiseResult[X + Y * CubeCountXY])
+				else if (Z < TerrainManager->GrassThreshold - TerrainManager->StoneOffset + NoiseResult[X + Y * TerrainManager->CubeCountXY])
 				{
 					AllCubes[Index] = ECubeType::Stone;
 				}
-				else if (Z < GrassThreshold - 1 + NoiseResult[X + Y * CubeCountXY])
+				else if (Z < TerrainManager->GrassThreshold - 1 + NoiseResult[X + Y * TerrainManager->CubeCountXY])
 				{
 					AllCubes[Index] = ECubeType::Dirt;
 				}
-				else if (Z < GrassThreshold + NoiseResult[X + Y * CubeCountXY])
+				else if (Z < TerrainManager->GrassThreshold + NoiseResult[X + Y * TerrainManager->CubeCountXY])
 				{
 					AllCubes[Index] = ECubeType::Grass;
 				}
@@ -121,6 +129,54 @@ void ATerrainVoxel::GenerateChunk()
 					AllCubes[Index] = ECubeType::Empty;
 				}			
 			}
+		}
+	}
+
+	// Trees
+	for (FIntVector TreeRoot : TreeRoots)
+	{
+		const int32 TreeHeightMin   = static_cast<int32>(TerrainManager->TreeHeightRange.X);
+		const int32 TreeHeightMax   = static_cast<int32>(TerrainManager->TreeHeightRange.Y);
+		const int32 LeavesLegnthMin = static_cast<int32>(TerrainManager->LeavesLengthRange.X);
+		const int32 LeavesLegnthMax = static_cast<int32>(TerrainManager->LeavesLengthRange.Y);
+
+		const int32   TreeHeight      = FRNG::Global().RandInRange(TreeHeightMin, TreeHeightMax);
+		const int32   LeavesWidth     = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
+		const int32   LeavesLength    = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
+		const int32   LeavesHeight    = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
+
+		for (int32 X = -LeavesWidth; X <= LeavesWidth; ++X)
+		{
+			for (int32 Y = -LeavesLength; Y <= LeavesLength; ++Y)
+			{
+				for (int32 Z = -LeavesHeight; Z <= LeavesHeight; ++Z)
+				{
+					// Currently avoid growing the leaves to another voxel, will be fixed later
+					const bool bValidX = UKismetMathLibrary::InRange_IntInt(X + TreeRoot.X, 0, TerrainManager->CubeCountXY);
+					const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + TreeRoot.Y, 0, TerrainManager->CubeCountXY);
+					const bool bValidZ = UKismetMathLibrary::InRange_IntInt(Z + TreeRoot.Z + TreeHeight, 0, TerrainManager->CubeCountZ);
+					if (!bValidX || !bValidY || !bValidZ)
+					{
+						continue;	
+					}
+					
+					// Make the leaves look more realistic, wipe out some of the leaves here
+					const float RadiusSquard = FVector(X, Y, Z).SizeSquared();
+					if (FRNG::Global().FRand() < TerrainManager->LeavesPlumpness ||		// Randomly wipe out some leaves
+						RadiusSquard < (LeavesWidth / 2.0f))	// But don't wipe out the leaves close to the center
+					{
+						const int32 Index = GetIndexFromXYZ(TreeRoot.X + X, TreeRoot.Y + Y, TreeRoot.Z + Z + TreeHeight);
+						AllCubes[Index] = ECubeType::TreeLeaves;
+					}
+				}
+			}
+		}
+
+		// Trunk
+		for (int32 Z = 0; Z < TreeHeight; ++Z)
+		{
+			int32 Index = GetIndexFromXYZ(TreeRoot.X, TreeRoot.Y, TreeRoot.Z + Z);
+			AllCubes[Index] = ECubeType::TreeTrunk;
 		}
 	}
 }
@@ -135,13 +191,13 @@ void ATerrainVoxel::UpdateMesh()
 TArray<FMeshSection> ATerrainVoxel::GenerateMeshSections()
 {
 	TArray<FMeshSection> MeshSections;
-	MeshSections.SetNum(Materials.Num());
+	MeshSections.SetNum(TerrainManager->Materials.Num());
 
-	for (int32 X = 0; X < CubeCountXY; ++X)
+	for (int32 X = 0; X < TerrainManager->CubeCountXY; ++X)
 	{
-		for (int32 Y = 0; Y < CubeCountXY; ++Y)
+		for (int32 Y = 0; Y < TerrainManager->CubeCountXY; ++Y)
 		{
-			for (int32 Z = 0; Z < CubeCountZ; ++Z)
+			for (int32 Z = 0; Z < TerrainManager->CubeCountZ; ++Z)
 			{
 				UpdateSingleCube(X, Y, Z, MeshSections);
 			}
@@ -153,27 +209,12 @@ TArray<FMeshSection> ATerrainVoxel::GenerateMeshSections()
 
 void ATerrainVoxel::UpdateSingleCube(int32 X, int32 Y, int32 Z, TArray<FMeshSection>& MeshSections)
 {
-	int32 Index = X + (CubeCountXY * Y) + (CubeCountXYSquared * Z);
-	ECubeType CubeType = AllCubes[Index];
+	const int32 Index = GetIndexFromXYZ(X, Y, Z);
+	const ECubeType CubeType = AllCubes[Index];
 
-	if (CubeType == ECubeType::Tree)
+	if (CubeType != ECubeType::Empty)
 	{
-		FVector Location{ X * CubeLength, Y * CubeLength, Z * CubeLength };
-		Spawn(ECubeType::Tree, Location + GetActorLocation());
-	}
-	else if (CubeType == ECubeType::Spawnable)
-	{
-		FVector Location{ X * CubeLength, Y * CubeLength, Z * CubeLength };
-		Spawn(ECubeType::Spawnable, Location + GetActorLocation());
-	}
-	else if (CubeType != ECubeType::Empty)
-	{
-		HandleNonEmptyCube(X, Y, Z, static_cast<int32>(CubeType) - 1, MeshSections);
-	}
-	else
-	{
-		// Only empty cube types should get here
-		check(CubeType == ECubeType::Empty);
+		HandleNonEmptyCube(X, Y, Z, CubeType, MeshSections);
 	}
 }
 
@@ -191,50 +232,53 @@ void ATerrainVoxel::RegenerateMesh(const TArray<FMeshSection>& MeshSections)
 
 void ATerrainVoxel::ApplyMaterials()
 {
-	for (int32 i = 0; i < Materials.Num(); ++i)
+	for (int32 i = 0; i < TerrainManager->Materials.Num(); ++i)
 	{
-		ProceduralMeshComponent->SetMaterial(i, Materials[i]);
+		ProceduralMeshComponent->SetMaterial(i, TerrainManager->Materials[i]);
 	}
 }
 
 void ATerrainVoxel::SetVoxel(FVector Location, ECubeType NewType)
 {
-	int32 X = Location.X / CubeLength;
-	int32 Y = Location.Y / CubeLength;
-	int32 Z = Location.Z / CubeLength;
-
-	int32 Index = X + (Y * CubeCountXY) + (Z * CubeCountXYSquared);
+	const int32 Index = GetIndexFromLocation(Location);
 	AllCubes[Index] = NewType;
 	UpdateMesh();
 }
 
-void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const int32 MeshIndex, TArray<FMeshSection>& MeshSections)
+void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeType CubeType, TArray<FMeshSection>& MeshSections)
 {
-	int32 Index = X + (CubeCountXY * Y) + (CubeCountXYSquared * Z);
+	const int32 Index = GetIndexFromXYZ(X, Y, Z);
+	const int32 CubeTypeMaterialIndex = static_cast<int32>(CubeType);
 
-	TArray<FVector>& Vertices = MeshSections[MeshIndex].Vertices;
-	TArray<int32>& Triangles = MeshSections[MeshIndex].Triangles;
-	TArray<FVector>& Normals = MeshSections[MeshIndex].Normals;
-	TArray<FVector2D>& UVs = MeshSections[MeshIndex].UVs;
-	TArray<FProcMeshTangent>& Tangents = MeshSections[MeshIndex].Tangents;
-	TArray<FColor>& VertexColors = MeshSections[MeshIndex].VertexColors;
-	int32 ElementID = MeshSections[MeshIndex].ElementID;
+	TArray<FVector>& Vertices = MeshSections[CubeTypeMaterialIndex].Vertices;
+	TArray<int32>& Triangles = MeshSections[CubeTypeMaterialIndex].Triangles;
+	TArray<FVector>& Normals = MeshSections[CubeTypeMaterialIndex].Normals;
+	TArray<FVector2D>& UVs = MeshSections[CubeTypeMaterialIndex].UVs;
+	TArray<FProcMeshTangent>& Tangents = MeshSections[CubeTypeMaterialIndex].Tangents;
+	TArray<FColor>& VertexColors = MeshSections[CubeTypeMaterialIndex].VertexColors;
+	const int32 ElementID = MeshSections[CubeTypeMaterialIndex].ElementID;
 
 	// add faces, verticies, UVS and Normals
 	int32 TriangleNum = 0;
-	for (int32 CubeSideIndex = 0; CubeSideIndex < 6; ++CubeSideIndex)
+	for (int32 CubeSideIndex = 0; CubeSideIndex < UE_ARRAY_COUNT(bMasks); ++CubeSideIndex)
 	{
-		int32 NewIndex = Index + bMask[CubeSideIndex].X + (bMask[CubeSideIndex].Y * CubeCountXY) + (bMask[CubeSideIndex].Z * CubeCountXYSquared);
-
+		const int32 MaskIndex = GetIndexFromXYZ(bMasks[CubeSideIndex].X, bMasks[CubeSideIndex].Y, bMasks[CubeSideIndex].Z);
+		const int32 NewIndex = Index + MaskIndex;
+		const bool bValidX = UKismetMathLibrary::InRange_IntInt(X + bMasks[CubeSideIndex].X, 0, TerrainManager->CubeCountXY - 1);
+		const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + bMasks[CubeSideIndex].Y, 0, TerrainManager->CubeCountXY - 1);
 		bool bShouldAddVertices = false;
-		if ((X + bMask[CubeSideIndex].X < CubeCountXY) && (X + bMask[CubeSideIndex].X >= 0) && (Y + bMask[CubeSideIndex].Y < CubeCountXY) && (Y + bMask[CubeSideIndex].Y >= 0))
+
+		if (CubeType > ECubeType::TreeTrunk)
 		{
-			if (NewIndex < AllCubes.Num() && NewIndex >= 0)
+			bShouldAddVertices = true;
+		}
+		else if (bValidX && bValidY)
+		{
+			const bool bValidNewIndex = UKismetMathLibrary::InRange_IntInt(NewIndex, 0, AllCubes.Num() - 1);
+			if (bValidNewIndex && 
+				AllCubes[NewIndex] < ECubeType::Grass)
 			{
-				if (AllCubes[NewIndex] < ECubeType::Grass)
-				{
-					bShouldAddVertices = true;
-				}
+				bShouldAddVertices = true;
 			}
 		}
 		else
@@ -244,12 +288,10 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const int32 Me
 
 		if (bShouldAddVertices)
 		{
-			Triangles.Emplace(bTriangles[0] + TriangleNum + ElementID);
-			Triangles.Emplace(bTriangles[1] + TriangleNum + ElementID);
-			Triangles.Emplace(bTriangles[2] + TriangleNum + ElementID);
-			Triangles.Emplace(bTriangles[3] + TriangleNum + ElementID);
-			Triangles.Emplace(bTriangles[4] + TriangleNum + ElementID);
-			Triangles.Emplace(bTriangles[5] + TriangleNum + ElementID);
+			for (int32 Vertex : bTriangles)
+			{
+				Triangles.Emplace(Vertex + TriangleNum + ElementID);
+			}
 			TriangleNum += 4;	// add 4 verticies to next triangle
 
 			AddVertices(Vertices, Normals, X, Y, Z, CubeSideIndex);
@@ -262,7 +304,7 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const int32 Me
 		}
 	}
 
-	MeshSections[MeshIndex].ElementID += TriangleNum;
+	MeshSections[CubeTypeMaterialIndex].ElementID += TriangleNum;
 }
 
 void ATerrainVoxel::AddVertices(TArray<FVector>& Vertices, TArray<FVector>& Normals, int32 X, int32 Y, int32 Z, int32 CubeSideIndex)
@@ -271,55 +313,55 @@ void ATerrainVoxel::AddVertices(TArray<FVector>& Vertices, TArray<FVector>& Norm
 	{
 		case 0:
 		{
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
 			Normals.Append(bNormals0, UE_ARRAY_COUNT(bNormals0));
 			break;
 		}
 		case 1:
 		{
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
 			Normals.Append(bNormals1, UE_ARRAY_COUNT(bNormals1));
 			break;
 		}
 		case 2:
 		{
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
 			Normals.Append(bNormals2, UE_ARRAY_COUNT(bNormals2));
 			break;
 		}
 		case 3:
 		{
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
 			Normals.Append(bNormals3, UE_ARRAY_COUNT(bNormals3));
 			break;
 		}
 		case 4:
 		{
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
 			Normals.Append(bNormals4, UE_ARRAY_COUNT(bNormals4));
 			break;
 		}
 		case 5:
 		{
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), -CubeLengthHalf + (Z * CubeLength));
-			Vertices.Emplace(-CubeLengthHalf + (X * CubeLength), -CubeLengthHalf + (Y * CubeLength), CubeLengthHalf + (Z * CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
+			Vertices.Emplace(-TerrainManager->CubeLengthHalf + (X * TerrainManager->CubeLength), -TerrainManager->CubeLengthHalf + (Y * TerrainManager->CubeLength), TerrainManager->CubeLengthHalf + (Z * TerrainManager->CubeLength));
 			Normals.Append(bNormals5, UE_ARRAY_COUNT(bNormals5));
 			break;
 		}
@@ -332,39 +374,54 @@ void ATerrainVoxel::CalculateNoise()
 	float _Y = 0.0f;
 	float Result = 0.0f;
 
-	for (int32 Y = 0; Y < CubeCountXY; ++Y)
+	for (int32 Y = 0; Y < TerrainManager->CubeCountXY; ++Y)
 	{
-		for (int32 X = 0; X < CubeCountXY; ++X)
+		for (int32 X = 0; X < TerrainManager->CubeCountXY; ++X)
 		{
 			// 1
-			_X = (VoxelX * CubeCountXY + X) * 0.01f;
-			_Y = (VoxelY * CubeCountXY + Y) * 0.01f;
-			Result += USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * Weight;
+			_X = (VoxelX * TerrainManager->CubeCountXY + X) * 0.01f;
+			_Y = (VoxelY * TerrainManager->CubeCountXY + Y) * 0.01f;
+			Result += USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * TerrainManager->Weight;
 
 			// 2
-			_X = (VoxelX * CubeCountXY + X) * 0.01f;
-			_Y = (VoxelY * CubeCountXY + Y) * 0.01f;
-			Result += USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * Weight * 2.0f;
+			_X = (VoxelX * TerrainManager->CubeCountXY + X) * 0.01f;
+			_Y = (VoxelY * TerrainManager->CubeCountXY + Y) * 0.01f;
+			Result += USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * TerrainManager->Weight * 2.0f;
 
 			// 3
-			_X = (VoxelX * CubeCountXY + X) * 0.004f;
-			_Y = (VoxelY * CubeCountXY + Y) * 0.004f;
-			Result += USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * Weight * 4.0f;
+			_X = (VoxelX * TerrainManager->CubeCountXY + X) * 0.004f;
+			_Y = (VoxelY * TerrainManager->CubeCountXY + Y) * 0.004f;
+			Result += USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * TerrainManager->Weight * 4.0f;
 
 			// 4
-			_X = (VoxelX * CubeCountXY + X) * 0.05f;
-			_Y = (VoxelY * CubeCountXY + Y) * 0.05f;
-			Result += FMath::Clamp(USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * Weight, 0.0f, 5.0f);
+			_X = (VoxelX * TerrainManager->CubeCountXY + X) * 0.05f;
+			_Y = (VoxelY * TerrainManager->CubeCountXY + Y) * 0.05f;
+			Result += FMath::Clamp(USimplexNoiseBPLibrary::SimplexNoise2D(_X, _Y) * TerrainManager->Weight, 0.0f, 5.0f);
 
 			// Finalize
-			NoiseResult[Y * CubeCountXY + X] = FMath::Floor(Result);
+			NoiseResult[Y * TerrainManager->CubeCountXY + X] = FMath::Floor(Result);
 			Result = 0.0f;
 		}
 	}
 }
 
-bool ATerrainVoxel::InRange(int32 Value, int32 Range)
+int32 ATerrainVoxel::GetIndexFromXYZ(int32 X, int32 Y, int32 Z) const
 {
-	return (Value >= 0 && Value <= Range);
+	return X + (Y * TerrainManager->CubeCountXY) + (Z * TerrainManager->CubeCountXYSquared);
 }
 
+FIntVector ATerrainVoxel::GetXYZFromLocation(FVector Location) const
+{
+	const int32 X = Location.X / TerrainManager->CubeLength;
+	const int32 Y = Location.Y / TerrainManager->CubeLength;
+	const int32 Z = Location.Z / TerrainManager->CubeLength;
+	return FIntVector(X, Y, Z);
+}
+
+int32 ATerrainVoxel::GetIndexFromLocation(FVector Location) const
+{
+	const FIntVector XYZ = GetXYZFromLocation(Location);
+	return GetIndexFromXYZ(XYZ.X, XYZ.Y, XYZ.Z);
+}
+
+PRAGMA_ENABLE_OPTIMIZATION

@@ -18,4 +18,6 @@ class ZIXUANCRAFT_API ALootable : public AActor
 
 public:	
 	ALootable();
+
+	virtual void Tick(float DeltaSeconds) override final;
 };

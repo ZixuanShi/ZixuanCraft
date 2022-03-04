@@ -8,11 +8,9 @@
 #include "Utils/RNG.h"
 #include "TerrainVoxel.generated.h"
 
-class UStaticMeshComponent;
-class UInstancedStaticMeshComponent;
-class UMaterialInterface;
 class UProceduralMeshComponent;
 struct FProcMeshTangent;
+class ATerrainManager;
 
 struct FMeshSection
 {
@@ -25,6 +23,7 @@ struct FMeshSection
 	int32 ElementID = 0;
 };
 
+/** The order must perfectly match the ATerrainManager::Materials */
 UENUM(BlueprintType)
 enum class ECubeType : uint8
 {
@@ -32,8 +31,8 @@ enum class ECubeType : uint8
 	Grass		UMETA(DisplayName = "Grass"),
 	Dirt		UMETA(DisplayName = "Dirt"),
 	Stone		UMETA(DisplayName = "Stone"),
-	Tree		UMETA(DisplayName = "Tree"),
-	Spawnable	UMETA(DisplayName = "Spawnable"),
+	TreeTrunk	UMETA(DisplayName = "TreeTruck"),
+	TreeLeaves	UMETA(DisplayName = "TreeLeaves"),
 };
 
 /**
@@ -44,60 +43,24 @@ class ZIXUANCRAFT_API ATerrainVoxel : public AActor
 {
 	GENERATED_BODY()
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UProceduralMeshComponent* ProceduralMeshComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<UMaterialInterface*> Materials;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 VoxelX;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 VoxelY;
-
-	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 CubeCountXY;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 CubeCountZ;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	float CubeLength;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 GrassThreshold;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 StoneOffset;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	float GenerateTreeChance;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	float Weight;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	float SpawnObjectChance;
-
-	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	int32 Seed;
-
-	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
-	float CubeLengthHalf;
-
-	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
-	int32 TotalCubeCount;
-
-	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
-	int32 CubeCountXYSquared;
+private:
+	TArray<ECubeType> AllCubes;
+	TArray<int32> NoiseResult;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> SpawnedObjects;
 
-	TArray<ECubeType> AllCubes;
-	TArray<int32> NoiseResult;	// Temp hack
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UProceduralMeshComponent* ProceduralMeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	ATerrainManager* TerrainManager = nullptr;
+
+	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	int32 VoxelX = 0;
+
+	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	int32 VoxelY = 0;
 
 public:	
 	ATerrainVoxel();
@@ -117,11 +80,8 @@ private:
 	void ApplyMaterials();
 
 	/** Vertices */
-	void HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const int32 MeshIndex, TArray<FMeshSection>& MeshSections);
+	void HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeType CubeType, TArray<FMeshSection>& MeshSections);
 	void AddVertices(TArray<FVector>& Vertices, TArray<FVector>& Normals, int32 X, int32 Y, int32 Z, int32 CubeSideIndex);
-
-	/** Utils */
-	bool InRange(int32 Value, int32 Range);
 
 protected:
 	/** Calculate perlin noise value for terrain generation */
@@ -129,5 +89,17 @@ protected:
 	void CalculateNoise();
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void Spawn(ECubeType Type, FVector Location);
+	void SpawnNPC(FVector Location);
+
+	/** Returns Index of cube in AllCubes by X Y Z index */
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	int32 GetIndexFromXYZ(int32 X, int32 Y, int32 Z) const;
+
+	/** Returns X Y Z index of cube in AllCubes by world location */
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	FIntVector GetXYZFromLocation(FVector Location) const;
+
+	/** Returns index of cube in AllCubes by world location */
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	int32 GetIndexFromLocation(FVector Location) const;
 };

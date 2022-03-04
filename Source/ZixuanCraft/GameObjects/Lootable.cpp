@@ -6,10 +6,18 @@
 
 ALootable::ALootable()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComp"));
 	RootComponent = StaticMeshComp;
+}
+
+void ALootable::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// Self rotate by Z axix
+	AddActorLocalRotation(FRotator(0.0f, 1.0f, 0.0f));
 }
 
 

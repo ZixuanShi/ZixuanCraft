@@ -3,7 +3,7 @@
 
 #include "RNG.h"
 
-FRNG::FRNG(uint64_t Seed)
+FRNG::FRNG(uint64 Seed)
 {
 	Seeds[0] = Seed << 3 | Seed;
 	Seeds[1] = Seed << 7 | Seed;
@@ -21,10 +21,10 @@ float FRNG::FRand()
 	float Result = 0.f;
 
 	// mangling...
-	uint64_t Temp1 = Seeds[1];
+	uint64 Temp1 = Seeds[1];
 	Seeds[0] ^= Seeds[0] << 23;
-	uint64_t Temp2 = Seeds[0] ^ Seeds[1] ^ (Seeds[0] >> 17) ^ (Seeds[1] >> 26);
-	uint64_t Temp3 = Temp2 + Seeds[1];
+	uint64 Temp2 = Seeds[0] ^ Seeds[1] ^ (Seeds[0] >> 17) ^ (Seeds[1] >> 26);
+	uint64 Temp3 = Temp2 + Seeds[1];
 
 	Result = 1.0f / ((float)INT_MAX + 1.0f) * (0x7FFFFFFF & Temp3);
 
@@ -40,8 +40,9 @@ bool FRNG::RandBool()
 	return static_cast<bool>(RandInRange(0, 1));
 }
 
-void FRNG::SetSeed(uint64_t Seed)
+void FRNG::SetSeed(uint64 Seed)
 {
+	ensureMsgf(Seed != 0, TEXT("Seed should not be zero"));
 	Seeds[0] = Seed << 3 | Seed;
 	Seeds[1] = Seed << 7 | Seed;
 }

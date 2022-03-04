@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameObjects/TerrainVoxel.h"
 #include "ZixuanCraftCharacter.generated.h"
 
 class UInputComponent;
@@ -15,10 +16,33 @@ class UAnimMontage;
 class USoundBase;
 class ATerrainManager;
 
+UENUM(BlueprintType)
+enum class EActionType : uint8
+{
+	Destroy		UMETA(DisplayName = "Destroy"),
+	PlaceCube	UMETA(DisplayName = "PlaceCube"),
+	Attack  	UMETA(DisplayName = "Attack"),
+};
+
 UCLASS(config=Game)
 class AZixuanCraftCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	/** Touch */
+	struct TouchData
+	{
+		bool bIsPressed;
+		ETouchIndex::Type FingerIndex;
+		FVector Location;
+		bool bMoved;
+
+		TouchData()
+		{
+			bIsPressed = false;
+			Location = FVector::ZeroVector;
+		}
+	};
 
 private:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
@@ -54,26 +78,32 @@ private:
 	UMotionControllerComponent* L_MotionController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float MaxHealth;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float Health;
+	float MaxHealth = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float DestroyDistance;
+	float Health = MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float DestroyDistance = 700.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	ATerrainManager* TerrainManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionType CurrentAction = EActionType::Destroy;
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
+	float BaseTurnRate = 45.0f;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+	float BaseLookUpRate = 45.0f;
 
 	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
+	FVector GunOffset = { 100.0f, 0.0f, 10.0f };
 
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
@@ -96,28 +126,10 @@ public:
 	uint8 bUsingMotionControllers : 1;
 
 	AZixuanCraftCharacter();
-
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
-protected:
 	virtual void BeginPlay();
 
-	/** Touch */
-	struct TouchData
-	{
-		bool bIsPressed;
-		ETouchIndex::Type FingerIndex;
-		FVector Location;
-		bool bMoved;
-
-		TouchData()
-		{
-			bIsPressed = false;
-			Location = FVector::ZeroVector;
-		}
-	};
-	TouchData	TouchItem;
+private:
+	TouchData TouchItem;
 	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
@@ -162,5 +174,10 @@ protected:
 	 * @returns true if touch controls were enabled.
 	 */
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
+
+	/** Get Offset when detecting cube location by current action */
+	float GetOffset() const;
+
+	void InteractVoxel(ECubeType NewType) const;
 };
 

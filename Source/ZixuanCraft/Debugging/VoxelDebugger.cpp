@@ -7,7 +7,7 @@ PRAGMA_DISABLE_OPTIMIZATION
 
 int32 AVoxelDebugger::GetIndex(int32 X, int32 Y, int32 Z) const
 {
-	int32 Index = (X * CubeCountXY * CubeCountZ) + (Y * CubeCountZ) + Z;
+	int32 Index = X + (Y * CubeCountXY) + (Z * CubeCountXYSquared);
 	return Index; 
 }
 

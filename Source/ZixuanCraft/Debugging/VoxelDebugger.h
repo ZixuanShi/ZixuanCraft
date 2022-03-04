@@ -20,6 +20,9 @@ private:
 	int32 CubeCountZ = 3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 CubeCountXYSquared = CubeCountXY * CubeCountXY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float CubeLength = 100.0f;
 
 protected:

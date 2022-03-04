@@ -3,6 +3,7 @@
 
 #include "TerrainManager.h"
 #include "GameObjects/TerrainVoxel.h"
+#include "Utils/RNG.h"
 
 // Sets default values
 ATerrainManager::ATerrainManager()
@@ -14,6 +15,8 @@ void ATerrainManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FRNG::Global().SetSeed(Seed);
+	CubeLengthHalf = CubeLength / 2.0f;
 	VoxelLength = static_cast<float>(CubeCountXY * CubeLength);
 	Terrains.Reserve(RenderRadius * CubeCountXY);
 }
@@ -66,7 +69,7 @@ void ATerrainManager::AddChunk()
 			{
 				SpawnVoxel(VoxelLocation, X, Y);
 				Terrains.Emplace(SpawnedVoxel);
-				TerrainLocations.Emplace(VoxelLocation, Terrains.Num() - 1);
+				TerrainLocations.Emplace(VoxelLocation, false);
 			}
 		}
 	}
@@ -84,7 +87,6 @@ void ATerrainManager::RemoveChunk()
 		if (DistanceToPlayer > RenderRadius * 2 * VoxelLength)
 		{
 			FVector VoxelLocation = Terrains[i]->GetActorLocation() * FVector(1.0f, 1.0f, 0.0f);
-			TerrainLocations[Terrains.Last()->GetActorLocation() * FVector(1.0f, 1.0f, 0.0f)] = i;	// Update terrains location's index
 			TerrainLocations.Remove(VoxelLocation);
 
 			Swap(Terrains[i], Terrains.Last());
