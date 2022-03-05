@@ -146,8 +146,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	CurrentAction = EActionType::Destroy;
-	InteractVoxel(ECubeType::Empty);
+	InteractVoxel(ECubeType::Empty, -OffsetHelper);
 }
 
 void AZixuanCraftCharacter::UseItem()
@@ -157,8 +156,7 @@ void AZixuanCraftCharacter::UseItem()
 
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	CurrentAction = EActionType::PlaceCube;
-	InteractVoxel(ECubeType::Grass);
+	InteractVoxel(ECubeType::Grass, OffsetHelper);
 }
 
 void AZixuanCraftCharacter::Attack()
@@ -334,32 +332,22 @@ bool AZixuanCraftCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 	return false;
 }
 
-float AZixuanCraftCharacter::GetOffset() const
-{
-	switch (CurrentAction)
-	{
-	case EActionType::Destroy: return -1.0f;
-	case EActionType::PlaceCube: return 1.0f;
-	default: return 0.0f;
-	}
-}
-
-void AZixuanCraftCharacter::InteractVoxel(ECubeType NewType) const
+void AZixuanCraftCharacter::InteractVoxel(ECubeType NewType, float OffsetMultiplier) const
 {
 	// Find the block to interact
 	const APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	const FVector Start = PlayerCameraManager->GetCameraLocation();
-	const FVector End = (PlayerCameraManager->GetActorForwardVector() * DestroyDistance) + Start;
+	const FVector End = (PlayerCameraManager->GetActorForwardVector() * CubeInteractDistance) + Start;
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
 	// Hit a voxel to interact
 	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.Actor))
 	{
-		const FVector ReversedVoxelLocation = HitVoxel->GetActorLocation() * -1.0f;
-		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * GetOffset();
+		const FVector ReversedVoxelLocation = -HitVoxel->GetActorLocation();
+		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * OffsetMultiplier;
 		const FVector RelativePostion = ReversedVoxelLocation + UnitDirection;
-		const FVector CubeLocation = RelativePostion + HitResult.Location + (FVector(0.5f, 0.5f, 0.5f) * TerrainManager->GetCubeLength());
+		const FVector CubeLocation = RelativePostion + HitResult.Location + FVector(TerrainManager->GetCubeLengthHalf());
 		HitVoxel->SetVoxel(CubeLocation, NewType);
 	}
 }

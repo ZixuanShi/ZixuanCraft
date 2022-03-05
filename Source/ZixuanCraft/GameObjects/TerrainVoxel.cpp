@@ -145,6 +145,7 @@ void ATerrainVoxel::GenerateChunk()
 		const int32   LeavesLength    = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
 		const int32   LeavesHeight    = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
 
+		// Leaves 
 		for (int32 X = -LeavesWidth; X <= LeavesWidth; ++X)
 		{
 			for (int32 Y = -LeavesLength; Y <= LeavesLength; ++Y)

@@ -108,8 +108,8 @@ public:
 
 	virtual void BeginPlay() override final;
 	virtual void Tick(float DeltaTime) override final;
-
-	float GetCubeLength() const { return CubeLength; }
+	
+	float GetCubeLengthHalf() const { return CubeLengthHalf; }
 
 private:
 	bool UpdatedPosition();

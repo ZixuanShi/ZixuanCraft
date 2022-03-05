@@ -40,7 +40,12 @@ Minecraft clone using Unreal Engine.
 | Place Cube    | Left Trigger       | Trigger Down       |
 | Quit Game     | Menu Button        | Button Down        |
 
+## Planned Feature Implementations
+- Finish Inventory System
+- Add mobile input & controls
+- Add Android as target platform
+
 ## Known Issues
 - There are some tree leaves in the air which don't attach to any tree trunks.
 - The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
-
+- The player falls into meshes due to faulty collision with new placed cube

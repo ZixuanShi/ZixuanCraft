@@ -16,18 +16,12 @@ class UAnimMontage;
 class USoundBase;
 class ATerrainManager;
 
-UENUM(BlueprintType)
-enum class EActionType : uint8
-{
-	Destroy		UMETA(DisplayName = "Destroy"),
-	PlaceCube	UMETA(DisplayName = "PlaceCube"),
-	Attack  	UMETA(DisplayName = "Attack"),
-};
-
 UCLASS(config=Game)
 class AZixuanCraftCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	static constexpr float OffsetHelper = 1.0f;		// Use this value to find the cube's location when interacting with voxel
 
 	/** Touch */
 	struct TouchData
@@ -84,13 +78,10 @@ private:
 	float Health = MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float DestroyDistance = 700.0f;
+	float CubeInteractDistance = 700.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	ATerrainManager* TerrainManager;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EActionType CurrentAction = EActionType::Destroy;
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -175,9 +166,11 @@ private:
 	 */
 	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
-	/** Get Offset when detecting cube location by current action */
-	float GetOffset() const;
-
-	void InteractVoxel(ECubeType NewType) const;
+	/**
+	 * When the player tries to Interact with terrain (Destroy/Place a cube), update a voxel according to player's action
+	 * @param NewType				The new cube type to replace in terrain
+	 * @param OffsetMultiplier		Used for accurately find the cube's index to update in the terrain. i.e. If the player tries to destroy a cube, we should grab the cube that's a little far away. If placing one, grab the cube location closer to the player
+	 */
+	void InteractVoxel(ECubeType NewType, float OffsetMultiplier) const;
 };
 
