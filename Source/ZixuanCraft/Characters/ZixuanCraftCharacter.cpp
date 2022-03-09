@@ -341,12 +341,11 @@ void AZixuanCraftCharacter::InteractVoxel(ECubeType NewType, float OffsetMultipl
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
-	// Hit a voxel to interact
+	// Do work if we hit a voxel to interact
 	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.Actor))
 	{
-		const FVector ReversedVoxelLocation = -HitVoxel->GetActorLocation();
 		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * OffsetMultiplier;
-		const FVector RelativePostion = ReversedVoxelLocation + UnitDirection;
+		const FVector RelativePostion = UnitDirection - HitVoxel->GetActorLocation();
 		const FVector CubeLocation = RelativePostion + HitResult.Location + FVector(TerrainManager->GetCubeLengthHalf());
 		HitVoxel->SetVoxel(CubeLocation, NewType);
 	}

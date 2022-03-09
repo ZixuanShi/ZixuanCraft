@@ -71,7 +71,7 @@ private:
 template<typename Type>
 inline Type FRNG::XOrShift128Plus()
 {
-	static_assert(std::is_integral_v<Type>, "Type must be integral");
+	//static_assert(std::is_integral_v<Type>, "Type must be integral");
 
 	uint64 T = Seeds[0];
 	const uint64 S = Seeds[1];

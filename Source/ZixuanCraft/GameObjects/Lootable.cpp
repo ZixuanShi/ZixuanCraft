@@ -18,6 +18,8 @@ void ALootable::Tick(float DeltaSeconds)
 
 	// Self rotate by Z axix
 	AddActorLocalRotation(FRotator(0.0f, 1.0f, 0.0f));
+
+	// If not close to the ground, keep falling
 }
 
 

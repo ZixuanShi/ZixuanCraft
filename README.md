@@ -12,38 +12,42 @@ Minecraft clone using Unreal Engine.
 
 ## Target Platfroms
 - Windows
+- Android
 
 ## Input
 - Keyboard & Mouse
 - XBox Controller
+- Mobile Touches
 
 ## Controls
 #### Keyboard & Mouse
 | Action        | Keyboard & Mouse   | Status             |
 |:-------------:| :-----------------:|:------------------:|
-| Move          | WASD               | Key Press          |
-| Jump          | Space bar          | Key Down           |
-| Attack        | Left Mouse Button  | Button Down        |
-| Sprint        | Left Shift Key     | Key Press          |
-| Destroy Cube  | F Key              | Key Down           |
-| Place Cube    | Right Mouse Button | Button Down        |
-| Quit Game     | Escape             | Key Down           |
+| Move          | WASD               | Hold               |
+| Jump          | Space bar          | Press              |
+| Attack        | Left Mouse Button  | Press              |
+| Sprint        | Left Shift Key     | Hold               |
+| Destroy Cube  | F Key              | Press              |
+| Place Cube    | Right Mouse Button | Press              |
+| Quit Game     | Escape             | Press              |
 
 #### Controller
 | Action        | Controller         | Status             |
 |:-------------:|:------------------:|:------------------:|
 | Move          | Left Thumb Stick   | Hold               |
-| Jump          | Face Pad Bottom    | Button Down        |
-| Attack        | Right Trigger      | Trigger Down       |
-| Sprint        | Left Thumb Stick   | Thumb Stick Press  |
-| Destroy Cube  | Right Trigger      | Trigger Down       |
-| Place Cube    | Left Trigger       | Trigger Down       |
-| Quit Game     | Menu Button        | Button Down        |
+| Jump          | Face Pad Bottom    | Press              |
+| Attack        | Right Trigger      | Press              |
+| Sprint        | Left Thumb Stick   | Hold               |
+| Destroy Cube  | Right Trigger      | Press              |
+| Place Cube    | Left Trigger       | Press              |
+| Quit Game     | Menu Button        | Press              |
+
+#### Mobile Input
+To be added. Right now there are two joysticks, the left one controls the movement and the right one controls camera, and a button on the right controls shooting.
 
 ## Planned Feature Implementations
 - Finish Inventory System
-- Add mobile input & controls
-- Add Android as target platform
+- Add more mobile input & controls
 
 ## Known Issues
 - There are some tree leaves in the air which don't attach to any tree trunks.
