@@ -2,7 +2,7 @@
 
 #include "ZixuanCraftCharacter.h"
 #include "GameObjects/ZixuanCraftProjectile.h"
-#include "GameObjects/TerrainManager.h"
+#include "GameObjects/Terrain/TerrainManager.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TerrainEnums.h"
 #include "Utils/TypeDefs.h"
 #include "Utils/RNG.h"
 #include "TerrainVoxel.generated.h"
@@ -11,6 +12,7 @@
 class UProceduralMeshComponent;
 struct FProcMeshTangent;
 class ATerrainManager;
+class ALootableManager;
 
 struct FMeshSection
 {
@@ -21,18 +23,6 @@ struct FMeshSection
 	TArray<FProcMeshTangent> Tangents;
 	TArray<FColor> VertexColors;
 	int32 ElementID = 0;
-};
-
-/** The order must perfectly match the ATerrainManager::Materials */
-UENUM(BlueprintType)
-enum class ECubeType : uint8
-{
-	Empty		UMETA(DisplayName = "Empty"),
-	Grass		UMETA(DisplayName = "Grass"),
-	Dirt		UMETA(DisplayName = "Dirt"),
-	Stone		UMETA(DisplayName = "Stone"),
-	TreeTrunk	UMETA(DisplayName = "TreeTruck"),
-	TreeLeaves	UMETA(DisplayName = "TreeLeaves"),
 };
 
 /**
@@ -56,6 +46,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	ATerrainManager* TerrainManager = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	ALootableManager* LootableManager = nullptr;
+
 	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	int32 VoxelX = 0;
 
@@ -66,6 +59,7 @@ public:
 	ATerrainVoxel();
 
 	virtual void OnConstruction(const FTransform& Transform) override final;
+	virtual void BeginPlay() override final;
 
 	UFUNCTION(BlueprintCallable)
 	void SetVoxel(FVector Location, ECubeType NewType);

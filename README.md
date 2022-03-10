@@ -43,7 +43,7 @@ Minecraft clone using Unreal Engine.
 | Quit Game     | Menu Button        | Press              |
 
 #### Mobile Input
-To be added. Right now there are two joysticks, the left one controls the movement and the right one controls camera, and a button on the right controls shooting.
+To be added. Right now there are two joysticks, the left one controls the movement and the right one controls camera, and single press the screen for shooting.
 
 ## Planned Feature Implementations
 - Finish Inventory System

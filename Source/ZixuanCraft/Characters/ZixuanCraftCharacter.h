@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GameObjects/TerrainVoxel.h"
+#include "GameObjects/Terrain/TerrainVoxel.h"
 #include "ZixuanCraftCharacter.generated.h"
 
 class UInputComponent;

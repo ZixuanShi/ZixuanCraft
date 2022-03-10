@@ -2,7 +2,7 @@
 
 
 #include "TerrainManager.h"
-#include "GameObjects/TerrainVoxel.h"
+#include "TerrainVoxel.h"
 #include "Utils/RNG.h"
 
 // Sets default values

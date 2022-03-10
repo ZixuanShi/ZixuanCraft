@@ -12,6 +12,7 @@ class UStaticMeshComponent;
  * Base class for objects in the world that 
  * - Can be picked up by the player
  * - Can be dropped by NPC
+ * - Can be dropped by a terrain cube
  */
 UCLASS()
 class ZIXUANCRAFT_API ALootable : public AActor

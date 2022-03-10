@@ -4,7 +4,9 @@
 #include "TerrainVoxel.h"
 #include "ProceduralMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "TerrainManager.h"
+#include "GameObjects/Loot/LootableManager.h"
 #include "SimplexNoiseBPLibrary.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
@@ -84,6 +86,13 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 
 	GenerateChunk();
 	UpdateMesh();
+}
+
+void ATerrainVoxel::BeginPlay()
+{
+	Super::BeginPlay();
+
+	LootableManager = Cast<ALootableManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ALootableManager::StaticClass()));
 }
 
 void ATerrainVoxel::GenerateChunk()
@@ -242,8 +251,10 @@ void ATerrainVoxel::ApplyMaterials()
 void ATerrainVoxel::SetVoxel(FVector Location, ECubeType NewType)
 {
 	const int32 Index = GetIndexFromLocation(Location);
+	ECubeType OriginalType = AllCubes[Index];
 	AllCubes[Index] = NewType;
 	UpdateMesh();
+	LootableManager->SpawnTerrainCubeLoot(OriginalType);
 }
 
 void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeType CubeType, TArray<FMeshSection>& MeshSections)

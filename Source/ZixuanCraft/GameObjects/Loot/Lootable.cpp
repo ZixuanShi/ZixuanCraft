@@ -10,6 +10,7 @@ ALootable::ALootable()
 
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComp"));
 	RootComponent = StaticMeshComp;
+	InitialLifeSpan = 60.0f;
 }
 
 void ALootable::Tick(float DeltaSeconds)
