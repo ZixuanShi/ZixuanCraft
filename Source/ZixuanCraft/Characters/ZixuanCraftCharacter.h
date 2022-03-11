@@ -15,6 +15,7 @@ class UMotionControllerComponent;
 class UAnimMontage;
 class USoundBase;
 class ATerrainManager;
+class UInventoryComponent;
 
 UCLASS(config=Game)
 class AZixuanCraftCharacter : public ACharacter
@@ -83,6 +84,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	ATerrainManager* TerrainManager;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* InventoryComponent;
+
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -117,21 +121,29 @@ public:
 	uint8 bUsingMotionControllers : 1;
 
 	AZixuanCraftCharacter();
+
 	virtual void BeginPlay();
 
+	/** Inputs */
+	UFUNCTION(BlueprintCallable)
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+	void DestroyBlock();
+
+	UFUNCTION(BlueprintCallable)
+	void PlaceBlock();
+
+	void UseItem();
+	void Sprint();
+	void SlowDown();
+
 private:
+	/** Touches */
 	TouchData TouchItem;
 	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
-
-	/** Inputs */
-	void Attack();
-	void DestroyBlock();
-	void UseItem();
-	void PlaceBlock();
-	void Sprint();
-	void SlowDown();
 
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();

@@ -25,10 +25,10 @@ Minecraft clone using Unreal Engine.
 |:-------------:| :-----------------:|:------------------:|
 | Move          | WASD               | Hold               |
 | Jump          | Space bar          | Press              |
-| Attack        | Left Mouse Button  | Press              |
+| Attack        | F Key              | Press              |
 | Sprint        | Left Shift Key     | Hold               |
-| Destroy Cube  | F Key              | Press              |
-| Place Cube    | Right Mouse Button | Press              |
+| Destroy Cube  | F Key              | Hold               |
+| Place Cube    | R Key              | Press              |
 | Quit Game     | Escape             | Press              |
 
 #### Controller
@@ -38,18 +38,20 @@ Minecraft clone using Unreal Engine.
 | Jump          | Face Pad Bottom    | Press              |
 | Attack        | Right Trigger      | Press              |
 | Sprint        | Left Thumb Stick   | Hold               |
-| Destroy Cube  | Right Trigger      | Press              |
+| Destroy Cube  | Right Trigger      | Hold               |
 | Place Cube    | Left Trigger       | Press              |
 | Quit Game     | Menu Button        | Press              |
 
 #### Mobile Input
 To be added. Right now there are two joysticks, the left one controls the movement and the right one controls camera, and single press the screen for shooting.
 
-## Planned Feature Implementations
+## Future Plans
 - Finish Inventory System
-- Add more mobile input & controls
+- Complete mobile input & controls
+- Add village
+- More terrains like sand, river, mountain
 
 ## Known Issues
 - There are some tree leaves in the air which don't attach to any tree trunks.
 - The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
-- The player falls into meshes due to faulty collision with new placed cube
+- The player falls into meshes due to faulty collision with new placed cube.

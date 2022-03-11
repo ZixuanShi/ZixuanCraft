@@ -6,55 +6,12 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "TerrainManager.h"
-#include "GameObjects/Loot/LootableManager.h"
+#include "TerrainCubeData.h"
+#include "GameObjects/Loot/TerrainCubeLoot.h"
 #include "SimplexNoiseBPLibrary.h"
+#include "Utils/Math.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
-
-static const int32 bTriangles[] = { 2, 1, 0, 
-									0, 3, 2 };
-
-static const FVector2D bUVs[] = { FVector2D(0.000000, 0.000000), 
-								  FVector2D(0.000000, 1.000000), 
-								  FVector2D(1.000000, 1.000000), 
-								  FVector2D(1.000000, 0.000000) };
-
-static const FVector bNormals0[] = { FVector(0, 0, 1), 
-									 FVector(0, 0, 1), 
-									 FVector(0, 0, 1), 
-									 FVector(0, 0, 1) };
-
-static const FVector bNormals1[] = { FVector(0, 0, -1), 
-									 FVector(0, 0, -1), 
-									 FVector(0, 0, -1), 
-									 FVector(0, 0, -1) };
-
-static const FVector bNormals2[] = { FVector(0, 1, 0), 
-									 FVector(0, 1, 0), 
-									 FVector(0, 1, 0), 
-									 FVector(0, 1, 0) };
-
-static const FVector bNormals3[] = { FVector(0, -1, 0),
-									 FVector(0, -1, 0), 
-									 FVector(0, -1, 0), 
-									 FVector(0, -1, 0) };
-
-static const FVector bNormals4[] = { FVector(1, 0, 0), 
-									 FVector(1, 0, 0),
-									 FVector(1, 0, 0), 
-									 FVector(1, 0, 0) };
-
-static const FVector bNormals5[] = { FVector(-1, 0, 0),
-									 FVector(-1, 0, 0), 
-									 FVector(-1, 0, 0),
-									 FVector(-1, 0, 0) };
-
-static const FVector bMasks[] = { FVector( 0.000000,  0.000000,  1.000000),	  // Top
-								  FVector( 0.000000,  0.000000, -1.000000),	  // Bottom
-								  FVector( 0.000000,  1.000000,  0.000000),	  // Front
-								  FVector( 0.000000, -1.000000,  0.000000),	  // Back
-								  FVector( 1.000000,  0.000000,  0.000000),	  // Right
-								  FVector(-1.000000,  0.000000,  0.000000) }; // Left
 
 ATerrainVoxel::ATerrainVoxel()
 {
@@ -88,13 +45,6 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 	UpdateMesh();
 }
 
-void ATerrainVoxel::BeginPlay()
-{
-	Super::BeginPlay();
-
-	LootableManager = Cast<ALootableManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ALootableManager::StaticClass()));
-}
-
 void ATerrainVoxel::GenerateChunk()
 {
 	TArray<FIntVector> TreeRoots;
@@ -108,7 +58,7 @@ void ATerrainVoxel::GenerateChunk()
 		{
 			for (int32 Z = 0; Z < TerrainManager->CubeCountZ; ++Z)
 			{
-				const int32 Index = GetIndexFromXYZ(X, Y, Z);
+				const int32 Index = GetIndexFromXYZ(X, Y, Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
 
 				if (Z == TerrainManager->GrassThreshold + 1 + NoiseResult[X + Y * TerrainManager->CubeCountXY] && 
 					FRNG::Global().FRand() < TerrainManager->SpawnObjectChance)
@@ -175,7 +125,7 @@ void ATerrainVoxel::GenerateChunk()
 					if (FRNG::Global().FRand() < TerrainManager->LeavesPlumpness ||		// Randomly wipe out some leaves
 						RadiusSquard < (LeavesWidth / 2.0f))	// But don't wipe out the leaves close to the center
 					{
-						const int32 Index = GetIndexFromXYZ(TreeRoot.X + X, TreeRoot.Y + Y, TreeRoot.Z + Z + TreeHeight);
+						const int32 Index = GetIndexFromXYZ(TreeRoot.X + X, TreeRoot.Y + Y, TreeRoot.Z + Z + TreeHeight, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
 						AllCubes[Index] = ECubeType::TreeLeaves;
 					}
 				}
@@ -185,7 +135,7 @@ void ATerrainVoxel::GenerateChunk()
 		// Trunk
 		for (int32 Z = 0; Z < TreeHeight; ++Z)
 		{
-			int32 Index = GetIndexFromXYZ(TreeRoot.X, TreeRoot.Y, TreeRoot.Z + Z);
+			int32 Index = GetIndexFromXYZ(TreeRoot.X, TreeRoot.Y, TreeRoot.Z + Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
 			AllCubes[Index] = ECubeType::TreeTrunk;
 		}
 	}
@@ -219,7 +169,7 @@ TArray<FMeshSection> ATerrainVoxel::GenerateMeshSections()
 
 void ATerrainVoxel::UpdateSingleCube(int32 X, int32 Y, int32 Z, TArray<FMeshSection>& MeshSections)
 {
-	const int32 Index = GetIndexFromXYZ(X, Y, Z);
+	const int32 Index = GetIndexFromXYZ(X, Y, Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
 	const ECubeType CubeType = AllCubes[Index];
 
 	if (CubeType != ECubeType::Empty)
@@ -250,16 +200,25 @@ void ATerrainVoxel::ApplyMaterials()
 
 void ATerrainVoxel::SetVoxel(FVector Location, ECubeType NewType)
 {
-	const int32 Index = GetIndexFromLocation(Location);
+	const int32 Index = GetIndexFromLocation(Location, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared, TerrainManager->CubeLength);
 	ECubeType OriginalType = AllCubes[Index];
 	AllCubes[Index] = NewType;
 	UpdateMesh();
-	LootableManager->SpawnTerrainCubeLoot(OriginalType);
+
+	// Create a loot
+	if (OriginalType > ECubeType::TreeTrunk || OriginalType == ECubeType::Empty)
+	{
+		return;
+	}
+	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(Location, FRotator::ZeroRotator);
+	TerrainCubeLoot->SetCubeType(OriginalType);
+	UMeshComponent* MeshComponent = TerrainCubeLoot->FindComponentByClass<UMeshComponent>();
+	MeshComponent->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
 }
 
 void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeType CubeType, TArray<FMeshSection>& MeshSections)
 {
-	const int32 Index = GetIndexFromXYZ(X, Y, Z);
+	const int32 Index = GetIndexFromXYZ(X, Y, Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
 	const int32 CubeTypeMaterialIndex = static_cast<int32>(CubeType);
 
 	TArray<FVector>& Vertices = MeshSections[CubeTypeMaterialIndex].Vertices;
@@ -274,7 +233,7 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeTyp
 	int32 TriangleNum = 0;
 	for (int32 CubeSideIndex = 0; CubeSideIndex < UE_ARRAY_COUNT(bMasks); ++CubeSideIndex)
 	{
-		const int32 MaskIndex = GetIndexFromXYZ(bMasks[CubeSideIndex].X, bMasks[CubeSideIndex].Y, bMasks[CubeSideIndex].Z);
+		const int32 MaskIndex = GetIndexFromXYZ(bMasks[CubeSideIndex].X, bMasks[CubeSideIndex].Y, bMasks[CubeSideIndex].Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
 		const int32 NewIndex = Index + MaskIndex;
 		const bool bValidX = UKismetMathLibrary::InRange_IntInt(X + bMasks[CubeSideIndex].X, 0, TerrainManager->CubeCountXY - 1);
 		const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + bMasks[CubeSideIndex].Y, 0, TerrainManager->CubeCountXY - 1);
@@ -415,25 +374,6 @@ void ATerrainVoxel::CalculateNoise()
 			Result = 0.0f;
 		}
 	}
-}
-
-int32 ATerrainVoxel::GetIndexFromXYZ(int32 X, int32 Y, int32 Z) const
-{
-	return X + (Y * TerrainManager->CubeCountXY) + (Z * TerrainManager->CubeCountXYSquared);
-}
-
-FIntVector ATerrainVoxel::GetXYZFromLocation(FVector Location) const
-{
-	const int32 X = Location.X / TerrainManager->CubeLength;
-	const int32 Y = Location.Y / TerrainManager->CubeLength;
-	const int32 Z = Location.Z / TerrainManager->CubeLength;
-	return FIntVector(X, Y, Z);
-}
-
-int32 ATerrainVoxel::GetIndexFromLocation(FVector Location) const
-{
-	const FIntVector XYZ = GetXYZFromLocation(Location);
-	return GetIndexFromXYZ(XYZ.X, XYZ.Y, XYZ.Z);
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

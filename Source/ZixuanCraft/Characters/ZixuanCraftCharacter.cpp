@@ -3,6 +3,7 @@
 #include "ZixuanCraftCharacter.h"
 #include "GameObjects/ZixuanCraftProjectile.h"
 #include "GameObjects/Terrain/TerrainManager.h"
+#include "GameplayComponents/InventoryComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -26,7 +27,7 @@ AZixuanCraftCharacter::AZixuanCraftCharacter()
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-33.8f, -6.96f, 64.f)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-33.8f, -6.96f, 56.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
@@ -74,9 +75,15 @@ AZixuanCraftCharacter::AZixuanCraftCharacter()
 	VR_MuzzleLocation->SetRelativeLocation(FVector(0.000004, 53.999992, 10.000000));
 	VR_MuzzleLocation->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));		// Counteract the rotation of the VR gun model.
 
-	// Tune movement
-	GetCharacterMovement()->MaxStepHeight = 50;
-	GetCharacterMovement()->JumpZVelocity = 500;
+#if PLATFORM_ANDROID || PLATFORM_IOS
+	GetCharacterMovement()->MaxStepHeight = 100.0f;
+#else
+	GetCharacterMovement()->MaxStepHeight = 50.0f;
+#endif
+
+	GetCharacterMovement()->JumpZVelocity = 500.0f;
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
@@ -116,7 +123,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	// Bind attack/destroy event
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AZixuanCraftCharacter::Attack);
-	PlayerInputComponent->BindAction("Destroy", IE_Pressed, this, &AZixuanCraftCharacter::DestroyBlock);
+	PlayerInputComponent->BindAction("Destroy", IE_Repeat, this, &AZixuanCraftCharacter::DestroyBlock);
 
 	// Bind use item/place block event
 	PlayerInputComponent->BindAction("PlaceBlock", IE_Pressed, this, &AZixuanCraftCharacter::PlaceBlock);
@@ -137,7 +144,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick	
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AZixuanCraftCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
@@ -215,6 +222,7 @@ void AZixuanCraftCharacter::OnResetVR()
 
 void AZixuanCraftCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, "BeginTouch");
 	if (TouchItem.bIsPressed == true)
 	{
 		return;
@@ -231,6 +239,7 @@ void AZixuanCraftCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, cons
 
 void AZixuanCraftCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, "EndTouch");
 	if (TouchItem.bIsPressed == false)
 	{
 		return;
@@ -242,6 +251,7 @@ void AZixuanCraftCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const 
 //This allows the user to turn without using the right virtual joystick
 void AZixuanCraftCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, "TouchUpdate");
 	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
 	{
 		if (TouchItem.bIsPressed)

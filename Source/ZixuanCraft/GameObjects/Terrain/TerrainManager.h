@@ -7,6 +7,7 @@
 #include "TerrainManager.generated.h"
 
 class ATerrainVoxel;
+class ATerrainCubeLoot;
 
 /**
 * Responsible for generating terrains. Should be only one instance in the world
@@ -17,6 +18,7 @@ class ZIXUANCRAFT_API ATerrainManager : public AActor
 	GENERATED_BODY()
 
 	friend ATerrainVoxel;
+	friend ATerrainCubeLoot;
 
 private:
 	/** Stores all the voxels */
@@ -110,6 +112,7 @@ public:
 	virtual void Tick(float DeltaTime) override final;
 	
 	float GetCubeLengthHalf() const { return CubeLengthHalf; }
+	UMaterialInterface* GetMaterial(int32 Index) const { return Materials[Index]; }
 
 private:
 	bool UpdatedPosition();

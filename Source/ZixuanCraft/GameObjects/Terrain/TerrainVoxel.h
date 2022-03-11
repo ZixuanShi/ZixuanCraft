@@ -5,25 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TerrainEnums.h"
+#include "MeshSection.h"
 #include "Utils/TypeDefs.h"
 #include "Utils/RNG.h"
 #include "TerrainVoxel.generated.h"
 
 class UProceduralMeshComponent;
-struct FProcMeshTangent;
 class ATerrainManager;
-class ALootableManager;
-
-struct FMeshSection
-{
-	TArray<FVector> Vertices;
-	TArray<int32> Triangles;
-	TArray<FVector> Normals;
-	TArray<FVector2D> UVs;
-	TArray<FProcMeshTangent> Tangents;
-	TArray<FColor> VertexColors;
-	int32 ElementID = 0;
-};
 
 /**
 * Voxel holding the terrain cubes
@@ -46,9 +34,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	ATerrainManager* TerrainManager = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	ALootableManager* LootableManager = nullptr;
-
 	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	int32 VoxelX = 0;
 
@@ -59,7 +44,6 @@ public:
 	ATerrainVoxel();
 
 	virtual void OnConstruction(const FTransform& Transform) override final;
-	virtual void BeginPlay() override final;
 
 	UFUNCTION(BlueprintCallable)
 	void SetVoxel(FVector Location, ECubeType NewType);
@@ -84,16 +68,4 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SpawnNPC(FVector Location);
-
-	/** Returns Index of cube in AllCubes by X Y Z index */
-	UFUNCTION(BlueprintPure, BlueprintCallable)
-	int32 GetIndexFromXYZ(int32 X, int32 Y, int32 Z) const;
-
-	/** Returns X Y Z index of cube in AllCubes by world location */
-	UFUNCTION(BlueprintPure, BlueprintCallable)
-	FIntVector GetXYZFromLocation(FVector Location) const;
-
-	/** Returns index of cube in AllCubes by world location */
-	UFUNCTION(BlueprintPure, BlueprintCallable)
-	int32 GetIndexFromLocation(FVector Location) const;
 };
