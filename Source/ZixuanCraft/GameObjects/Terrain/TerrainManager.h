@@ -99,7 +99,7 @@ private:
 	FVector2D TreeHeightRange = { 6.0f, 12.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FVector2D LeavesLengthRange = { 3.0f, 6.0f };
+	FVector2D LeavesLengthRange = { 2.0f, 3.0f };
 
 	/** How plump the leaves are. Value in 0 to 1 range, the greater the plumper the leaves are */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "1", AllowPrivateAccess = "true"))

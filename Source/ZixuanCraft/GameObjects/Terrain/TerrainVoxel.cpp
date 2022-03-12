@@ -16,6 +16,9 @@ PRAGMA_DISABLE_OPTIMIZATION
 ATerrainVoxel::ATerrainVoxel()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	ProceduralMeshComponent = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("ProceduralMeshComponent"));
+	RootComponent = ProceduralMeshComponent;
 }
 
 void ATerrainVoxel::OnConstruction(const FTransform& Transform)
@@ -31,14 +34,6 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 	NoiseResult.SetNum(TerrainManager->CubeCountXYSquared);
 	AllCubes.SetNum(TerrainManager->CubeCountXYSquared * TerrainManager->CubeCountZ);
 	USimplexNoiseBPLibrary::setNoiseSeed(TerrainManager->Seed);
-
-	// Set voxel name in the editor
-	const FString Str = "Voxel_" + FString::FromInt(VoxelX) + "_" + FString::FromInt(VoxelY);
-	ProceduralMeshComponent = NewObject<UProceduralMeshComponent>(this, *Str);
-	ProceduralMeshComponent->RegisterComponent();
-
-	// Procedural component
-	RootComponent = ProceduralMeshComponent;
 	RootComponent->SetWorldTransform(Transform);
 
 	GenerateChunk();
