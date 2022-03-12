@@ -23,5 +23,6 @@ public:
 	UInventoryComponent();
 
 	void AddLoot(ALoot* Loot);
+
 	bool IsFull() const { return Inventory.Num() >= MaxSize; }
 };
