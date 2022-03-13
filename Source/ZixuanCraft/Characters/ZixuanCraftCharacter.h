@@ -82,10 +82,10 @@ private:
 	float CubeInteractDistance = 700.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	ATerrainManager* TerrainManager;
+	ATerrainManager* TerrainManager = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UInventoryComponent* InventoryComponent;
+	UInventoryComponent* InventoryComponent = nullptr;
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */

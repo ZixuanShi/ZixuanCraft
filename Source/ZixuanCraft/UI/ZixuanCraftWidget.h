@@ -11,11 +11,13 @@
  * - Health
  * - Starveness
  * - Inventory
- * - Mobile input if on Android 
+ * - Mobile input if on Mobile 
  */
 UCLASS()
 class ZIXUANCRAFT_API UZixuanCraftWidget : public UUserWidget
 {
 	GENERATED_BODY()
+	
+private:
 	
 };

@@ -16,14 +16,14 @@ class AZixuanCraftProjectile : public AActor
 
 	/** Sphere collision component */
 	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
-	USphereComponent* CollisionComp;
+	USphereComponent* CollisionComp = nullptr;
 
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	UProjectileMovementComponent* ProjectileMovement;
+	UProjectileMovementComponent* ProjectileMovement = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
-	float Damage;
+	float Damage = 30.0f;
 
 public:
 	AZixuanCraftProjectile();

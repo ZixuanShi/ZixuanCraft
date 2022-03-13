@@ -7,7 +7,6 @@
 #include "Characters/SpawnableCharacter.h"
 
 AZixuanCraftProjectile::AZixuanCraftProjectile() 
-	: Damage{ 10.0f }
 {
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));

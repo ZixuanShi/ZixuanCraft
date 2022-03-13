@@ -5,9 +5,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 ASpawnableCharacter::ASpawnableCharacter()
-	: AgentState{ EAgentState::Idle }
-	, Health{ 30.0f }
-	, DeathLifeSpan{ 2.0f }
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -15,14 +12,3 @@ ASpawnableCharacter::ASpawnableCharacter()
 	GetCharacterMovement()->MaxStepHeight = 100.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 255.0f;
 }
-
-FSpawnableParam::FSpawnableParam()
-	: ObjectType{ EObjectType::Zombie }
-{		
-}
-
-FString FSpawnableParam::ToString() const
-{
-	return FString();
-}
-

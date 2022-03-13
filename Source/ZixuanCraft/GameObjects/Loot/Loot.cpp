@@ -9,7 +9,7 @@
 ALoot::ALoot()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	InitialLifeSpan = 60.0f;
+	InitialLifeSpan = 3.0f;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	MeshComp->SetCollisionProfileName("OverlapAllDynamic");
@@ -39,7 +39,8 @@ void ALoot::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 			InventoryComponent->AddLoot(this);
 			MeshComp->SetVisibility(false);
 			SetActorEnableCollision(false);
-			SetActorTickEnabled(false);
+			SetActorTickEnabled(false);		// Stop falling or rotating
+			GetWorldTimerManager().ClearTimer(TimerHandle_LifeSpanExpired);	// Don't destroy this loot when initial life span time is up anymore
 		}
 	}
 }

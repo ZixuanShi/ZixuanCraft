@@ -20,7 +20,7 @@ class ZIXUANCRAFT_API ALoot : public AActor
 protected:
 	/** The mesh to render in game world */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MeshComp;
+	UStaticMeshComponent* MeshComp = nullptr;
 
 	/** The texture to draw in inventory UI Widget */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

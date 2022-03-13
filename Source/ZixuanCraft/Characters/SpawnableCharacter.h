@@ -7,37 +7,11 @@
 #include "SpawnableCharacter.generated.h"
 
 UENUM(BlueprintType)
-enum class EObjectType : uint8
-{
-	Creeper		UMETA(DisplayName = "Creeper"),
-	Zombie		UMETA(DisplayName = "Zombie"),
-	Chicken		UMETA(DisplayName = "Chicken"),
-};
-
-UENUM(BlueprintType)
 enum class EAgentState : uint8 
 {
 	Idle		UMETA(DisplayName = "Idle"),
 	Engaged 	UMETA(DisplayName = "Engaged"),
 	Dead		UMETA(DisplayName = "Dead"),
-};
-
-/**
-* Holds all the necessary details of a spawnable
-*/
-USTRUCT(BlueprintType)
-struct FSpawnableParam
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EObjectType ObjectType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 Loot;
-
-	FSpawnableParam();
-	FString ToString() const;
 };
 
 /**
@@ -49,17 +23,17 @@ class ZIXUANCRAFT_API ASpawnableCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
+	/** State used for AI */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FSpawnableParam SpawnableParam;
+	EAgentState AgentState = EAgentState::Idle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EAgentState AgentState;
-
+	/** Current & Max health */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float Health;
+	float Health = 30.0f;
 
+	/** How long to destroy the mesh after death. Used for playing the death animation */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float DeathLifeSpan;
+	float DeathLifeSpan = 2.0f;
 
 public:
 	ASpawnableCharacter();
