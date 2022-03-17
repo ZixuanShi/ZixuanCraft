@@ -357,7 +357,7 @@ void AZixuanCraftCharacter::InteractVoxel(ECubeType NewType, float OffsetMultipl
 		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * OffsetMultiplier;
 		const FVector RelativePostion = UnitDirection - HitVoxel->GetActorLocation();
 		const FVector CubeLocation = RelativePostion + HitResult.Location + FVector(TerrainManager->GetCubeLengthHalf());
-		HitVoxel->SetVoxel(CubeLocation, NewType);
+		HitVoxel->SetVoxel(CubeLocation, HitResult.Location, NewType);
 	}
 }
 

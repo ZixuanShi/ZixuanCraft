@@ -193,9 +193,9 @@ void ATerrainVoxel::ApplyMaterials()
 	}
 }
 
-void ATerrainVoxel::SetVoxel(FVector Location, ECubeType NewType)
+void ATerrainVoxel::SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, ECubeType NewType)
 {
-	const int32 Index = GetIndexFromLocation(Location, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared, TerrainManager->CubeLength);
+	const int32 Index = GetIndexFromLocation(CubeLocation, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared, TerrainManager->CubeLength);
 	ECubeType OriginalType = AllCubes[Index];
 	AllCubes[Index] = NewType;
 	UpdateMesh();
@@ -205,7 +205,7 @@ void ATerrainVoxel::SetVoxel(FVector Location, ECubeType NewType)
 	{
 		return;
 	}
-	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(Location, FRotator::ZeroRotator);
+	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(SpawnLootLocation, FRotator::ZeroRotator);
 	TerrainCubeLoot->SetCubeType(OriginalType);
 	UMeshComponent* MeshComponent = TerrainCubeLoot->FindComponentByClass<UMeshComponent>();
 	MeshComponent->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));

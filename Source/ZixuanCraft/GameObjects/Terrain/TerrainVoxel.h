@@ -46,7 +46,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override final;
 
 	UFUNCTION(BlueprintCallable)
-	void SetVoxel(FVector Location, ECubeType NewType);
+	void SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, ECubeType NewType);
 
 private:
 	/** Create voxel mesh information and determine the type of a cube */

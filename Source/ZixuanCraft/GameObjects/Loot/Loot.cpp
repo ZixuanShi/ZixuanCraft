@@ -9,7 +9,7 @@
 ALoot::ALoot()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	InitialLifeSpan = 3.0f;
+	InitialLifeSpan = 60.0f;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	MeshComp->SetCollisionProfileName("OverlapAllDynamic");
