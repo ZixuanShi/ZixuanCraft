@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TerrainEnums.h"
+#include "GameObjects/ObjectEnums.h"
 #include "MeshSection.h"
 #include "Utils/TypeDefs.h"
 #include "Utils/RNG.h"
@@ -22,7 +22,7 @@ class ZIXUANCRAFT_API ATerrainVoxel : public AActor
 	GENERATED_BODY()
 
 private:
-	TArray<ECubeType> AllCubes;
+	TArray<EObjectType> AllCubes;
 	TArray<int32> NoiseResult;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -46,7 +46,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override final;
 
 	UFUNCTION(BlueprintCallable)
-	void SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, ECubeType NewType);
+	void SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType);
 
 private:
 	/** Create voxel mesh information and determine the type of a cube */
@@ -58,7 +58,7 @@ private:
 	void ApplyMaterials();
 
 	/** Vertices */
-	void HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeType CubeType, TArray<FMeshSection>& MeshSections);
+	void HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const EObjectType ObjectType, TArray<FMeshSection>& MeshSections);
 	void AddVertices(TArray<FVector>& Vertices, TArray<FVector>& Normals, int32 X, int32 Y, int32 Z, int32 CubeSideIndex);
 
 protected:

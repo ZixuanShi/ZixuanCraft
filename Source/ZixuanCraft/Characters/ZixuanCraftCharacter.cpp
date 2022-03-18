@@ -153,7 +153,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	InteractVoxel(ECubeType::Empty, -OffsetHelper);
+	InteractVoxel(EObjectType::Empty, -OffsetHelper);
 }
 
 void AZixuanCraftCharacter::UseItem()
@@ -163,7 +163,7 @@ void AZixuanCraftCharacter::UseItem()
 
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	InteractVoxel(ECubeType::Grass, OffsetHelper);
+	InteractVoxel(EObjectType::Grass, OffsetHelper);
 }
 
 void AZixuanCraftCharacter::Attack()
@@ -342,7 +342,7 @@ bool AZixuanCraftCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 	return false;
 }
 
-void AZixuanCraftCharacter::InteractVoxel(ECubeType NewType, float OffsetMultiplier) const
+void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMultiplier) const
 {
 	// Find the block to interact
 	const APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);

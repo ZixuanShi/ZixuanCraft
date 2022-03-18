@@ -87,17 +87,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* InventoryComponent = nullptr;
 
-public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	float BaseTurnRate = 45.0f;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	float BaseLookUpRate = 45.0f;
 
 	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay, meta = (AllowPrivateAccess = "true"))
 	FVector GunOffset = { 100.0f, 0.0f, 10.0f };
 
 	/** Projectile class to spawn */
@@ -105,21 +104,22 @@ public:
 	TSubclassOf<class AZixuanCraftProjectile> ProjectileClass;
 
 	/** Used when sprinting/slowing down */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 	float SpeedMultiplier = 2.0f;
 
 	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay, meta = (AllowPrivateAccess = "true"))
 	USoundBase* FireSound;
 
 	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* FireAnimation;
 
 	/** Whether to use motion controller location for aiming. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 	uint8 bUsingMotionControllers : 1;
 
+public:
 	AZixuanCraftCharacter();
 
 	virtual void BeginPlay();
@@ -137,6 +137,8 @@ public:
 	void UseItem();
 	void Sprint();
 	void SlowDown();
+
+	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 
 private:
 	/** Touches */
@@ -183,6 +185,6 @@ private:
 	 * @param NewType				The new cube type to replace in terrain
 	 * @param OffsetMultiplier		Used for accurately find the cube's index to update in the terrain. i.e. If the player tries to destroy a cube, we should grab the cube that's a little far away. If placing one, grab the cube location closer to the player
 	 */
-	void InteractVoxel(ECubeType NewType, float OffsetMultiplier) const;
+	void InteractVoxel(EObjectType NewType, float OffsetMultiplier) const;
 };
 

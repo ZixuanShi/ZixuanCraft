@@ -11,10 +11,10 @@ ALoot::ALoot()
 	PrimaryActorTick.bCanEverTick = true;
 	InitialLifeSpan = 60.0f;
 
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	MeshComp->SetCollisionProfileName("OverlapAllDynamic");
-	MeshComp->OnComponentBeginOverlap.AddDynamic(this, &ALoot::OnBeginOverlap);
-	RootComponent = MeshComp;
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	MeshComponent->SetCollisionProfileName("OverlapAllDynamic");
+	MeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALoot::OnBeginOverlap);
+	RootComponent = MeshComponent;
 }
 
 void ALoot::Tick(float DeltaSeconds)
@@ -32,12 +32,12 @@ void ALoot::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	// if the overlapped actor is a Player
 	if (AZixuanCraftCharacter* ZixuanCraftCharacter = Cast<AZixuanCraftCharacter>(OtherActor))
 	{
-		// If player's inventory isn't full, try adding this loot to his inventory
-		UInventoryComponent* InventoryComponent = ZixuanCraftCharacter->FindComponentByClass<UInventoryComponent>();
-		if (!InventoryComponent->IsFull())
+		// Try adding this loot to his inventory
+		UInventoryComponent* InventoryComponent = ZixuanCraftCharacter->GetInventoryComponent();
+		if (InventoryComponent->TryAdd(this))
 		{
-			InventoryComponent->AddLoot(this);
-			MeshComp->SetVisibility(false);
+			GetWorld()->DestroyActor(this);
+			MeshComponent->SetVisibility(false);
 			SetActorEnableCollision(false);
 			SetActorTickEnabled(false);		// Stop falling or rotating
 			GetWorldTimerManager().ClearTimer(TimerHandle_LifeSpanExpired);	// Don't destroy this loot when initial life span time is up anymore

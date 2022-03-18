@@ -68,19 +68,19 @@ void ATerrainVoxel::GenerateChunk()
 				}
 				else if (Z < TerrainManager->GrassThreshold - TerrainManager->StoneOffset + NoiseResult[X + Y * TerrainManager->CubeCountXY])
 				{
-					AllCubes[Index] = ECubeType::Stone;
+					AllCubes[Index] = EObjectType::Stone;
 				}
 				else if (Z < TerrainManager->GrassThreshold - 1 + NoiseResult[X + Y * TerrainManager->CubeCountXY])
 				{
-					AllCubes[Index] = ECubeType::Dirt;
+					AllCubes[Index] = EObjectType::Dirt;
 				}
 				else if (Z < TerrainManager->GrassThreshold + NoiseResult[X + Y * TerrainManager->CubeCountXY])
 				{
-					AllCubes[Index] = ECubeType::Grass;
+					AllCubes[Index] = EObjectType::Grass;
 				}
 				else
 				{
-					AllCubes[Index] = ECubeType::Empty;
+					AllCubes[Index] = EObjectType::Empty;
 				}			
 			}
 		}
@@ -121,7 +121,7 @@ void ATerrainVoxel::GenerateChunk()
 						RadiusSquard < (LeavesWidth / 2.0f))	// But don't wipe out the leaves close to the center
 					{
 						const int32 Index = GetIndexFromXYZ(TreeRoot.X + X, TreeRoot.Y + Y, TreeRoot.Z + Z + TreeHeight, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
-						AllCubes[Index] = ECubeType::TreeLeaves;
+						AllCubes[Index] = EObjectType::TreeLeaves;
 					}
 				}
 			}
@@ -131,7 +131,7 @@ void ATerrainVoxel::GenerateChunk()
 		for (int32 Z = 0; Z < TreeHeight; ++Z)
 		{
 			int32 Index = GetIndexFromXYZ(TreeRoot.X, TreeRoot.Y, TreeRoot.Z + Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
-			AllCubes[Index] = ECubeType::TreeTrunk;
+			AllCubes[Index] = EObjectType::TreeTrunk;
 		}
 	}
 }
@@ -165,11 +165,11 @@ TArray<FMeshSection> ATerrainVoxel::GenerateMeshSections()
 void ATerrainVoxel::UpdateSingleCube(int32 X, int32 Y, int32 Z, TArray<FMeshSection>& MeshSections)
 {
 	const int32 Index = GetIndexFromXYZ(X, Y, Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
-	const ECubeType CubeType = AllCubes[Index];
+	const EObjectType ObjectType = AllCubes[Index];
 
-	if (CubeType != ECubeType::Empty)
+	if (ObjectType != EObjectType::Empty)
 	{
-		HandleNonEmptyCube(X, Y, Z, CubeType, MeshSections);
+		HandleNonEmptyCube(X, Y, Z, ObjectType, MeshSections);
 	}
 }
 
@@ -193,28 +193,28 @@ void ATerrainVoxel::ApplyMaterials()
 	}
 }
 
-void ATerrainVoxel::SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, ECubeType NewType)
+void ATerrainVoxel::SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType)
 {
 	const int32 Index = GetIndexFromLocation(CubeLocation, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared, TerrainManager->CubeLength);
-	ECubeType OriginalType = AllCubes[Index];
+	EObjectType OriginalType = AllCubes[Index];
 	AllCubes[Index] = NewType;
 	UpdateMesh();
 
 	// Create a loot
-	if (OriginalType > ECubeType::TreeTrunk || OriginalType == ECubeType::Empty)
+	if (OriginalType > EObjectType::TreeTrunk || OriginalType == EObjectType::Empty)
 	{
 		return;
 	}
 	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(SpawnLootLocation, FRotator::ZeroRotator);
-	TerrainCubeLoot->SetCubeType(OriginalType);
-	UMeshComponent* MeshComponent = TerrainCubeLoot->FindComponentByClass<UMeshComponent>();
-	MeshComponent->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
+	TerrainCubeLoot->SetType(OriginalType);
+	TerrainCubeLoot->SetIcon(TerrainManager->Icons[static_cast<int32>(OriginalType)]);
+	TerrainCubeLoot->GetMesh()->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
 }
 
-void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeType CubeType, TArray<FMeshSection>& MeshSections)
+void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const EObjectType ObjectType, TArray<FMeshSection>& MeshSections)
 {
 	const int32 Index = GetIndexFromXYZ(X, Y, Z, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
-	const int32 CubeTypeMaterialIndex = static_cast<int32>(CubeType);
+	const int32 CubeTypeMaterialIndex = static_cast<int32>(ObjectType);
 
 	TArray<FVector>& Vertices = MeshSections[CubeTypeMaterialIndex].Vertices;
 	TArray<int32>& Triangles = MeshSections[CubeTypeMaterialIndex].Triangles;
@@ -234,7 +234,7 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeTyp
 		const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + bMasks[CubeSideIndex].Y, 0, TerrainManager->CubeCountXY - 1);
 		bool bShouldAddVertices = false;
 
-		if (CubeType > ECubeType::TreeTrunk)
+		if (ObjectType > EObjectType::TreeTrunk)
 		{
 			bShouldAddVertices = true;
 		}
@@ -242,7 +242,7 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const ECubeTyp
 		{
 			const bool bValidNewIndex = UKismetMathLibrary::InRange_IntInt(NewIndex, 0, AllCubes.Num() - 1);
 			if (bValidNewIndex && 
-				AllCubes[NewIndex] < ECubeType::Grass)
+				AllCubes[NewIndex] < EObjectType::Grass)
 			{
 				bShouldAddVertices = true;
 			}

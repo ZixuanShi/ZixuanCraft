@@ -2,15 +2,32 @@
 
 
 #include "InventoryComponent.h"
+#include "GameObjects/Loot/Loot.h"
 
-// Sets default values for this component's properties
-UInventoryComponent::UInventoryComponent()
+PRAGMA_DISABLE_OPTIMIZATION
+
+bool UInventoryComponent::TryAdd(ALoot* Loot)
 {
-	Inventory.Reserve(MaxSize);
+	// Find if there is a existing loot slot for this loot. Add this loot to that slot if it's not full
+	for (FLootSlot& LootSlot : Inventory)
+	{
+		if (LootSlot.TryAppend(Loot))
+		{
+			return true;
+		}		
+	}
+
+	// There is no existing loot slot for this type, create a new one if this inventory is not full
+	if (Inventory.Num() <= MaxSize)
+	{
+		Inventory.Emplace();						// Emplace a new slot
+		Inventory.Last().AddFirstLoot(Loot);
+
+		return true;
+	}
+
+	// At this point, we didn't find a valid loot slot to add the new loot, and ran out of space in inventory, we can't add this loot
+	return false;
 }
 
-void UInventoryComponent::AddLoot(ALoot* Loot)
-{
-	Inventory.Emplace(Loot);
-}
-
+PRAGMA_ENABLE_OPTIMIZATION
