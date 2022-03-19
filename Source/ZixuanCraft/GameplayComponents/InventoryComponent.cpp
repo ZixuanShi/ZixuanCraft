@@ -22,11 +22,11 @@ bool UInventoryComponent::TryAdd(ALoot* Loot)
 	{
 		Inventory.Emplace();						// Emplace a new slot
 		Inventory.Last().AddFirstLoot(Loot);
-
 		return true;
 	}
 
-	// At this point, we didn't find a valid loot slot to add the new loot, and ran out of space in inventory, we can't add this loot
+	// At this point, we didn't find a existing valid loot slot to append the new loot
+	// and ran out of space in this inventory, we can't add this loot
 	return false;
 }
 

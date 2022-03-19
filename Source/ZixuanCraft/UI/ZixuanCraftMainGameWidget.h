@@ -22,7 +22,7 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 	
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemTitle;
+	UTextBlock* ItemTitle = nullptr;
 
 	virtual void NativeConstruct() override final;
 };

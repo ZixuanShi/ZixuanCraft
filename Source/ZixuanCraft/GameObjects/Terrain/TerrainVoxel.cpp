@@ -96,17 +96,14 @@ void ATerrainVoxel::GenerateChunk()
 
 		const int32   TreeHeight      = FRNG::Global().RandInRange(TreeHeightMin, TreeHeightMax);
 		const int32   LeavesWidth     = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
-		const int32   LeavesLength    = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
-		const int32   LeavesHeight    = FRNG::Global().RandInRange(LeavesLegnthMin, LeavesLegnthMax);
 
 		// Leaves 
-		for (int32 X = -LeavesWidth; X <= LeavesWidth; ++X)
+		for (int32 X = -LeavesLegnthMax; X <= LeavesLegnthMax; ++X)
 		{
-			for (int32 Y = -LeavesLength; Y <= LeavesLength; ++Y)
+			for (int32 Y = -LeavesLegnthMax; Y <= LeavesLegnthMax; ++Y)
 			{
-				for (int32 Z = -LeavesHeight; Z <= LeavesHeight; ++Z)
+				for (int32 Z = -LeavesLegnthMax; Z <= LeavesLegnthMax; ++Z)
 				{
-					// Currently avoid growing the leaves to another voxel, will be fixed later
 					const bool bValidX = UKismetMathLibrary::InRange_IntInt(X + TreeRoot.X, 0, TerrainManager->CubeCountXY);
 					const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + TreeRoot.Y, 0, TerrainManager->CubeCountXY);
 					const bool bValidZ = UKismetMathLibrary::InRange_IntInt(Z + TreeRoot.Z + TreeHeight, 0, TerrainManager->CubeCountZ);
@@ -206,9 +203,9 @@ void ATerrainVoxel::SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, EO
 		return;
 	}
 	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(SpawnLootLocation, FRotator::ZeroRotator);
-	TerrainCubeLoot->SetType(OriginalType);
-	TerrainCubeLoot->SetIcon(TerrainManager->Icons[static_cast<int32>(OriginalType)]);
-	TerrainCubeLoot->GetMesh()->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
+	TerrainCubeLoot->GetLootData().Type = OriginalType;
+	TerrainCubeLoot->GetLootData().Icon = TerrainManager->Icons[static_cast<int32>(OriginalType)];
+	TerrainCubeLoot->GetLootData().MeshComponent->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
 }
 
 void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const EObjectType ObjectType, TArray<FMeshSection>& MeshSections)

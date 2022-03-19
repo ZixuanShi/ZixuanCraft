@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ZixuanCraftMainGameWidget.h"
@@ -11,6 +11,6 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	// Blueprint subclass
 	if (ItemTitle)
 	{
-		ItemTitle->SetText(FText::FromString(TEXT("Hello world!")));
+		ItemTitle->SetText(FText::FromString(L"芜湖 "));
 	}
 }

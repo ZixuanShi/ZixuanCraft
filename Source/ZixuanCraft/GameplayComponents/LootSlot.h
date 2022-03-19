@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Containers/StaticArray.h"
 #include "GameObjects/ObjectEnums.h"
+#include "GameObjects/Loot/LootData.h"
 #include "LootSlot.generated.h"
 
 class ALoot;
@@ -17,21 +18,12 @@ struct ZIXUANCRAFT_API FLootSlot
 {
 	GENERATED_BODY()
 
-	/** Represents the Loot type in this slot. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EObjectType Type = EObjectType::Empty;
+	FLootData LootData;
 
 	/** How many loot of this type in this slot. If the loot is stackable, this will grow when inventory component wants to add that type until hit the MaxSlotCount. If the loot is not stackable, this can only be one */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 Count = 0;
-
-	/** The icon to draw in inventory widget UI */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UTexture2D* Icon = nullptr;
-
-	/** The mesh to render if the player is grabbing this loot in hand */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MeshComponent = nullptr;
 
 	/**
 	 * Try to append a new stackable loot

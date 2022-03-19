@@ -41,10 +41,10 @@ private:
 	TMap<FVector, bool> TerrainLocations;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FVector2D TreeHeightRange = { 6.0f, 12.0f };
+	FVector2D TreeHeightRange = { 6.0f, 9.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FVector2D LeavesLengthRange = { 2.0f, 3.0f };
+	FVector2D LeavesLengthRange = { 0.0f, 2.0f };
 
 	/** The voxel spawned recently */
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameObjects/ObjectEnums.h"
+#include "GameObjects/Loot/LootData.h"
 #include "Loot.generated.h"
 
 /**
@@ -19,20 +20,12 @@ class ZIXUANCRAFT_API ALoot : public AActor
 	GENERATED_BODY()
 
 protected:
-	/** The mesh to render in game world */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MeshComponent = nullptr;
-
-	/** The texture to draw in inventory UI Widget */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
-	UTexture2D* IconTexture = nullptr;
+	FLootData LootData;
 
 	/** Can be stacked in inventory */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	bool bStackable = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EObjectType ObjectType = EObjectType::Dirt;
 
 public:	
 	ALoot();
@@ -43,9 +36,6 @@ public:
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	bool IsStackable() const { return bStackable; }
-	void SetType(EObjectType InCubeType) { ObjectType = InCubeType; }
-	EObjectType GetType() const { return ObjectType; }
-	UTexture2D* GetIcon() const { return IconTexture; }
-	void SetIcon(UTexture2D* InIcon) { IconTexture = InIcon; }
-	UStaticMeshComponent* GetMesh() const { return MeshComponent; }
+	const FLootData& GetLootData() const { return LootData; }
+	FLootData& GetLootData() { return LootData; }
 };

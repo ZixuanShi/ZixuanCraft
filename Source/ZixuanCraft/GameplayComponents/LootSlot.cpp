@@ -6,9 +6,9 @@
 
 bool FLootSlot::TryAppend(ALoot* NewLoot)
 {
-	if (Type > EObjectType::RoastedChicken ||	// Not Stackable?
+	if (LootData.Type > EObjectType::RoastedChicken ||	// Not Stackable?
 		Count >= MaxSlotCount ||				// Slot full?
-		Type != NewLoot->GetType())				// Not Same type?
+		LootData.Type != NewLoot->GetLootData().Type)				// Not Same type?
 	{
 		return false;
 	}
@@ -20,8 +20,6 @@ bool FLootSlot::TryAppend(ALoot* NewLoot)
 
 void FLootSlot::AddFirstLoot(ALoot* NewLoot)
 {
-	Type		  = NewLoot->GetType();	
-	Icon		  = NewLoot->GetIcon();
-	MeshComponent = NewLoot->GetMesh();
+	LootData = NewLoot->GetLootData();
 	++Count;					
 }
