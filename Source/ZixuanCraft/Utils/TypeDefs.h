@@ -22,4 +22,4 @@ using NodeSequenceList = TArray<NodeSequence>;
 using DiscoveredSet = std::unordered_set<FIndex>;
 
 static constexpr FId InvalidId = TNumericLimits<int64>::Max();
-static constexpr FIndex InvalidIndex = TNumericLimits<int32>::Max();
+static constexpr int32 InvalidIndex = TNumericLimits<int32>::Max();

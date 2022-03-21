@@ -3,31 +3,39 @@
 
 #include "InventoryComponent.h"
 #include "GameObjects/Loot/Loot.h"
+#include "Utils/TypeDefs.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
-bool UInventoryComponent::TryAdd(ALoot* Loot)
+UInventoryComponent::UInventoryComponent(const FObjectInitializer& ObjectInitializer)
+	: Super{ ObjectInitializer }
 {
-	// Find if there is a existing loot slot for this loot. Add this loot to that slot if it's not full
+	Inventory.SetNum(MaxSize);
+}
+
+int32 UInventoryComponent::TryAdd(ALoot* Loot)
+{
+	// Find if there is a valid loot slot for this loot. Try to add this loot to that slot
+	int32 Index = 0;
 	for (FLootSlot& LootSlot : Inventory)
 	{
-		if (LootSlot.TryAppend(Loot))
+		// If this slot is empty, it is available for a new loot, add the first loot to this slot
+		if (LootSlot.Count == 0)
 		{
-			return true;
+			LootSlot.AddFirstLoot(Loot);
+			return Index;
+		}
+		// If this slot is not empty, but we can append the new loot to this slot, do so
+		if (LootSlot.TryAppend(Loot))
+		{			
+			return Index;
 		}		
-	}
-
-	// There is no existing loot slot for this type, create a new one if this inventory is not full
-	if (Inventory.Num() <= MaxSize)
-	{
-		Inventory.Emplace();						// Emplace a new slot
-		Inventory.Last().AddFirstLoot(Loot);
-		return true;
+		++Index;
 	}
 
 	// At this point, we didn't find a existing valid loot slot to append the new loot
 	// and ran out of space in this inventory, we can't add this loot
-	return false;
+	return InvalidIndex;
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

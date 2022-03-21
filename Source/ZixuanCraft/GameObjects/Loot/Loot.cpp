@@ -10,6 +10,7 @@ ALoot::ALoot()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	InitialLifeSpan = 60.0f;
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	LootData.MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	LootData.MeshComponent->SetCollisionProfileName("OverlapAllDynamic");
@@ -34,8 +35,10 @@ void ALoot::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	{
 		// Try adding this loot to his inventory
 		UInventoryComponent* InventoryComponent = ZixuanCraftCharacter->GetInventoryComponent();
-		if (InventoryComponent->TryAdd(this))
+		int32 Index = InventoryComponent->TryAdd(this);
+		if (Index != InvalidIndex)
 		{
+			ZixuanCraftCharacter->UpdateInventoryUI(Index);
 			Destroy();
 		}
 	}

@@ -4,6 +4,7 @@
 #include "GameObjects/ZixuanCraftProjectile.h"
 #include "GameObjects/Terrain/TerrainManager.h"
 #include "GameplayComponents/InventoryComponent.h"
+#include "UI/ZixuanCraftMainGameWidget.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -220,6 +221,36 @@ void AZixuanCraftCharacter::OnResetVR()
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
+void AZixuanCraftCharacter::InitWidget(UZixuanCraftMainGameWidget* InWidget)
+{
+	Widget = InWidget;
+	UpdateHealthUI();
+	InitInventoryUI();
+}
+
+void AZixuanCraftCharacter::UpdateHealthUI()
+{
+	Widget->UpdateHealthBarPercent(Health / MaxHealth);
+}
+
+void AZixuanCraftCharacter::InitInventoryUI()
+{
+	// For every loot in my inventory, add it to the widget
+	int32 Index = 0;
+	for (const FLootSlot& Slot : InventoryComponent->GetInventory())
+	{
+		Widget->UpdateInventory(Slot, Index);
+		++Index;
+	}
+}
+
+void AZixuanCraftCharacter::UpdateInventoryUI(int32 Index)
+{
+	check(Index != InvalidIndex);
+	const TArray<FLootSlot>& Inventory = InventoryComponent->GetInventory();
+	Widget->UpdateInventory(Inventory[Index], Index);
+}
+
 void AZixuanCraftCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, "BeginTouch");
@@ -325,6 +356,14 @@ void AZixuanCraftCharacter::SlowDown()
 {
 	GetCharacterMovement()->MaxWalkSpeed /= SpeedMultiplier;
 	GetCharacterMovement()->MaxStepHeight /= 2.0f;
+}
+
+float AZixuanCraftCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Health -= Damage;
+	UpdateHealthUI();
+
+	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
 bool AZixuanCraftCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)

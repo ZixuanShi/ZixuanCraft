@@ -23,10 +23,14 @@ private:
 	TArray<FLootSlot> Inventory;
 
 public:	
+	UInventoryComponent(const FObjectInitializer& ObjectInitializer);
+
 	/**
 	 * Try to add a new loot into inventory
 	 * @param Loot		The loot trying to add
-	 * @return			true if succeeded, false if not
+	 * @return			Index of the added loot in Inventory, if couldn't add, return TNumericLimits<int32>::Max()
 	 */
-	bool TryAdd(ALoot* Loot);
+	int32 TryAdd(ALoot* Loot);
+
+	const TArray<FLootSlot>& GetInventory() const { return Inventory; }
 };

@@ -7,8 +7,8 @@
 bool FLootSlot::TryAppend(ALoot* NewLoot)
 {
 	if (LootData.Type > EObjectType::RoastedChicken ||	// Not Stackable?
-		Count >= MaxSlotCount ||				// Slot full?
-		LootData.Type != NewLoot->GetLootData().Type)				// Not Same type?
+		LootData.Type != NewLoot->GetLootData().Type ||	// Not Same type?
+		Count >= MaxSlotCount)							// Slot full?
 	{
 		return false;
 	}

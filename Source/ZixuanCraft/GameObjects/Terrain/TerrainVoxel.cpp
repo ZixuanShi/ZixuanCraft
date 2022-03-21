@@ -202,10 +202,14 @@ void ATerrainVoxel::SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, EO
 	{
 		return;
 	}
+
 	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(SpawnLootLocation, FRotator::ZeroRotator);
-	TerrainCubeLoot->GetLootData().Type = OriginalType;
-	TerrainCubeLoot->GetLootData().Icon = TerrainManager->Icons[static_cast<int32>(OriginalType)];
-	TerrainCubeLoot->GetLootData().MeshComponent->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
+	if (TerrainCubeLoot)
+	{
+		TerrainCubeLoot->GetLootData().Type = OriginalType;
+		TerrainCubeLoot->GetLootData().Icon = TerrainManager->Icons[static_cast<int32>(OriginalType)];
+		TerrainCubeLoot->GetLootData().MeshComponent->SetMaterial(0, TerrainManager->GetMaterial(static_cast<int32>(OriginalType)));
+	}
 }
 
 void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const EObjectType ObjectType, TArray<FMeshSection>& MeshSections)

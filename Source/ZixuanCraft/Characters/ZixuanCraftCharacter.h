@@ -16,6 +16,7 @@ class UAnimMontage;
 class USoundBase;
 class ATerrainManager;
 class UInventoryComponent;
+class UZixuanCraftMainGameWidget;
 
 UCLASS(config=Game)
 class AZixuanCraftCharacter : public ACharacter
@@ -86,6 +87,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UInventoryComponent* InventoryComponent = nullptr;
+	
+	/** Back reference of this character's widget */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UZixuanCraftMainGameWidget* Widget = nullptr;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
@@ -122,7 +127,8 @@ private:
 public:
 	AZixuanCraftCharacter();
 
-	virtual void BeginPlay();
+	virtual void BeginPlay() override final;
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override final;
 
 	/** Inputs */
 	UFUNCTION(BlueprintCallable)
@@ -138,8 +144,21 @@ public:
 	void Sprint();
 	void SlowDown();
 
+	/** Inventory */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 
+	/** UI */
+	UFUNCTION(BlueprintCallable)
+	void InitWidget(UZixuanCraftMainGameWidget* InWidget);
+	void UpdateHealthUI();
+	void InitInventoryUI();
+
+	/**
+	 * Update a single slot in inventory UI
+	 * @param Index			The index of inventory in widget to update
+     */
+	void UpdateInventoryUI(int32 Index);
+	 
 private:
 	/** Touches */
 	TouchData TouchItem;
