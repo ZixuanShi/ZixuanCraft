@@ -32,5 +32,13 @@ public:
 	 */
 	int32 TryAdd(ALoot* Loot);
 
+	/**
+	 * Subtract count in the inventory, remove the loot if count <= 0
+	 * @param Index		The index in the inventory to remove item
+	 * @return			true If the item is removed because the count is <= 0, false if it's still here
+	 */
+	bool SubtractItem(int32 Index);
+
 	const TArray<FLootSlot>& GetInventory() const { return Inventory; }
+	const FLootSlot& GetLootSlot(int32 Index) const { return Inventory[Index]; }
 };

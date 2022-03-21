@@ -92,6 +92,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UZixuanCraftMainGameWidget* Widget = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EObjectType ObjectInHand = EObjectType::Empty;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	float BaseTurnRate = 45.0f;
@@ -143,9 +146,13 @@ public:
 	void UseItem();
 	void Sprint();
 	void SlowDown();
+	void ShowInventory();
+	void ScrollInventoryUp();
+	void ScrollInventoryDown();
 
 	/** Inventory */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
+	void SetObjectInHand(EObjectType Type) { ObjectInHand = Type; }
 
 	/** UI */
 	UFUNCTION(BlueprintCallable)
@@ -204,6 +211,6 @@ private:
 	 * @param NewType				The new cube type to replace in terrain
 	 * @param OffsetMultiplier		Used for accurately find the cube's index to update in the terrain. i.e. If the player tries to destroy a cube, we should grab the cube that's a little far away. If placing one, grab the cube location closer to the player
 	 */
-	void InteractVoxel(EObjectType NewType, float OffsetMultiplier) const;
+	void InteractVoxel(EObjectType NewType, float OffsetMultiplier);
 };
 

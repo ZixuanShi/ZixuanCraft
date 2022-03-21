@@ -143,6 +143,11 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("MoveForward", this, &AZixuanCraftCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AZixuanCraftCharacter::MoveRight);
 
+	// Inventory
+	PlayerInputComponent->BindAction("ShowInventory", IE_Pressed, this, &AZixuanCraftCharacter::ShowInventory);
+	PlayerInputComponent->BindAction("ScrollInventoryDown", IE_Pressed, this, &AZixuanCraftCharacter::ScrollInventoryDown);
+	PlayerInputComponent->BindAction("ScrollInventoryUp", IE_Pressed, this, &AZixuanCraftCharacter::ScrollInventoryUp);
+
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick	
@@ -164,7 +169,11 @@ void AZixuanCraftCharacter::UseItem()
 
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	InteractVoxel(EObjectType::Grass, OffsetHelper);
+	if (ObjectInHand < EObjectType::TreeLeaves &&	// Valid terrain cube
+		ObjectInHand != EObjectType::Empty)			// Not empty
+	{
+		InteractVoxel(ObjectInHand, OffsetHelper);
+	}
 }
 
 void AZixuanCraftCharacter::Attack()
@@ -201,7 +210,7 @@ void AZixuanCraftCharacter::Attack()
 	// try and play the sound if specified
 	if (FireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), 0.4f);
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), 0.1f);
 	}
 
 	// try and play a firing animation if specified
@@ -358,6 +367,21 @@ void AZixuanCraftCharacter::SlowDown()
 	GetCharacterMovement()->MaxStepHeight /= 2.0f;
 }
 
+void AZixuanCraftCharacter::ShowInventory()
+{
+	Widget->SwitchInventory();
+}
+
+void AZixuanCraftCharacter::ScrollInventoryUp()
+{
+	Widget->ScrollInventoryUp();
+}
+
+void AZixuanCraftCharacter::ScrollInventoryDown()
+{
+	Widget->ScrollInventoryDown();
+}
+
 float AZixuanCraftCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Health -= Damage;
@@ -381,7 +405,7 @@ bool AZixuanCraftCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 	return false;
 }
 
-void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMultiplier) const
+void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMultiplier)
 {
 	// Find the block to interact
 	const APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
@@ -393,10 +417,20 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 	// Do work if we hit a voxel to interact
 	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.Actor))
 	{
+		if (NewType != EObjectType::Empty)
+		{
+			int32 SelectIndex = Widget->GetSelectIndex();
+			if (InventoryComponent->SubtractItem(SelectIndex))
+			{
+				ObjectInHand = EObjectType::Empty;
+			}
+			Widget->UpdateInventory(InventoryComponent->GetLootSlot(SelectIndex), SelectIndex);
+		}
+
 		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * OffsetMultiplier;
 		const FVector RelativePostion = UnitDirection - HitVoxel->GetActorLocation();
 		const FVector CubeLocation = RelativePostion + HitResult.Location + FVector(TerrainManager->GetCubeLengthHalf());
-		HitVoxel->SetVoxel(CubeLocation, HitResult.Location, NewType);
+		HitVoxel->ModifyCube(CubeLocation, HitResult.Location, NewType);
 	}
 }
 

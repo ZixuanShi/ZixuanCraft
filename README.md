@@ -8,7 +8,7 @@ Minecraft clone using Unreal Engine.
     - Chicken
 - Adding Cube
 - Removing Cube
-- Inventory (In Progress)
+- Inventory system
 
 ## Target Platfroms
 - Windows
@@ -16,38 +16,53 @@ Minecraft clone using Unreal Engine.
 
 ## Input
 - Keyboard & Mouse
-- XBox Controller
+- Controller
 - Mobile Touches
 
 ## Controls
 #### Keyboard & Mouse
-| Action        | Keyboard & Mouse   | Status             |
-|:-------------:| :-----------------:|:------------------:|
-| Move          | WASD               | Hold               |
-| Jump          | Space bar          | Press              |
-| Attack        | F Key              | Press              |
-| Sprint        | Left Shift Key     | Hold               |
-| Destroy Cube  | F Key              | Hold               |
-| Place Cube    | R Key              | Press              |
-| Quit Game     | Escape             | Press              |
+| Action           | Keyboard & Mouse    | Status             |
+|:----------------:| :------------------:|:------------------:|
+| Move             | WASD                | Hold               |
+| Rotate Camera    | Mouse X & Y axis    | Hold               |
+| Jump             | Space bar           | Press              |
+| Attack           | F Key               | Press              |
+| Sprint           | Left Shift Key      | Hold               |
+| Destroy Cube     | F Key               | Hold               |
+| Place Cube       | R Key               | Press              |
+| Quit Game        | Escape              | Press              |
+| Toggle Inventory | E Key               | Press              |
+| Scroll Inventory | Mouse Wheel         | Scroll             |
 
 #### Controller
-| Action        | Controller         | Status             |
-|:-------------:|:------------------:|:------------------:|
-| Move          | Left Thumb Stick   | Hold               |
-| Jump          | Face Pad Bottom    | Press              |
-| Attack        | Right Trigger      | Press              |
-| Sprint        | Left Thumb Stick   | Hold               |
-| Destroy Cube  | Right Trigger      | Hold               |
-| Place Cube    | Left Trigger       | Press              |
-| Quit Game     | Menu Button        | Press              |
-
+| Action           | Controller          | Status             |
+|:---------------: |:-------------------:|:------------------:|
+| Move             | Left Thumb Stick    | Hold               |
+| Rotate Camera    | Right Thumb Stick   | Hold               |
+| Jump             | Face Pad Bottom     | Press              |
+| Attack           | Face Pad Left       | Press              |
+| Sprint           | Left Thumb Stick    | Hold               |
+| Destroy Cube     | Right Trigger       | Hold               |
+| Place Cube       | Left Trigger        | Press              |
+| Quit Game        | Menu Button         | Press              |
+| Toggle Inventory | Face Pad Top        | Press              |
+| Scroll Inventory | Left/Right Shoulder | Press              |
+ 
 #### Mobile Input
-To be added. Right now there are two joysticks, the left one controls the movement and the right one controls camera, and single press the screen for shooting.
+| Action           | Mobile              | Status             |
+|:---------------: |:-------------------:|:------------------:|
+| Move             | Virtual Joystick    | Hold               |
+| Rotate Camera    | Scroll on Screen    | Hold               |
+| Jump             | Jump Button         | Press              |
+| Attack           | A Button            | Press              |
+| Sprint           | TBD                 | Hold               |
+| Destroy Cube     | A Button            | Hold               |
+| Place Cube       | B Button            | Press              |
+| Quit Game        | TBD                 | Press              |
+| Toggle Inventory | TBD                 | Press              |
+| Scroll Inventory | Touch               | Press              |
 
 ## Future Plans
-- Finish Inventory System
-- Complete mobile input & controls
 - Add village
 - More terrains like sand, river, mountain
 

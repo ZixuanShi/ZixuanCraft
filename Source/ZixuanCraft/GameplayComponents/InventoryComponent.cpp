@@ -15,6 +15,13 @@ UInventoryComponent::UInventoryComponent(const FObjectInitializer& ObjectInitial
 
 int32 UInventoryComponent::TryAdd(ALoot* Loot)
 {
+	// Don't add empty loot. This is preventing the bug that 
+	// if the player digs straight down, the loot will overlap with the player first, then initialize the data, which will cause an UI widget bug that display empty loot
+	if (Loot->GetLootData().Type == EObjectType::Empty)
+	{
+		return InvalidIndex;
+	}
+
 	// Find if there is a valid loot slot for this loot. Try to add this loot to that slot
 	int32 Index = 0;
 	for (FLootSlot& LootSlot : Inventory)
@@ -36,6 +43,20 @@ int32 UInventoryComponent::TryAdd(ALoot* Loot)
 	// At this point, we didn't find a existing valid loot slot to append the new loot
 	// and ran out of space in this inventory, we can't add this loot
 	return InvalidIndex;
+}
+
+bool UInventoryComponent::SubtractItem(int32 Index)
+{
+	check(Index < MaxSize);
+	--Inventory[Index].Count;
+	if (Inventory[Index].Count <= 0)
+	{
+		Inventory[Index].LootData.Type = EObjectType::Empty;
+		Inventory[Index].LootData.Icon = nullptr;
+		Inventory[Index].LootData.MeshComponent = nullptr;
+		return true;
+	}
+	return false;
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

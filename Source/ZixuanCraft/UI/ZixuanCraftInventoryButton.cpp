@@ -3,6 +3,8 @@
 
 #include "ZixuanCraftInventoryButton.h"
 #include "Components/TextBlock.h"
+#include "Characters/ZixuanCraftCharacter.h"
+#include "GameplayComponents/InventoryComponent.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
@@ -17,10 +19,16 @@ void UZixuanCraftInventoryButton::Init(int32 NewIndex)
 
 void UZixuanCraftInventoryButton::Update(const FLootSlot& InSlot)
 {
+	Data = InSlot;
+
 	// Count text
 	if (InSlot.Count > 0)
 	{
 		CountText->SetText(FText::AsNumber(InSlot.Count));
+	}
+	else
+	{
+		CountText->SetText(FText::FromString(""));
 	}
 
 	// Background Image
@@ -31,11 +39,11 @@ void UZixuanCraftInventoryButton::Update(const FLootSlot& InSlot)
 
 void UZixuanCraftInventoryButton::Select()
 {
-	// If there's an item in this inventory button.
-
-
-	// Switch this item to the player's hand
-
+	if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
+	{
+		WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+		Character->SetObjectInHand(Data.LootData.Type);
+	}
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

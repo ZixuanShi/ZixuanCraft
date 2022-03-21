@@ -45,8 +45,7 @@ public:
 
 	virtual void OnConstruction(const FTransform& Transform) override final;
 
-	UFUNCTION(BlueprintCallable)
-	void SetVoxel(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType);
+	void ModifyCube(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType);
 
 private:
 	/** Create voxel mesh information and determine the type of a cube */
@@ -66,6 +65,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void CalculateNoise();
 
+	/** Spawning */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SpawnNPC(FVector Location);
 };

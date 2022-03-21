@@ -41,6 +41,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UPanelWidget* AllInventoryItems_Panel = nullptr;
 
+	/** The index to select an item */
+	int32 SelectIndex = 0;
+
 	/** Mobile dedicated UI */
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UPanelWidget* Mobile_Panel = nullptr;
@@ -57,7 +60,11 @@ protected:
 public:
 	virtual void NativeConstruct() override final;
 
-	void ShowAllInventory(bool bShowing);
+	void ScrollInventoryUp();
+	void ScrollInventoryDown();
+
+	/** Turn on and off all inventory */
+	void SwitchInventory();
 
 	/**
 	 * Update the button in the inventory at Index
@@ -71,4 +78,6 @@ public:
 	void OnJumpButtonReleased() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->StopJumping(); }
 	void OnDestoryAttackButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->DestroyBlock(); }
 	void OnPlaceUseItemButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock(); }
+
+	int32 GetSelectIndex() const { return SelectIndex; }
 };

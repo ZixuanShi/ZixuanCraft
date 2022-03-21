@@ -17,8 +17,12 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	int32 InventoryButtonIndex = 0;
 	for (UWidget* InventoryButtons : BottomInventoryItems_Panel->GetAllChildren())
 	{
-		Cast<UZixuanCraftInventoryButton>(InventoryButtons)->Init(InventoryButtonIndex);
-		++InventoryButtonIndex;
+		UZixuanCraftInventoryButton* Button = Cast<UZixuanCraftInventoryButton>(InventoryButtons);
+		if (Button)
+		{
+			Button->Init(InventoryButtonIndex);
+			++InventoryButtonIndex;
+		}
 	}
 	InventoryButtonIndex = 0;
 	for (UWidget* InventoryButtons : AllInventoryItems_Panel->GetAllChildren())
@@ -32,7 +36,7 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	Player->InitWidget(this);
 
 	// Hide the all inventory panel
-	ShowAllInventory(false);
+	SwitchInventory();
 
 	// Hide mobile UI if not on mobile platforms
 #if !PLATFORM_ANDROID && !PLATFORM_IOS
@@ -50,17 +54,55 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 #endif
 }
 
-void UZixuanCraftMainGameWidget::ShowAllInventory(bool bShowing)
+void UZixuanCraftMainGameWidget::ScrollInventoryUp()
 {
-	if (bShowing)
+	// Reset previous selected button color
+	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+
+	const bool bScrollingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
+	if (!bScrollingAllInventory)
 	{
-		AllInventoryItems_Panel->SetVisibility(ESlateVisibility::Visible);
+		--SelectIndex;
+		if (SelectIndex < 0)
+		{
+			SelectIndex = BottomInventory.Num() - 1;
+		}
+
+		Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->Select();
 	}
-	else
+}
+
+void UZixuanCraftMainGameWidget::ScrollInventoryDown()
+{
+	// Reset previous selected button color
+	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+
+	const bool bScrollingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
+	if (!bScrollingAllInventory)
+	{
+		++SelectIndex;
+		SelectIndex %= BottomInventory.Num();
+
+		Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->Select();
+	}
+}
+
+void UZixuanCraftMainGameWidget::SwitchInventory()
+{
+	const bool bShowing = AllInventoryItems_Panel->GetIsEnabled();
+	if (bShowing)
 	{
 		AllInventoryItems_Panel->SetVisibility(ESlateVisibility::Hidden);
 	}
-	AllInventoryItems_Panel->SetIsEnabled(bShowing);
+	else
+	{
+		AllInventoryItems_Panel->SetVisibility(ESlateVisibility::Visible);
+
+	}
+	GetOwningPlayer()->SetShowMouseCursor(!bShowing);
+	AllInventoryItems_Panel->SetIsEnabled(!bShowing);
 }
 
 void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 Index)

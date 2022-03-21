@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* CountText = nullptr;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	FLootSlot Data;
+
 	/** The index in the inventory panel */
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 Index = 0;
