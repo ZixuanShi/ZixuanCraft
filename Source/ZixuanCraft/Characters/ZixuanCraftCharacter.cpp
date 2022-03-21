@@ -374,12 +374,12 @@ void AZixuanCraftCharacter::ShowInventory()
 
 void AZixuanCraftCharacter::ScrollInventoryUp()
 {
-	Widget->ScrollInventoryUp();
+	Widget->ScrollInventory(false);
 }
 
 void AZixuanCraftCharacter::ScrollInventoryDown()
 {
-	Widget->ScrollInventoryDown();
+	Widget->ScrollInventory(true);
 }
 
 float AZixuanCraftCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

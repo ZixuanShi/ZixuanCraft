@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Characters/ZixuanCraftCharacter.h"
 #include "GameplayComponents/InventoryComponent.h"
+#include "ZixuanCraftMainGameWidget.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
@@ -41,8 +42,10 @@ void UZixuanCraftInventoryButton::Select()
 {
 	if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+		Character->GetWidget()->ResetSelectedInventory();
+		Character->GetWidget()->SetSelectIndex(Index);
 		Character->SetObjectInHand(Data.LootData.Type);
+		WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 }
 

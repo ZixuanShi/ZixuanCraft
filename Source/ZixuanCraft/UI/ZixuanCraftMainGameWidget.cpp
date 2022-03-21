@@ -54,39 +54,32 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 #endif
 }
 
-void UZixuanCraftMainGameWidget::ScrollInventoryUp()
+void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
-	// Reset previous selected button color
 	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
-	Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+	const bool bShowingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
 
-	const bool bScrollingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
-	if (!bScrollingAllInventory)
+	if (bShowingAllInventory)
 	{
-		--SelectIndex;
-		if (SelectIndex < 0)
+		return;
+	}
+
+	int32 NewIndex = SelectIndex;
+	if (bIsScrollingDown)
+	{
+		++NewIndex;
+		NewIndex %= BottomInventory.Num();
+	}
+	else
+	{
+		--NewIndex;
+		if (NewIndex < 0)
 		{
-			SelectIndex = BottomInventory.Num() - 1;
+			NewIndex = BottomInventory.Num() - 1;
 		}
-
-		Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->Select();
 	}
-}
 
-void UZixuanCraftMainGameWidget::ScrollInventoryDown()
-{
-	// Reset previous selected button color
-	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
-	Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
-
-	const bool bScrollingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
-	if (!bScrollingAllInventory)
-	{
-		++SelectIndex;
-		SelectIndex %= BottomInventory.Num();
-
-		Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->Select();
-	}
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->Select();
 }
 
 void UZixuanCraftMainGameWidget::SwitchInventory()
@@ -109,7 +102,7 @@ void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 
 {
 	UZixuanCraftInventoryButton* InventoryButton = nullptr;
 
-	// Bottom
+	// Bottom Inventory
 	if (Index < BottomInventoryItems_Panel->GetAllChildren().Num())
 	{
 		InventoryButton = Cast<UZixuanCraftInventoryButton>(BottomInventoryItems_Panel->GetChildAt(Index));
@@ -118,5 +111,11 @@ void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 
 
 	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(Index));
 	InventoryButton->Update(InSlot);
+}
+
+void UZixuanCraftMainGameWidget::ResetSelectedInventory()
+{
+	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
 }
 

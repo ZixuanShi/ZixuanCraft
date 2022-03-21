@@ -159,6 +159,7 @@ public:
 	void InitWidget(UZixuanCraftMainGameWidget* InWidget);
 	void UpdateHealthUI();
 	void InitInventoryUI();
+	UZixuanCraftMainGameWidget* GetWidget() const { return Widget; }
 
 	/**
 	 * Update a single slot in inventory UI

@@ -33,8 +33,6 @@ protected:
 
 public:
 	void Init(int32 NewIndex);
-
-	UFUNCTION()
 	void Update(const FLootSlot& InSlot);
 
 	UFUNCTION()

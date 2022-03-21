@@ -60,8 +60,7 @@ protected:
 public:
 	virtual void NativeConstruct() override final;
 
-	void ScrollInventoryUp();
-	void ScrollInventoryDown();
+	void ScrollInventory(bool bIsScrollingDown);
 
 	/** Turn on and off all inventory */
 	void SwitchInventory();
@@ -80,4 +79,6 @@ public:
 	void OnPlaceUseItemButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock(); }
 
 	int32 GetSelectIndex() const { return SelectIndex; }
+	void SetSelectIndex(int32 Index) { SelectIndex = Index; }
+	void ResetSelectedInventory();
 };
