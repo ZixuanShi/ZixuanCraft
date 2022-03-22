@@ -44,7 +44,7 @@ protected:
 	UPanelWidget* AllInventoryItems_Panel = nullptr;
 
 	/** The index to select an item */
-	int32 SelectIndex = InvalidIndex;
+	int32 SelectIndex = 0;
 
 	/** Mobile dedicated UI */
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -87,4 +87,5 @@ public:
 	int32 GetSelectIndex() const { return SelectIndex; }
 	void SetSelectIndex(int32 Index) { SelectIndex = Index; }
 	UZixuanCraftInventoryButton* GetSelectedInventory() const;
+	void ResetSelectedInventory();
 };

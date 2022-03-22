@@ -38,7 +38,8 @@ void ALoot::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 void ALoot::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	// if the overlapped actor is a Player
-	if (AZixuanCraftCharacter* ZixuanCraftCharacter = Cast<AZixuanCraftCharacter>(OtherActor))
+	AZixuanCraftCharacter* ZixuanCraftCharacter = Cast<AZixuanCraftCharacter>(OtherActor);
+	if (ZixuanCraftCharacter && !IsPendingKillPending())
 	{
 		// Try adding this loot to his inventory
 		UInventoryComponent* InventoryComponent = ZixuanCraftCharacter->GetInventoryComponent();

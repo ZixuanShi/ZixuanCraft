@@ -23,7 +23,7 @@ class AZixuanCraftCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	static constexpr float OffsetHelper = 1.0f;		// Use this value to find the cube's location when interacting with voxel
+	static constexpr float OffsetHelper = 5.0f;		// Use this value to find the cube's location when interacting with voxel
 
 	/** Touch */
 	struct TouchData

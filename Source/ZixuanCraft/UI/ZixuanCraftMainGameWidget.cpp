@@ -65,7 +65,6 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 		return;
 	}
 
-	SelectIndex = 0;
 	int32 NewIndex = SelectIndex;
 	if (bIsScrollingDown)
 	{
@@ -90,14 +89,16 @@ void UZixuanCraftMainGameWidget::ToggleInventory()
 	if (bShowing)
 	{
 		AllInventoryItems_Panel->SetVisibility(ESlateVisibility::Hidden);
+		BottomInventoryItems_Panel->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
 		AllInventoryItems_Panel->SetVisibility(ESlateVisibility::Visible);
-
+		BottomInventoryItems_Panel->SetVisibility(ESlateVisibility::Hidden);
 	}
 	GetOwningPlayer()->SetShowMouseCursor(!bShowing);
 	AllInventoryItems_Panel->SetIsEnabled(!bShowing);
+	BottomInventoryItems_Panel->SetIsEnabled(bShowing);
 }
 
 void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 Index)
@@ -111,16 +112,34 @@ void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 
 		InventoryButton->Update(InSlot);
 	}
 
+	// All inventory
 	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(Index));
 	InventoryButton->Update(InSlot);
 }
 
 UZixuanCraftInventoryButton* UZixuanCraftMainGameWidget::GetSelectedInventory() const
 {
-	if (SelectIndex != InvalidIndex)
+	if (SelectIndex == InvalidIndex)
 	{
-		const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
-		return Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex]);
+		return nullptr;
 	}
-	return nullptr;
+
+	const TArray<UWidget*>& AllInventory = AllInventoryItems_Panel->GetAllChildren();
+	return Cast<UZixuanCraftInventoryButton>(AllInventory[SelectIndex]);
+}
+
+void UZixuanCraftMainGameWidget::ResetSelectedInventory()
+{
+	UZixuanCraftInventoryButton* InventoryButton = nullptr;
+
+	// Bottom Inventory
+	if (SelectIndex < BottomInventoryItems_Panel->GetAllChildren().Num())
+	{
+		InventoryButton = Cast<UZixuanCraftInventoryButton>(BottomInventoryItems_Panel->GetChildAt(SelectIndex));
+		InventoryButton->Reset();
+	}
+
+	// All inventory
+	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(SelectIndex));
+	InventoryButton->Reset();
 }
