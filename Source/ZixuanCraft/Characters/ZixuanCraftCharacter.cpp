@@ -369,7 +369,7 @@ void AZixuanCraftCharacter::SlowDown()
 
 void AZixuanCraftCharacter::ShowInventory()
 {
-	Widget->SwitchInventory();
+	Widget->ToggleInventory();
 }
 
 void AZixuanCraftCharacter::ScrollInventoryUp()

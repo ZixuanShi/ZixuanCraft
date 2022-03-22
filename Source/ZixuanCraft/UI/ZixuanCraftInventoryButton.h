@@ -34,7 +34,7 @@ protected:
 	int32 InventoryThreshold = 0;
 
 public:
-	void Init(int32 NewIndex, int32 InInventoryThreshold);
+	void Init(int32 NewIndex);
 	void Update(const FLootSlot& InSlot);
 
 	UFUNCTION()
