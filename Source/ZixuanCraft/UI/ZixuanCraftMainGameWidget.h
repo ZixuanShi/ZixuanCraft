@@ -57,13 +57,16 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* PlaceUseItem_Mobile_Button = nullptr;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* ToggleInventory_Mobile_Button = nullptr;
+
 public:
 	virtual void NativeConstruct() override final;
 
 	void ScrollInventory(bool bIsScrollingDown);
 
 	/** Turn on and off all inventory */
-	void SwitchInventory();
+	void ToggleInventory();
 
 	/**
 	 * Update the button in the inventory at Index
@@ -78,6 +81,7 @@ public:
 	void OnDestoryAttackButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->DestroyBlock(); }
 	void OnPlaceUseItemButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock(); }
 
+	int32 GetBottomInventoryNum() const { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
 	int32 GetSelectIndex() const { return SelectIndex; }
 	void SetSelectIndex(int32 Index) { SelectIndex = Index; }
 	void ResetSelectedInventory();

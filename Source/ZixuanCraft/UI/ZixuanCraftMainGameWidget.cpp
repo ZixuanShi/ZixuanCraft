@@ -15,7 +15,8 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 
 	// For each inventory buttons, add event
 	int32 InventoryButtonIndex = 0;
-	for (UWidget* InventoryButtons : BottomInventoryItems_Panel->GetAllChildren())
+	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
+	for (UWidget* InventoryButtons : BottomInventory)
 	{
 		UZixuanCraftInventoryButton* Button = Cast<UZixuanCraftInventoryButton>(InventoryButtons);
 		if (Button)
@@ -36,7 +37,7 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	Player->InitWidget(this);
 
 	// Hide the all inventory panel
-	SwitchInventory();
+	ToggleInventory();
 
 	// Hide mobile UI if not on mobile platforms
 #if !PLATFORM_ANDROID && !PLATFORM_IOS
@@ -51,6 +52,7 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	Jump_Mobile_Button->OnReleased.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonReleased);
 	DestroyAttack_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed);
 	PlaceUseItem_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed);
+	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::SwitchInventory);
 #endif
 }
 
@@ -82,7 +84,7 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->Select();
 }
 
-void UZixuanCraftMainGameWidget::SwitchInventory()
+void UZixuanCraftMainGameWidget::ToggleInventory()
 {
 	const bool bShowing = AllInventoryItems_Panel->GetIsEnabled();
 	if (bShowing)

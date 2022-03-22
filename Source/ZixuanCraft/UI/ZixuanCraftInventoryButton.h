@@ -31,8 +31,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 Index = 0;
 
+	int32 InventoryThreshold = 0;
+
 public:
-	void Init(int32 NewIndex);
+	void Init(int32 NewIndex, int32 InInventoryThreshold);
 	void Update(const FLootSlot& InSlot);
 
 	UFUNCTION()

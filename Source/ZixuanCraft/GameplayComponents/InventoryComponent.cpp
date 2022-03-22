@@ -59,4 +59,9 @@ bool UInventoryComponent::SubtractItem(int32 Index)
 	return false;
 }
 
+void UInventoryComponent::SwapLoot(int32 LeftIndex, int32 RightIndex)
+{
+	Inventory.Swap(LeftIndex, RightIndex);
+}
+
 PRAGMA_ENABLE_OPTIMIZATION

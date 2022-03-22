@@ -42,8 +42,18 @@ void UZixuanCraftInventoryButton::Select()
 {
 	if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		Character->GetWidget()->ResetSelectedInventory();
-		Character->GetWidget()->SetSelectIndex(Index);
+		UZixuanCraftMainGameWidget* Widget = Character->GetWidget();
+
+		// If this button serves all inventory panel, perform a swap 
+		int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
+		if (Index >= SwapItemThreshold)
+		{
+			Character->GetInventoryComponent()->SwapLoot(Index, Widget->GetSelectIndex());
+			// todo: Update loot
+		}
+
+		Widget->ResetSelectedInventory();
+		Widget->SetSelectIndex(Index);
 		Character->SetObjectInHand(Data.LootData.Type);
 		WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 	}

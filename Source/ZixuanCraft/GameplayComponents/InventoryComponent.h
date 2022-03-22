@@ -39,6 +39,13 @@ public:
 	 */
 	bool SubtractItem(int32 Index);
 
+	/**
+	 * Swap to loots' indices in the array
+	 * @param LeftIndex		First loot's index
+	 * @param RightIndex	Second loot's index
+	 */
+	void SwapLoot(int32 LeftIndex, int32 RightIndex);
+
 	const TArray<FLootSlot>& GetInventory() const { return Inventory; }
 	const FLootSlot& GetLootSlot(int32 Index) const { return Inventory[Index]; }
 };
