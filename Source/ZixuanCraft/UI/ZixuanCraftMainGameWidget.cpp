@@ -4,7 +4,6 @@
 #include "ZixuanCraftMainGameWidget.h"
 #include "Components/PanelWidget.h"
 #include "Components/Button.h"
-#include "Components/PanelWidget.h"
 #include "ZixuanCraftInventoryButton.h"
 #include "Characters/ZixuanCraftCharacter.h"
 
@@ -66,6 +65,7 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 		return;
 	}
 
+	SelectIndex = 0;
 	int32 NewIndex = SelectIndex;
 	if (bIsScrollingDown)
 	{
@@ -115,9 +115,12 @@ void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 
 	InventoryButton->Update(InSlot);
 }
 
-void UZixuanCraftMainGameWidget::ResetSelectedInventory()
+UZixuanCraftInventoryButton* UZixuanCraftMainGameWidget::GetSelectedInventory() const
 {
-	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
-	Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex])->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+	if (SelectIndex != InvalidIndex)
+	{
+		const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
+		return Cast<UZixuanCraftInventoryButton>(BottomInventory[SelectIndex]);
+	}
+	return nullptr;
 }
-

@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ProgressBar.h"
-#include "Characters/ZixuanCraftCharacter.h"
+#include "Components/PanelWidget.h"
 #include "ZixuanCraftWidgetBase.h"
+#include "Characters/ZixuanCraftCharacter.h"
 #include "GameplayComponents/LootSlot.h"
 #include "ZixuanCraftMainGameWidget.generated.h"
 
@@ -15,6 +16,7 @@ class UButton;
 class UImage;
 class UPanelWidget;
 class ALoot;
+class UZixuanCraftInventoryButton;
 
 /**
  * User Widget used for main game.
@@ -42,7 +44,7 @@ protected:
 	UPanelWidget* AllInventoryItems_Panel = nullptr;
 
 	/** The index to select an item */
-	int32 SelectIndex = 0;
+	int32 SelectIndex = InvalidIndex;
 
 	/** Mobile dedicated UI */
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -84,5 +86,5 @@ public:
 	int32 GetBottomInventoryNum() const { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
 	int32 GetSelectIndex() const { return SelectIndex; }
 	void SetSelectIndex(int32 Index) { SelectIndex = Index; }
-	void ResetSelectedInventory();
+	UZixuanCraftInventoryButton* GetSelectedInventory() const;
 };

@@ -52,7 +52,11 @@ void UZixuanCraftInventoryButton::Select()
 			// todo: Update loot
 		}
 
-		Widget->ResetSelectedInventory();
+		UZixuanCraftInventoryButton* SelectedButton = Widget->GetSelectedInventory();
+		if (SelectedButton)
+		{
+			SelectedButton->WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+		}
 		Widget->SetSelectIndex(Index);
 		Character->SetObjectInHand(Data.LootData.Type);
 		WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
