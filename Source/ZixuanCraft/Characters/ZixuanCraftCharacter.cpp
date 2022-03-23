@@ -169,10 +169,10 @@ void AZixuanCraftCharacter::UseItem()
 
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	if (ObjectInHand < EObjectType::TreeLeaves &&	// Valid terrain cube
-		ObjectInHand != EObjectType::Empty)			// Not empty
+	if (ObjectInHand.Type < EObjectType::TreeLeaves &&	// Valid terrain cube
+		ObjectInHand.Type != EObjectType::Empty)			// Not empty
 	{
-		InteractVoxel(ObjectInHand, OffsetHelper);
+		InteractVoxel(ObjectInHand.Type, OffsetHelper);
 	}
 }
 
@@ -422,7 +422,8 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 			int32 SelectIndex = Widget->GetSelectIndex();
 			if (InventoryComponent->SubtractItem(SelectIndex))
 			{
-				ObjectInHand = EObjectType::Empty;
+				ObjectInHand.Type = EObjectType::Empty;
+				ObjectInHand.MeshComponent = nullptr;
 			}
 			Widget->UpdateInventory(InventoryComponent->GetLootSlot(SelectIndex), SelectIndex);
 		}

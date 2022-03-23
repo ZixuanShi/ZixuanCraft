@@ -44,7 +44,7 @@ protected:
 	UPanelWidget* AllInventoryItems_Panel = nullptr;
 
 	/** The index to select an item */
-	int32 SelectIndex = 0;
+	int32 SelectIndex = InvalidIndex;
 
 	/** Mobile dedicated UI */
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -65,27 +65,36 @@ protected:
 public:
 	virtual void NativeConstruct() override final;
 
-	void ScrollInventory(bool bIsScrollingDown);
-
-	/** Turn on and off all inventory */
-	void ToggleInventory();
-
 	/**
 	 * Update the button in the inventory at Index
 	 * @param InSlot		The data to update in the inventory
 	 * @param Index			Where the data is in the inventory
 	 */
 	void UpdateInventory(const FLootSlot& InSlot, int32 Index);
+
 	void UpdateHealthBarPercent(float Percent) { HealthBar_ProgressBar->SetPercent(Percent); }
 
+	void ScrollInventory(bool bIsScrollingDown);
+
+	/** Turn on and off all inventory */
+	UFUNCTION()
+	void ToggleInventory();
+
+	UFUNCTION()
 	void OnJumpButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->Jump(); }
+
+	UFUNCTION()
 	void OnJumpButtonReleased() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->StopJumping(); }
+
+	UFUNCTION()
 	void OnDestoryAttackButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->DestroyBlock(); }
+
+	UFUNCTION()
 	void OnPlaceUseItemButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock(); }
 
 	int32 GetBottomInventoryNum() const { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
 	int32 GetSelectIndex() const { return SelectIndex; }
 	void SetSelectIndex(int32 Index) { SelectIndex = Index; }
 	UZixuanCraftInventoryButton* GetSelectedInventory() const;
-	void ResetSelectedInventory();
+	void ResetInventory(int32 Index);
 };

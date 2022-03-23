@@ -9,6 +9,9 @@
 
 PRAGMA_DISABLE_OPTIMIZATION
 
+static const FSlateColor NormalColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+static const FSlateColor HighlightColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+
 void UZixuanCraftInventoryButton::Init(int32 NewIndex)
 {
 	Index = NewIndex;
@@ -39,12 +42,12 @@ void UZixuanCraftInventoryButton::Update(const FLootSlot& InSlot)
 
 void UZixuanCraftInventoryButton::Highlight()
 {
-	WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+	WidgetStyle.Normal.TintColor = HighlightColor;
 }
 
 void UZixuanCraftInventoryButton::Reset()
 {
-	WidgetStyle.Normal.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
+	WidgetStyle.Normal.TintColor = NormalColor;
 }
 
 void UZixuanCraftInventoryButton::Select()
@@ -52,9 +55,9 @@ void UZixuanCraftInventoryButton::Select()
 	if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
 		UZixuanCraftMainGameWidget* Widget = Character->GetWidget();
-
-		// If this button serves all inventory panel, and the previous selected item is in the bottom inventory, perform a swap
 		int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
+		Widget->ResetInventory(Widget->GetSelectIndex());
+
 		if (Index >= SwapItemThreshold && 
 			Widget->GetSelectIndex() != InvalidIndex)
 		{
@@ -62,11 +65,14 @@ void UZixuanCraftInventoryButton::Select()
 			PlayerInventoryComponent->SwapLoot(Index, Widget->GetSelectIndex());
 			Widget->UpdateInventory(PlayerInventoryComponent->GetLootSlot(Index), Index);
 			Widget->UpdateInventory(PlayerInventoryComponent->GetLootSlot(Widget->GetSelectIndex()), Widget->GetSelectIndex());
+			Widget->ResetInventory(Index);
+			Widget->SetSelectIndex(InvalidIndex);
 		}
-
-		Widget->ResetSelectedInventory();
-		Widget->SetSelectIndex(Index);
-		Character->SetObjectInHand(Data.LootData.Type);
+		else
+		{
+			Widget->SetSelectIndex(Index);
+		}
+		Character->SetObjectInHand(Data.LootData);
 		Highlight();
 	}
 }

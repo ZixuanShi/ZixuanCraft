@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "GameObjects/Terrain/TerrainVoxel.h"
+#include "GameObjects/Loot/LootData.h"
 #include "ZixuanCraftCharacter.generated.h"
 
 class UInputComponent;
@@ -93,7 +94,7 @@ private:
 	UZixuanCraftMainGameWidget* Widget = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EObjectType ObjectInHand = EObjectType::Empty;
+	FLootData ObjectInHand;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
@@ -152,7 +153,7 @@ public:
 
 	/** Inventory */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
-	void SetObjectInHand(EObjectType Type) { ObjectInHand = Type; }
+	void SetObjectInHand(const FLootData& Data) { ObjectInHand = Data; }
 
 	/** UI */
 	UFUNCTION(BlueprintCallable)

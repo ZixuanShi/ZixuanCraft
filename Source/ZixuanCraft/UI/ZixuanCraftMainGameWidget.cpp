@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "ZixuanCraftInventoryButton.h"
 #include "Characters/ZixuanCraftCharacter.h"
+PRAGMA_DISABLE_OPTIMIZATION
 
 void UZixuanCraftMainGameWidget::NativeConstruct()
 {
@@ -39,24 +40,29 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	ToggleInventory();
 
 	// Hide mobile UI if not on mobile platforms
+	// If on mobile, bind events to the button clicks
 #if !PLATFORM_ANDROID && !PLATFORM_IOS
 	if (Mobile_Panel)
 	{
 		Mobile_Panel->SetIsEnabled(false);
 		Mobile_Panel->SetVisibility(ESlateVisibility::Hidden);
 	}
-	// If on mobile, bind events to the button clicks
 #else
 	Jump_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonPressed);
 	Jump_Mobile_Button->OnReleased.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonReleased);
 	DestroyAttack_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed);
 	PlaceUseItem_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed);
-	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::SwitchInventory);
+	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::ToggleInventory);
 #endif
 }
 
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
+	if (SelectIndex == InvalidIndex)
+	{
+		SelectIndex = 0;
+	}
+
 	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
 	const bool bShowingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
 
@@ -128,18 +134,25 @@ UZixuanCraftInventoryButton* UZixuanCraftMainGameWidget::GetSelectedInventory() 
 	return Cast<UZixuanCraftInventoryButton>(AllInventory[SelectIndex]);
 }
 
-void UZixuanCraftMainGameWidget::ResetSelectedInventory()
+void UZixuanCraftMainGameWidget::ResetInventory(int32 Index)
 {
+	if (Index == InvalidIndex)
+	{
+		return;
+	}
+
 	UZixuanCraftInventoryButton* InventoryButton = nullptr;
 
 	// Bottom Inventory
-	if (SelectIndex < BottomInventoryItems_Panel->GetAllChildren().Num())
+	if (Index < BottomInventoryItems_Panel->GetAllChildren().Num())
 	{
-		InventoryButton = Cast<UZixuanCraftInventoryButton>(BottomInventoryItems_Panel->GetChildAt(SelectIndex));
+		InventoryButton = Cast<UZixuanCraftInventoryButton>(BottomInventoryItems_Panel->GetChildAt(Index));
 		InventoryButton->Reset();
 	}
 
 	// All inventory
-	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(SelectIndex));
+	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(Index));
 	InventoryButton->Reset();
 }
+
+PRAGMA_ENABLE_OPTIMIZATION

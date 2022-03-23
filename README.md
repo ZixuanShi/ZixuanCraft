@@ -68,5 +68,6 @@ Minecraft clone using Unreal Engine.
 
 ## Known Issues
 - There are some tree leaves in the air which don't attach to any tree trunks.
+- UI inventory is not exactly working as I want to
+- Controller can't manipulate all inventory UI mouse
 - The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
-- The player falls into meshes due to faulty collision with new placed cube.
