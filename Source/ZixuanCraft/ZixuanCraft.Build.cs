@@ -9,7 +9,7 @@ public class ZixuanCraft : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "SimplexNoise" });
-		PrivateDependencyModuleNames.AddRange(new string[] { "ProceduralMeshComponent", "Slate", "SlateCore" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "ProceduralMeshComponent", "Slate", "SlateCore", "OnlineSubsystem" });
 		PrivateIncludePaths.AddRange(new string[] {	"ZixuanCraft"	});
 	}
 }
