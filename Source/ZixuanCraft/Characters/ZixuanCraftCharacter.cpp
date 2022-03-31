@@ -78,6 +78,8 @@ AZixuanCraftCharacter::AZixuanCraftCharacter()
 
 #if PLATFORM_ANDROID || PLATFORM_IOS
 	GetCharacterMovement()->MaxStepHeight = 100.0f;
+	BaseTurnRate *= 2.0f;
+	BaseLookUpRate *= 2.0f;
 #else
 	GetCharacterMovement()->MaxStepHeight = 50.0f;
 #endif
@@ -144,7 +146,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("MoveRight", this, &AZixuanCraftCharacter::MoveRight);
 
 	// Inventory
-	PlayerInputComponent->BindAction("ShowInventory", IE_Pressed, this, &AZixuanCraftCharacter::ShowInventory);
+	PlayerInputComponent->BindAction("ShowInventory", IE_Pressed, this, &AZixuanCraftCharacter::ToggleInventory);
 	PlayerInputComponent->BindAction("ScrollInventoryDown", IE_Pressed, this, &AZixuanCraftCharacter::ScrollInventoryDown);
 	PlayerInputComponent->BindAction("ScrollInventoryUp", IE_Pressed, this, &AZixuanCraftCharacter::ScrollInventoryUp);
 
@@ -253,6 +255,21 @@ void AZixuanCraftCharacter::InitInventoryUI()
 	}
 }
 
+void AZixuanCraftCharacter::ToggleInventory()
+{
+	Widget->ToggleInventory();
+}
+
+void AZixuanCraftCharacter::ScrollInventoryUp()
+{
+	Widget->ScrollInventory(false);
+}
+
+void AZixuanCraftCharacter::ScrollInventoryDown()
+{
+	Widget->ScrollInventory(true);
+}
+
 void AZixuanCraftCharacter::UpdateInventoryUI(int32 Index)
 {
 	check(Index != InvalidIndex);
@@ -269,7 +286,7 @@ void AZixuanCraftCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, cons
 	}
 	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
 	{
-		Attack();
+		//Attack();
 	}
 	TouchItem.bIsPressed = true;
 	TouchItem.FingerIndex = FingerIndex;
@@ -365,21 +382,6 @@ void AZixuanCraftCharacter::SlowDown()
 {
 	GetCharacterMovement()->MaxWalkSpeed /= SpeedMultiplier;
 	GetCharacterMovement()->MaxStepHeight /= 2.0f;
-}
-
-void AZixuanCraftCharacter::ShowInventory()
-{
-	Widget->ToggleInventory();
-}
-
-void AZixuanCraftCharacter::ScrollInventoryUp()
-{
-	Widget->ScrollInventory(false);
-}
-
-void AZixuanCraftCharacter::ScrollInventoryDown()
-{
-	Widget->ScrollInventory(true);
 }
 
 float AZixuanCraftCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

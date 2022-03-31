@@ -24,8 +24,6 @@ class AZixuanCraftCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	static constexpr float OffsetHelper = 5.0f;		// Use this value to find the cube's location when interacting with voxel
-
 	/** Touch */
 	struct TouchData
 	{
@@ -40,6 +38,8 @@ class AZixuanCraftCharacter : public ACharacter
 			Location = FVector::ZeroVector;
 		}
 	};
+
+	static constexpr float OffsetHelper = 5.0f;		// Use this value to find the cube's location when interacting with voxel
 
 private:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
@@ -74,6 +74,34 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UMotionControllerComponent* L_MotionController;
 
+	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	float BaseTurnRate = 45.0f;
+
+	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	float BaseLookUpRate = 45.0f;
+
+	/** Gun muzzle's offset from the characters location */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay, meta = (AllowPrivateAccess = "true"))
+	FVector GunOffset = { 100.0f, 0.0f, 10.0f };
+
+	/** Projectile class to spawn */
+	UPROPERTY(EditDefaultsOnly, Category=Projectile)
+	TSubclassOf<class AZixuanCraftProjectile> ProjectileClass;
+
+	/** Sound to play each time we fire */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay, meta = (AllowPrivateAccess = "true"))
+	USoundBase* FireSound;
+
+	/** AnimMontage to play each time we fire */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* FireAnimation;
+
+	/** Whether to use motion controller location for aiming. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+	uint8 bUsingMotionControllers : 1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MaxHealth = 100.0f;
 
@@ -96,37 +124,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FLootData ObjectInHand;
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float BaseTurnRate = 45.0f;
-
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float BaseLookUpRate = 45.0f;
-
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay, meta = (AllowPrivateAccess = "true"))
-	FVector GunOffset = { 100.0f, 0.0f, 10.0f };
-
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AZixuanCraftProjectile> ProjectileClass;
-
 	/** Used when sprinting/slowing down */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 	float SpeedMultiplier = 2.0f;
-
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay, meta = (AllowPrivateAccess = "true"))
-	USoundBase* FireSound;
-
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* FireAnimation;
-
-	/** Whether to use motion controller location for aiming. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
-	uint8 bUsingMotionControllers : 1;
 
 public:
 	AZixuanCraftCharacter();
@@ -147,9 +147,6 @@ public:
 	void UseItem();
 	void Sprint();
 	void SlowDown();
-	void ShowInventory();
-	void ScrollInventoryUp();
-	void ScrollInventoryDown();
 
 	/** Inventory */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
@@ -160,6 +157,9 @@ public:
 	void InitWidget(UZixuanCraftMainGameWidget* InWidget);
 	void UpdateHealthUI();
 	void InitInventoryUI();
+	void ToggleInventory();
+	void ScrollInventoryUp();
+	void ScrollInventoryDown();
 	UZixuanCraftMainGameWidget* GetWidget() const { return Widget; }
 
 	/**

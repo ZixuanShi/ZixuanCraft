@@ -6,7 +6,6 @@
 #include "Components/Button.h"
 #include "ZixuanCraftInventoryButton.h"
 #include "Characters/ZixuanCraftCharacter.h"
-PRAGMA_DISABLE_OPTIMIZATION
 
 void UZixuanCraftMainGameWidget::NativeConstruct()
 {
@@ -58,19 +57,20 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
-	if (SelectIndex == InvalidIndex)
-	{
-		SelectIndex = 0;
-	}
-
-	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
+	// If the whole inventory panel is opened, don't do anything
 	const bool bShowingAllInventory = AllInventoryItems_Panel->GetIsEnabled();
-
 	if (bShowingAllInventory)
 	{
 		return;
 	}
 
+	if (SelectIndex == InvalidIndex)
+	{
+		SelectIndex = 0;
+	}
+
+	// Calculate the new index in bottom inventory
+	const TArray<UWidget*>& BottomInventory = BottomInventoryItems_Panel->GetAllChildren();
 	int32 NewIndex = SelectIndex;
 	if (bIsScrollingDown)
 	{
@@ -155,4 +155,24 @@ void UZixuanCraftMainGameWidget::ResetInventory(int32 Index)
 	InventoryButton->Reset();
 }
 
-PRAGMA_ENABLE_OPTIMIZATION
+void UZixuanCraftMainGameWidget::OnJumpButtonPressed()
+{
+	Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->Jump();
+}
+
+void UZixuanCraftMainGameWidget::OnJumpButtonReleased()
+{
+	Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->StopJumping(); 
+}
+
+void UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed()
+{ 
+	Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->DestroyBlock();
+	Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->Attack();
+}
+
+void UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed()
+{ 
+	Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock();
+}
+

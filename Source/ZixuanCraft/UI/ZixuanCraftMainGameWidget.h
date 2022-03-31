@@ -6,8 +6,8 @@
 #include "Components/ProgressBar.h"
 #include "Components/PanelWidget.h"
 #include "ZixuanCraftWidgetBase.h"
-#include "Characters/ZixuanCraftCharacter.h"
 #include "GameplayComponents/LootSlot.h"
+#include "Utils/TypeDefs.h"
 #include "ZixuanCraftMainGameWidget.generated.h"
 
 class UProgressBar;
@@ -17,6 +17,7 @@ class UImage;
 class UPanelWidget;
 class ALoot;
 class UZixuanCraftInventoryButton;
+class AZixuanCraftCharacter;
 
 /**
  * User Widget used for main game.
@@ -81,16 +82,16 @@ public:
 	void ToggleInventory();
 
 	UFUNCTION()
-	void OnJumpButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->Jump(); }
+	void OnJumpButtonPressed();
 
 	UFUNCTION()
-	void OnJumpButtonReleased() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->StopJumping(); }
+	void OnJumpButtonReleased();
 
 	UFUNCTION()
-	void OnDestoryAttackButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->DestroyBlock(); }
+	void OnDestoryAttackButtonPressed();
 
 	UFUNCTION()
-	void OnPlaceUseItemButtonPressed() { Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock(); }
+	void OnPlaceUseItemButtonPressed();
 
 	int32 GetBottomInventoryNum() const { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
 	int32 GetSelectIndex() const { return SelectIndex; }
