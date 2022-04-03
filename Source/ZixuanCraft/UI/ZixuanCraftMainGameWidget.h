@@ -6,10 +6,9 @@
 #include "Components/ProgressBar.h"
 #include "Components/PanelWidget.h"
 #include "ZixuanCraftWidgetBase.h"
-#include "GameplayComponents/LootSlot.h"
-#include "Utils/TypeDefs.h"
 #include "ZixuanCraftMainGameWidget.generated.h"
 
+class AZixuanCraftCharacter;
 class UProgressBar;
 class UPanelWidget;
 class UButton;
@@ -17,7 +16,6 @@ class UImage;
 class UPanelWidget;
 class ALoot;
 class UZixuanCraftInventoryButton;
-class AZixuanCraftCharacter;
 
 /**
  * User Widget used for main game.
@@ -63,19 +61,29 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* ToggleInventory_Mobile_Button = nullptr;
 
-public:
-	virtual void NativeConstruct() override final;
 
+public:
 	/**
 	 * Update the button in the inventory at Index
 	 * @param InSlot		The data to update in the inventory
 	 * @param Index			Where the data is in the inventory
 	 */
-	void UpdateInventory(const FLootSlot& InSlot, int32 Index);
+	virtual void IUpdateInventory(const FLootSlot& InSlot, int32 Index) override final;
 
-	void UpdateHealthBarPercent(float Percent) { HealthBar_ProgressBar->SetPercent(Percent); }
+	virtual void UpdateHealthBarPercent(float Percent) override final { HealthBar_ProgressBar->SetPercent(Percent); }
+	virtual void ScrollInventory(bool bIsScrollingDown) override final;
+	virtual void IToggleInventory() override final { ToggleInventory(); }
+	virtual void IOnJumpButtonPressed() override final { OnJumpButtonPressed(); }
+	virtual void IOnJumpButtonReleased() override final { OnJumpButtonReleased(); }
+	virtual void IOnDestoryAttackButtonPressed() override final { OnDestoryAttackButtonPressed(); }
+	virtual void IOnPlaceUseItemButtonPressed() override final { OnPlaceUseItemButtonPressed(); }
+	virtual void ResetInventory(int32 Index) override final;
+	virtual int32 GetBottomInventoryNum() const override final { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
+	virtual int32 IGetSelectIndex() const override final { return SelectIndex; }
+	virtual void SetSelectIndex(int32 Index) override final { SelectIndex = Index; }
 
-	void ScrollInventory(bool bIsScrollingDown);
+public:
+	virtual void NativeConstruct() override final;
 
 	/** Turn on and off all inventory */
 	UFUNCTION()
@@ -93,9 +101,5 @@ public:
 	UFUNCTION()
 	void OnPlaceUseItemButtonPressed();
 
-	int32 GetBottomInventoryNum() const { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
-	int32 GetSelectIndex() const { return SelectIndex; }
-	void SetSelectIndex(int32 Index) { SelectIndex = Index; }
 	UZixuanCraftInventoryButton* GetSelectedInventory() const;
-	void ResetInventory(int32 Index);
 };

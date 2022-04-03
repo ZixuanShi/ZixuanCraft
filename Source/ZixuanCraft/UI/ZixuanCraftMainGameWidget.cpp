@@ -107,7 +107,7 @@ void UZixuanCraftMainGameWidget::ToggleInventory()
 	BottomInventoryItems_Panel->SetIsEnabled(bShowing);
 }
 
-void UZixuanCraftMainGameWidget::UpdateInventory(const FLootSlot& InSlot, int32 Index)
+void UZixuanCraftMainGameWidget::IUpdateInventory(const FLootSlot& InSlot, int32 Index)
 {
 	UZixuanCraftInventoryButton* InventoryButton = nullptr;
 

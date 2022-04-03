@@ -54,17 +54,17 @@ void UZixuanCraftInventoryButton::Select()
 {
 	if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		UZixuanCraftMainGameWidget* Widget = Character->GetWidget();
+		UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 		int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
-		Widget->ResetInventory(Widget->GetSelectIndex());
+		Widget->ResetInventory(Widget->IGetSelectIndex());
 
 		if (Index >= SwapItemThreshold && 
-			Widget->GetSelectIndex() != InvalidIndex)
+			Widget->IGetSelectIndex() != InvalidIndex)
 		{
 			UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
-			PlayerInventoryComponent->SwapLoot(Index, Widget->GetSelectIndex());
-			Widget->UpdateInventory(PlayerInventoryComponent->GetLootSlot(Index), Index);
-			Widget->UpdateInventory(PlayerInventoryComponent->GetLootSlot(Widget->GetSelectIndex()), Widget->GetSelectIndex());
+			PlayerInventoryComponent->SwapLoot(Index, Widget->IGetSelectIndex());
+			Widget->IUpdateInventory(PlayerInventoryComponent->GetLootSlot(Index), Index);
+			Widget->IUpdateInventory(PlayerInventoryComponent->GetLootSlot(Widget->IGetSelectIndex()), Widget->IGetSelectIndex());
 			Widget->ResetInventory(Index);
 			Widget->SetSelectIndex(InvalidIndex);
 		}
