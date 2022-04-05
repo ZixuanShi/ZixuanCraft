@@ -9,7 +9,6 @@
 #include "ZixuanCraftMainGameWidget.generated.h"
 
 class AZixuanCraftCharacter;
-class UProgressBar;
 class UPanelWidget;
 class UButton;
 class UImage;
