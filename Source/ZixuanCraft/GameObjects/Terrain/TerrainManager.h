@@ -10,8 +10,8 @@ class ATerrainVoxel;
 class ATerrainCubeLoot;
 
 /**
-* Responsible for generating terrains. Should be only one instance in the world
-*/
+ * Responsible for generating terrains. Should be only one instance in the world
+ */
 UCLASS()
 class ZIXUANCRAFT_API ATerrainManager : public AActor
 {

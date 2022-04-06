@@ -14,8 +14,8 @@ class UProceduralMeshComponent;
 class ATerrainManager;
 
 /**
-* Voxel holding the terrain cubes
-*/
+ * Voxel holding the terrain cubes
+ */
 UCLASS()
 class ZIXUANCRAFT_API ATerrainVoxel : public AActor
 {

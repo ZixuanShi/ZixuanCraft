@@ -8,8 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 void AZixuanCraftCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -83,5 +81,3 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 		HitVoxel->ModifyCube(CubeLocation, HitResult.Location, NewType);
 	}
 }
-
-PRAGMA_ENABLE_OPTIMIZATION
