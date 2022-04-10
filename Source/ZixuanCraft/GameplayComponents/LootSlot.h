@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// LootSlot.h
+// Author: Zixuan Shi
+// A struct represents a slot in inventory UI and component
 
 #pragma once
 

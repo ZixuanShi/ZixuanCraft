@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// ZixuanCraftMainGameWidget.h
+// Author: Zixuan Shi
+// Main game widget during gameplay
 
 #pragma once
 
@@ -59,7 +62,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* ToggleInventory_Mobile_Button = nullptr;
-
 
 public:
 	/**

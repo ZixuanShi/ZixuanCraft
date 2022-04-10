@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// TerrainManager.h
+// Author: Zixuan Shi
+// Manager class for manipulating generating/removing terrain voxels
 
 #pragma once
 

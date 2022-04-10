@@ -1,4 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+// ZixuanCraftGameMode.h
+// Author: Zixuan Shi
+// ZixuanCraft GameMode
 
 #pragma once
 

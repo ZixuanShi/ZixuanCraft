@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// SpawnableCharacter.h
+// Author: Zixuan Shi
+// NPC character class used in the game. All NPC should be inherited from this
 
 #pragma once
 

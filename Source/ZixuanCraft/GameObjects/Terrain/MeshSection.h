@@ -1,4 +1,8 @@
 #pragma once
+// MeshSection.h
+// Author: Zixuan Shi
+// Struct for ProceduralMeshComponent usage
+
 #include "CoreMinimal.h"
 
 struct FProcMeshTangent;

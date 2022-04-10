@@ -1,4 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+// ZixuanCraftProjectile.h
+// Author: Zixuan Shi
+// Projectile base class for gun shooting
 
 #pragma once
 

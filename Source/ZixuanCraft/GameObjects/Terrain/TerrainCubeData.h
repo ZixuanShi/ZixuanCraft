@@ -1,4 +1,8 @@
 #pragma once
+// TerrainCubeData.h
+// Author: Zixuan Shi
+// Graphics data used for generating terrain cubes
+
 #include "CoreMinimal.h"
 
 static const int32 bTriangles[] = { 2, 1, 0,

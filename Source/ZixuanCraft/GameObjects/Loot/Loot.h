@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// Loot.h
+// Author: Zixuan Shi
+// Base class for the game objects that can be collected by characters
 
 #pragma once
 

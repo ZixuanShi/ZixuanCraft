@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// ZixuanCraftInventoryButton.h
+// Author: Zixuan Shi
+// A button used for InventoryUI widget
 
 #pragma once
 

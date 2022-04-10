@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// RNG.h
+// Author: Zixuan Shi
+// Custom Random Number Generator
 
 #pragma once
 

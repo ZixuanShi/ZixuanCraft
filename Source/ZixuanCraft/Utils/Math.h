@@ -1,4 +1,8 @@
 #pragma once
+// Math.h
+// Author: Zixuan Shi
+// Wrapping some common math used in game
+
 #include "CoreMinimal.h"
 
 /** Returns Index of cube in AllCubes by X Y Z index */

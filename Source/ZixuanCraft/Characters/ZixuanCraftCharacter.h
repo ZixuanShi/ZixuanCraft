@@ -1,4 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+// ZixuanCraftCharacter.h
+// Author: Zixuan Shi
+// C++ base class for player character
 
 #pragma once
 

@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// ZixuanCraftWidgetBase.h
+// Author: Zixuan Shi
+// Base widget interface for input
 
 #pragma once
 

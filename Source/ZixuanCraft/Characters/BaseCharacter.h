@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// BaseCharacter.h
+// Author: Zixuan Shi
+// Base character class used in the game. All characters should be inherited from this
 
 #pragma once
 
@@ -18,7 +21,7 @@ class UZixuanCraftWidgetBase;
 class UInventoryComponent;
 
 /**
- * Base FPS character with minimal data to be controlled by the player. 
+ * Base character with minimal data to be controlled by the player. 
  * Attached a camera in the world to display the game
  * Inventory component
  * Widget UI which mirrors the inventory and health data

@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// InventoryComponent.h
+// Author: Zixuan Shi
+// Component for inventory system
 
 #pragma once
 

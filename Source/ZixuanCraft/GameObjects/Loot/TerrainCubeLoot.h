@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// TerrainCubeLoot.h
+// Author: Zixuan Shi
+// Inherited from Loot, specific used for terrain cube loot
 
 #pragma once
 

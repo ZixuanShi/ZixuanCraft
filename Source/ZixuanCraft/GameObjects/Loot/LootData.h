@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// LootData.h
+// Author: Zixuan Shi
+// Struct for loot data
 
 #pragma once
 

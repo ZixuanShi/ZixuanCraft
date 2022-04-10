@@ -1,4 +1,8 @@
 #pragma once
+// ObjectEnums.h
+// Author: Zixuan Shi
+// Enum for game objects
+
 #include "CoreMinimal.h"
 
 /** Maximum count for a single slot can hold. Used for the loot that can stack in the inventory */

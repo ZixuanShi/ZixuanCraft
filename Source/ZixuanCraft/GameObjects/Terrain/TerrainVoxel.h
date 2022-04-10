@@ -1,4 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// TerrainVoxel.h
+// Author: Zixuan Shi
+// Game object with procedural mesh component, holding a portion of cubes
 
 #pragma once
 
