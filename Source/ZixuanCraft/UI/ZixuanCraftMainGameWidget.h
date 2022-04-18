@@ -33,34 +33,38 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 	
 protected:
 	/** All platforms UI */
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
 	UProgressBar* HealthBar_ProgressBar = nullptr;
 
 	/** This panel is at the bottom of the game UI, indicates a portion of inventory that allows the player quick select */
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
 	UPanelWidget* BottomInventoryItems_Panel = nullptr;
 
 	/** This panel is hide in game, will show up if the player pressed the show key, indicates all the inventory this owning player has */
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
 	UPanelWidget* AllInventoryItems_Panel = nullptr;
+
+	/** Panel for crafting */
+	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
+	UPanelWidget* Crafting_Panel = nullptr;
 
 	/** The index to select an item */
 	int32 SelectIndex = InvalidIndex;
 
 	/** Mobile dedicated UI */
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UPanelWidget* Mobile_Panel = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UButton* Jump_Mobile_Button = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UButton* DestroyAttack_Mobile_Button = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UButton* PlaceUseItem_Mobile_Button = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UButton* ToggleInventory_Mobile_Button = nullptr;
 
 public:
