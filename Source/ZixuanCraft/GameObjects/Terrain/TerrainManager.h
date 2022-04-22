@@ -66,7 +66,7 @@ private:
 	int32 CubeCountXY = 20;
 
 	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
-	int32 CubeCountXYSquared = CubeCountXY * CubeCountXY;
+	int32 CubeCountXYSquared = 0;
 
 	/** How many cubes in Z coordinate for a voxel to hold */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

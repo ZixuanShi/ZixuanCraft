@@ -18,6 +18,8 @@ class ATerrainManager;
 
 /**
  * Voxel holding the terrain cubes
+ * - If there is a terrain manager, follow it's data
+ * - If there is no terrain manager, create a plane
  */
 UCLASS()
 class ZIXUANCRAFT_API ATerrainVoxel : public AActor

@@ -16,6 +16,7 @@ void ATerrainManager::BeginPlay()
 	Super::BeginPlay();
 
 	FRNG::Global().SetSeed(Seed);
+	CubeCountXYSquared = CubeCountXY * CubeCountXY;
 	CubeLengthHalf = CubeLength / 2.0f;
 	VoxelLength = static_cast<float>(CubeCountXY * CubeLength);
 	Terrains.Reserve(RenderRadius * CubeCountXY);

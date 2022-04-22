@@ -25,6 +25,7 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
+	// If in editor, terrainManager is not set, we try to find it in the editor, if can't find, we use the default values
 	if(!TerrainManager)
 	{
 		return;
