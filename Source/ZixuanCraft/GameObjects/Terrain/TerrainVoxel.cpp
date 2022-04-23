@@ -2,14 +2,16 @@
 
 
 #include "TerrainVoxel.h"
+#include "GameObjects/Terrain/TerrainManager.h"
+#include "GameObjects/Terrain/TerrainCubeData.h"
+#include "GameObjects/Loot/TerrainCubeLoot.h"
+#include "Utils/Math.h"
+
+#include "SimplexNoiseBPLibrary.h"
+
 #include "ProceduralMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "TerrainManager.h"
-#include "TerrainCubeData.h"
-#include "GameObjects/Loot/TerrainCubeLoot.h"
-#include "SimplexNoiseBPLibrary.h"
-#include "Utils/Math.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
@@ -25,10 +27,17 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	// If in editor, terrainManager is not set, we try to find it in the editor, if can't find, we use the default values
+	// If in editor, terrainManager is not set, 
 	if(!TerrainManager)
 	{
-		return;
+		// Try to find it in the editor
+		TerrainManager = Cast<ATerrainManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATerrainManager::StaticClass()));
+
+		// if can't find, we use the default values
+		if (!TerrainManager)
+		{
+			return;
+		}
 	}
 
 	// Init members
