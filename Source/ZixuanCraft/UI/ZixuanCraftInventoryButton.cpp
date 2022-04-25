@@ -9,12 +9,17 @@
 
 PRAGMA_DISABLE_OPTIMIZATION
 
+static const FSlateColor PressedColor = FSlateColor(FLinearColor(0.5f, 0.5f, 0.5f, 1.0f));
 static const FSlateColor NormalColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
-static const FSlateColor HighlightColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+static const FSlateColor HighlightColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));	// On hover and selected
 
 void UZixuanCraftInventoryButton::Init(int32 NewIndex)
 {
 	Index = NewIndex;
+
+	WidgetStyle.Normal.TintColor = NormalColor;
+	WidgetStyle.Hovered.TintColor = HighlightColor;
+	WidgetStyle.Pressed.TintColor = PressedColor;
 
 	CountText = Cast<UTextBlock>(GetChildAt(0));
 	OnPressed.AddDynamic(this, &UZixuanCraftInventoryButton::Select);
@@ -52,29 +57,36 @@ void UZixuanCraftInventoryButton::Reset()
 
 void UZixuanCraftInventoryButton::Select()
 {
-	if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
-	{
-		UZixuanCraftWidgetBase* Widget = Character->GetWidget();
-		int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
-		Widget->ResetInventory(Widget->IGetSelectIndex());
+	// Data
+	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
+	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 
-		if (Index >= SwapItemThreshold && 
-			Widget->IGetSelectIndex() != InvalidIndex)
-		{
-			UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
-			PlayerInventoryComponent->SwapLoot(Index, Widget->IGetSelectIndex());
-			Widget->IUpdateInventory(PlayerInventoryComponent->GetLootSlot(Index), Index);
-			Widget->IUpdateInventory(PlayerInventoryComponent->GetLootSlot(Widget->IGetSelectIndex()), Widget->IGetSelectIndex());
-			Widget->ResetInventory(Index);
-			Widget->SetSelectIndex(InvalidIndex);
-		}
-		else
-		{
-			Widget->SetSelectIndex(Index);
-		}
-		Character->SetObjectInHand(Data.LootData);
-		Highlight();
+	// Don't do anything if we don't have selected other button, and this button is empty
+	if (Widget->IGetSelectIndex() == InvalidIndex && Data.Count == 0)
+	{
+		return;
 	}
+
+	// At this point, we are swapping two items in the inventory.
+	const int32 SelectedIndex = Widget->IGetSelectIndex();
+	Widget->ResetItemAt(SelectedIndex);		
+
+	int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
+	if (Index >= SwapItemThreshold &&
+		SelectedIndex != InvalidIndex)
+	{
+		UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
+		PlayerInventoryComponent->SwapLoot(Index, SelectedIndex);
+		Widget->IUpdateInventory(PlayerInventoryComponent->GetLootSlot(Index), Index);
+		Widget->IUpdateInventory(PlayerInventoryComponent->GetLootSlot(SelectedIndex), SelectedIndex);
+		Widget->ResetItemAt(Index);
+		Widget->SetSelectIndex(InvalidIndex);
+	}
+	else
+	{
+		Widget->SetSelectIndex(Index);
+	}
+	Character->SetObjectInHand(Data.LootData);
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

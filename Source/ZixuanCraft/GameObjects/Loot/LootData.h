@@ -18,14 +18,14 @@ struct ZIXUANCRAFT_API FLootData
 	GENERATED_BODY()
 
 	/** Represents the Loot type in this slot. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EObjectType Type = EObjectType::Empty;
 
 	/** The icon to draw in inventory widget UI */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Icon = nullptr;
 
 	/** The mesh to render if the player is grabbing this loot in hand */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent = nullptr;
 };

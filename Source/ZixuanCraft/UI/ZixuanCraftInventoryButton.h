@@ -23,10 +23,11 @@ class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UButton
 	GENERATED_BODY()
 	
 protected:
-	/** The quantity of this loot */
+	/** The quantity text of this loot */
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* CountText = nullptr;
 
+	/** Data for this button */
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	FLootSlot Data;
 

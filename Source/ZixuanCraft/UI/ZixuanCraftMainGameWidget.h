@@ -32,15 +32,27 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 	GENERATED_BODY()
 	
 protected:
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Gameplay
+	/** Gameplay Widgets Panel */
+	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
+	UPanelWidget* Gameplay_Panel = nullptr;
+
 	/** All platforms UI */
 	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
 	UProgressBar* HealthBar_ProgressBar = nullptr;
 
 	/** This panel is at the bottom of the game UI, indicates a portion of inventory that allows the player quick select */
-	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
-	UPanelWidget* BottomInventoryItems_Panel = nullptr;
+	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
+	UPanelWidget* GameplayInventoryItems_Panel = nullptr;
 
-	/** This panel is hide in game, will show up if the player pressed the show key, indicates all the inventory this owning player has */
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Inventory & Crafting
+	/** Panel for crafting and all inventory */
+	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
+	UPanelWidget* InventoryCrafting_Panel = nullptr;
+
+	/** Hiden in gameplay, will show up if the player pressed the show key, indicates all the inventory this owning player has */
 	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
 	UPanelWidget* AllInventoryItems_Panel = nullptr;
 
@@ -51,6 +63,8 @@ protected:
 	/** The index to select an item */
 	int32 SelectIndex = InvalidIndex;
 
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Mobile
 	/** Mobile dedicated UI */
 	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UPanelWidget* Mobile_Panel = nullptr;
@@ -82,15 +96,16 @@ public:
 	virtual void IOnJumpButtonReleased() override final { OnJumpButtonReleased(); }
 	virtual void IOnDestoryAttackButtonPressed() override final { OnDestoryAttackButtonPressed(); }
 	virtual void IOnPlaceUseItemButtonPressed() override final { OnPlaceUseItemButtonPressed(); }
-	virtual void ResetInventory(int32 Index) override final;
-	virtual int32 GetBottomInventoryNum() const override final { return BottomInventoryItems_Panel->GetAllChildren().Num(); }
+	virtual void ResetItemAt(int32 Index) override final;
+
+	virtual int32 GetBottomInventoryNum() const override final { return GameplayInventoryItems_Panel->GetAllChildren().Num(); }
 	virtual int32 IGetSelectIndex() const override final { return SelectIndex; }
 	virtual void SetSelectIndex(int32 Index) override final { SelectIndex = Index; }
 
 public:
 	virtual void NativeConstruct() override final;
 
-	/** Turn on and off all inventory */
+	/** Turn on and off Inventory and Crafting panel */
 	UFUNCTION()
 	void ToggleInventory();
 

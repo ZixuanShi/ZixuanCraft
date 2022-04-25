@@ -11,9 +11,9 @@ ATerrainManager::ATerrainManager()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ATerrainManager::BeginPlay()
+void ATerrainManager::OnConstruction(const FTransform& Transform)
 {
-	Super::BeginPlay();
+	Super::OnConstruction(Transform);
 
 	FRNG::Global().SetSeed(Seed);
 	CubeCountXYSquared = CubeCountXY * CubeCountXY;

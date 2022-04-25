@@ -9,9 +9,6 @@
 #include "GameFramework/Actor.h"
 #include "TerrainManager.generated.h"
 
-class ATerrainVoxel;
-class ATerrainCubeLoot;
-
 /**
  * Responsible for generating terrains. Should be only one instance in the world
  */
@@ -20,8 +17,8 @@ class ZIXUANCRAFT_API ATerrainManager : public AActor
 {
 	GENERATED_BODY()
 
-	friend ATerrainVoxel;
-	friend ATerrainCubeLoot;
+	friend class ATerrainVoxel;
+	friend class ATerrainCubeLoot;
 
 private:
 	/** Stores all the voxels */
@@ -80,10 +77,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 StoneOffset = 10;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	/** The higher this value is, the steeper the terrain is */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", AllowPrivateAccess = "true"))
 	float Weight = 4.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	/** Chance to spawn objects */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", AllowPrivateAccess = "true"))
 	float SpawnObjectChance = 0.003f;
 
 	/** Length of a single cube */
@@ -115,9 +114,9 @@ private:
 public:
 	ATerrainManager();
 
-	virtual void BeginPlay() override final;
+	virtual void OnConstruction(const FTransform& Transform) override final;
 	virtual void Tick(float DeltaTime) override final;
-	
+
 	float GetCubeLengthHalf() const { return CubeLengthHalf; }
 	UMaterialInterface* GetMaterial(int32 Index) const { return Materials[Index]; }
 

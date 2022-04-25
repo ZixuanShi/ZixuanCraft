@@ -31,6 +31,6 @@ public:
 	virtual void UpdateHealthBarPercent(float Percent) {}
 	virtual void ScrollInventory(bool bIsScrollingDown) {};
 	virtual int32 GetBottomInventoryNum() const { return InvalidIndex; }
-	virtual void ResetInventory(int32 Index) {};
+	virtual void ResetItemAt(int32 Index) {};
 	virtual void SetSelectIndex(int32 NeWIndex) {};
 };

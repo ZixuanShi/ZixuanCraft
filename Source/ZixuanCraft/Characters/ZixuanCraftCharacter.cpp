@@ -34,6 +34,7 @@ void AZixuanCraftCharacter::DestroyBlock()
 
 void AZixuanCraftCharacter::UseItem()
 {
+	// TODO: Use item like roasted chicken
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Use Item");
 }
 
