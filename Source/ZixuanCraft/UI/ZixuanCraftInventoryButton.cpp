@@ -72,6 +72,7 @@ void UZixuanCraftInventoryButton::OnSelected()
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 	Widget->ResetItemAt(SelectedIndex);		
 
+	// If we are swapping two items
 	if (SelectedIndex != InvalidIndex &&
 		Widget->IsDisplayingInventoryPanel())
 	{
