@@ -89,19 +89,28 @@ void UZixuanCraftInventoryButton::OnSelected()
 		if (Widget->IsDisplayingInventoryPanel())
 		{
 			Widget->SetSelectedItem(Data);
+
+			// Clear the rendering data in the button
 			WidgetStyle.Normal.SetResourceObject(nullptr);
 			WidgetStyle.Hovered.SetResourceObject(nullptr);
 			WidgetStyle.Pressed.SetResourceObject(nullptr);
 			CountText->SetText(FText::FromString(""));
 		}
 
-		Widget->SetSelectIndex(Index);
-		Highlight();
-
+		// If the selected button is in gameplay inventory, the character should hold that object in hand
 		if (SelectedIndex < Widget->GetGameplayInventoryNum())
 		{
 			Character->SetObjectInHand(Data.LootData);
 		}
+		// If the selected button is in all items inventory, the character should hold nothing
+		else
+		{			
+			Character->SetObjectInHand(FLootData());
+		}
+
+		// Always set widget selected index and highlight it
+		Widget->SetSelectIndex(Index);
+		Highlight();
 	}
 }
 

@@ -11,7 +11,8 @@ class UTextBlock;
 
 /**
  * Base class for UI button widget used in the game UI system
- * It has an image and a count text indicating the item and it's quantity
+ * - If there is no item in the inventory button, show a gray rectangle
+ * - If there is a item in the corresponding inventory button, it's background should show the loot slot item's image, and a number indicates the quantity of that loot
  */
 UCLASS()
 class ZIXUANCRAFT_API UZixuanCraftButton : public UButton

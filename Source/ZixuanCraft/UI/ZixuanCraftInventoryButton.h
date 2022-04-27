@@ -11,8 +11,6 @@
 
 /**
  * A button of inventory panel in the main game widget
- * - If there is no item in the inventory button, show a gray rectangle
- * - If there is a item in the corresponding inventory button, it's background should show the loot slot item's image, and a number indicates the quantity of that loot
  */
 UCLASS()
 class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UZixuanCraftButton
