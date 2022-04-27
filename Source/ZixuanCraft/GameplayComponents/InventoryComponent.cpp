@@ -47,14 +47,14 @@ int32 UInventoryComponent::TryAdd(ALoot* Loot)
 
 bool UInventoryComponent::SubtractItem(int32 Index)
 {
-	check(Index < MaxSize);
-	--Inventory[Index].Count;
-	if (Inventory[Index].Count <= 0)
+	if (Index < MaxSize)
 	{
-		Inventory[Index].LootData.Type = EObjectType::Empty;
-		Inventory[Index].LootData.Icon = nullptr;
-		Inventory[Index].LootData.MeshComponent = nullptr;
-		return true;
+		--Inventory[Index].Count;
+		if (Inventory[Index].Count <= 0)
+		{
+			Inventory[Index].Reset();
+			return true;
+		}
 	}
 	return false;
 }

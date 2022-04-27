@@ -1,11 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
+#include "UI/ZixuanCraftMainGameWidget.h"
+#include "UI/ZixuanCraftInventoryButton.h"
+#include "Characters/ZixuanCraftCharacter.h"
 
-#include "ZixuanCraftMainGameWidget.h"
 #include "Components/PanelWidget.h"
 #include "Components/Button.h"
-#include "ZixuanCraftInventoryButton.h"
-#include "Characters/ZixuanCraftCharacter.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
+
+PRAGMA_DISABLE_OPTIMIZATION
 
 void UZixuanCraftMainGameWidget::NativeConstruct()
 {
@@ -45,14 +50,33 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 		Mobile_Panel->SetIsEnabled(false);
 		Mobile_Panel->SetVisibility(ESlateVisibility::Hidden);
 	}
-	// If on mobile, bind events to the button clicks
+	// If on mobile, bind events to the button clicks and kill PC/Console dedicated UI
 #else
+	// Disable PC/Console Dedicated UI
+	if (SelectedItem_Panel)
+	{
+		SelectedItem_Panel->SetIsEnabled(false);
+		SelectedItem_Panel->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	// Bind Mobile Button events
 	Jump_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonPressed);
 	Jump_Mobile_Button->OnReleased.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonReleased);
 	DestroyAttack_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed);
 	PlaceUseItem_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed);
 	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::ToggleInventory);
 #endif
+}
+
+void UZixuanCraftMainGameWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	// Selected Item always follow mouse position
+	float MouseX = 0;
+	float MouseY = 0;
+	GetOwningPlayer()->GetMousePosition(MouseX, MouseY);
+	Cast<UCanvasPanelSlot>(SelectedItem_Panel->Slot)->SetDesiredPosition(FVector2D(MouseX, MouseY));
 }
 
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
@@ -64,14 +88,14 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 		return;
 	}
 
-	if (SelectIndex == InvalidIndex)
+	if (SelectedIndex == InvalidIndex)
 	{
-		SelectIndex = 0;
+		SelectedIndex = 0;
 	}
 
 	// Calculate the new index in bottom inventory
 	const TArray<UWidget*>& BottomInventory = GameplayInventoryItems_Panel->GetAllChildren();
-	int32 NewIndex = SelectIndex;
+	int32 NewIndex = SelectedIndex;
 	if (bIsScrollingDown)
 	{
 		++NewIndex;
@@ -113,6 +137,7 @@ void UZixuanCraftMainGameWidget::ToggleInventory()
 		{
 			GameplayWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+		SelectedIndex = InvalidIndex;
 	}
 	GetOwningPlayer()->SetShowMouseCursor(!bIsShowingInventoryCraftingPanel);
 	InventoryCrafting_Panel->SetIsEnabled(!bIsShowingInventoryCraftingPanel);
@@ -135,15 +160,43 @@ void UZixuanCraftMainGameWidget::IUpdateInventory(const FLootSlot& InSlot, int32
 	InventoryButton->Update(InSlot);
 }
 
+void UZixuanCraftMainGameWidget::SetSelectedItem(const FLootSlot& LootSlot)
+{
+	SelectedItem_Image->SetBrushResourceObject(LootSlot.LootData.Icon);
+
+	// If there is something to show, enable the RGBA
+	if (LootSlot.Count > 0)
+	{
+		SelectedItem_Image->SetOpacity(1.0f);
+		SelectedItemCount_TextBlock->SetText(FText::AsNumber(LootSlot.Count));
+	}
+	// Clear RGBA if we don't want to show anything
+	else
+	{
+		SelectedItem_Image->SetOpacity(0.0f);
+		SelectedItemCount_TextBlock->SetText(FText::FromString(""));
+	}
+}
+
+void UZixuanCraftMainGameWidget::SetSelectIndex(int32 Index)
+{
+	if (Index == InvalidIndex)
+	{
+		SetSelectedItem(FLootSlot{});
+	}
+
+	SelectedIndex = Index;
+}
+
 UZixuanCraftInventoryButton* UZixuanCraftMainGameWidget::GetSelectedInventory() const
 {
-	if (SelectIndex == InvalidIndex)
+	if (SelectedIndex == InvalidIndex)
 	{
 		return nullptr;
 	}
 
 	const TArray<UWidget*>& AllInventory = AllInventoryItems_Panel->GetAllChildren();
-	return Cast<UZixuanCraftInventoryButton>(AllInventory[SelectIndex]);
+	return Cast<UZixuanCraftInventoryButton>(AllInventory[SelectedIndex]);
 }
 
 void UZixuanCraftMainGameWidget::ResetItemAt(int32 Index)
@@ -188,3 +241,4 @@ void UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed()
 	Cast<AZixuanCraftCharacter>(GetOwningPlayer()->GetPawn())->PlaceBlock();
 }
 
+PRAGMA_ENABLE_OPTIMIZATION

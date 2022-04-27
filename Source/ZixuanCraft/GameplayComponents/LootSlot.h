@@ -41,4 +41,7 @@ struct ZIXUANCRAFT_API FLootSlot
 	 * @return			true if succeeded, false if not
 	 */
 	void AddFirstLoot(ALoot* NewLoot);
+
+	/** Reset all members back to the default ones */
+	void Reset();
 };

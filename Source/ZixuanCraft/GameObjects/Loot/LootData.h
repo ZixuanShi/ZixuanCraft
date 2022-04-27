@@ -28,4 +28,7 @@ struct ZIXUANCRAFT_API FLootData
 	/** The mesh to render if the player is grabbing this loot in hand */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent = nullptr;
+
+	/** Reset all members back to the default ones */
+	void Reset();
 };

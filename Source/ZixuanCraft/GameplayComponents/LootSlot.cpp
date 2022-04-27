@@ -23,3 +23,9 @@ void FLootSlot::AddFirstLoot(ALoot* NewLoot)
 	LootData = NewLoot->GetLootData();
 	++Count;					
 }
+
+void FLootSlot::Reset()
+{
+	LootData.Reset();
+	Count = 0;
+}

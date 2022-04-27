@@ -71,8 +71,8 @@ void UZixuanCraftInventoryButton::OnSelected()
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 	Widget->ResetItemAt(SelectedIndex);		
 
-	int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
-	if (SelectedIndex != InvalidIndex)
+	if (SelectedIndex != InvalidIndex &&
+		Widget->IsDisplayingInventoryPanel())
 	{
 		UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 		PlayerInventoryComponent->SwapLoot(Index, SelectedIndex);
@@ -81,13 +81,27 @@ void UZixuanCraftInventoryButton::OnSelected()
 		Widget->ResetItemAt(Index);
 		Widget->SetSelectIndex(InvalidIndex);
 	}
+	// We clicked an item for the first time, we want to select this item
 	else
 	{
+		// If we are displaying inventory panel, make the item follows the mouse
+		if (Widget->IsDisplayingInventoryPanel())
+		{
+			Widget->SetSelectedItem(Data);
+			WidgetStyle.Normal.SetResourceObject(nullptr);
+			WidgetStyle.Hovered.SetResourceObject(nullptr);
+			WidgetStyle.Pressed.SetResourceObject(nullptr);
+			CountText->SetText(FText::FromString(""));
+		}
+
 		Widget->SetSelectIndex(Index);
 		Highlight();
-	}
 
-	Character->SetObjectInHand(Data.LootData);
+		if (SelectedIndex < Widget->GetGameplayInventoryNum())
+		{
+			Character->SetObjectInHand(Data.LootData);
+		}
+	}
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

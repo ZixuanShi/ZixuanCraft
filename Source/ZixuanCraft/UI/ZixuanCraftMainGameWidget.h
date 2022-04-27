@@ -60,7 +60,7 @@ protected:
 	UPanelWidget* Crafting_Panel = nullptr;
 
 	/** The index to select an item */
-	int32 SelectIndex = InvalidIndex;
+	int32 SelectedIndex = InvalidIndex;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// PC/Console dedicated inventory UI 
@@ -73,7 +73,7 @@ protected:
 
 	/** Text of the count of the selected item */
 	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
-	UTextBlock* SelectedItem_TextBlock = nullptr;
+	UTextBlock* SelectedItemCount_TextBlock = nullptr;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Mobile dedicated UI
@@ -94,19 +94,7 @@ protected:
 
 public:
 	virtual void NativeConstruct() override final;
-
-	//------------------------------------------------------------------------------------------------------------------------------------
-	// Genearl APIs
-	/**
-	 * Update the button in the inventory at Index
-	 * @param InSlot		The data to update in the inventory
-	 * @param Index			Where the data is in the inventory
-	 */
-	virtual void IUpdateInventory(const FLootSlot& InSlot, int32 Index) override final;
-	virtual void ScrollInventory(bool bIsScrollingDown) override final;
-	virtual void IToggleInventory() override final { ToggleInventory(); }
-	virtual void ResetItemAt(int32 Index) override final;
-
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override final;
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
 	virtual void UpdateHealthBarPercent(float Percent) override final { HealthBar_ProgressBar->SetPercent(Percent); }
@@ -127,6 +115,25 @@ public:
 	void OnJumpButtonReleased();
 
 	//------------------------------------------------------------------------------------------------------------------------------------
+	// Inventory & Crafting
+	/**
+	 * Update the button in the inventory at Index
+	 * @param InSlot		The data to update in the inventory
+	 * @param Index			Where the data is in the inventory
+	 */
+	virtual void IUpdateInventory(const FLootSlot& InSlot, int32 Index) override final;
+
+	/**
+	 * Set the selected item (the one always follows mouse's position)
+	 * @param LootSlot		Loot slot data to set
+	 */
+	virtual void SetSelectedItem(const FLootSlot& LootSlot) override final;
+
+	virtual void ScrollInventory(bool bIsScrollingDown) override final;
+	virtual void IToggleInventory() override final { ToggleInventory(); }
+	virtual void ResetItemAt(int32 Index) override final;
+
+	//------------------------------------------------------------------------------------------------------------------------------------
 	// Mobile
 	virtual void IOnJumpButtonPressed() override final { OnJumpButtonPressed(); }
 	virtual void IOnJumpButtonReleased() override final { OnJumpButtonReleased(); }
@@ -135,9 +142,9 @@ public:
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Getter Setters
-	virtual int32 GetBottomInventoryNum() const override final { return GameplayInventoryItems_Panel->GetAllChildren().Num(); }
-	virtual int32 IGetSelectIndex() const override final { return SelectIndex; }
-	virtual void SetSelectIndex(int32 Index) override final { SelectIndex = Index; }
+	virtual int32 GetGameplayInventoryNum() const override final { return GameplayInventoryItems_Panel->GetAllChildren().Num(); }
+	virtual int32 IGetSelectIndex() const override final { return SelectedIndex; }
+	virtual void SetSelectIndex(int32 Index) override final;
 	virtual bool IsDisplayingInventoryPanel() const override final { return InventoryCrafting_Panel->GetIsEnabled(); }
 	UZixuanCraftInventoryButton* GetSelectedInventory() const;
 };

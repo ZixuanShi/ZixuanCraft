@@ -65,15 +65,15 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 	// Do work if we hit a voxel to interact
 	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.Actor))
 	{
-		if (NewType != EObjectType::Empty)
+		// If we are placing a cube
+		const int32 SelectedIndex = Widget->IGetSelectIndex();
+		if (NewType != EObjectType::Empty && SelectedIndex != InvalidIndex)
 		{
-			int32 SelectIndex = Widget->IGetSelectIndex();
-			if (InventoryComponent->SubtractItem(SelectIndex))
+			if (InventoryComponent->SubtractItem(SelectedIndex))
 			{
-				ObjectInHand.Type = EObjectType::Empty;
-				ObjectInHand.MeshComponent = nullptr;
+				ObjectInHand.Reset();
 			}
-			Widget->IUpdateInventory(InventoryComponent->GetLootSlot(SelectIndex), SelectIndex);
+			Widget->IUpdateInventory(InventoryComponent->GetLootSlot(SelectedIndex), SelectedIndex);
 		}
 
 		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * OffsetMultiplier;
@@ -82,3 +82,4 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 		HitVoxel->ModifyCube(CubeLocation, HitResult.Location, NewType);
 	}
 }
+
