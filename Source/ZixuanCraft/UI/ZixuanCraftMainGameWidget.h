@@ -94,7 +94,7 @@ protected:
 
 public:
 	virtual void NativeConstruct() override final;
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override final;
+
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
 	virtual void UpdateHealthBarPercent(float Percent) override final { HealthBar_ProgressBar->SetPercent(Percent); }

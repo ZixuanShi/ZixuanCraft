@@ -29,28 +29,38 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	InteractVoxel(EObjectType::Empty, -OffsetHelper);
+	if (!Widget->IsDisplayingInventoryPanel())
+	{
+		InteractVoxel(EObjectType::Empty, -OffsetHelper);
+	}
 }
-
 void AZixuanCraftCharacter::UseItem()
 {
 	// TODO: Use item like roasted chicken
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Use Item");
+	if (!Widget->IsDisplayingInventoryPanel())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Use Item");
+	}
 }
-
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	if (ObjectInHand.Type < EObjectType::TreeLeaves &&	// Valid terrain cube
-		ObjectInHand.Type != EObjectType::Empty)			// Not empty
+	if (!Widget->IsDisplayingInventoryPanel())
 	{
-		InteractVoxel(ObjectInHand.Type, OffsetHelper);
+		if (ObjectInHand.Type < EObjectType::TreeLeaves &&	// Valid terrain cube
+			ObjectInHand.Type != EObjectType::Empty)			// Not empty
+		{
+			InteractVoxel(ObjectInHand.Type, OffsetHelper);
+		}
 	}
 }
 
 void AZixuanCraftCharacter::Attack()
 {
 	// TODO replace by Minecraft style attack
-	Super::Attack();
+	if (!Widget->IsDisplayingInventoryPanel())
+	{
+		Super::Attack();
+	}
 }
 
 void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMultiplier)

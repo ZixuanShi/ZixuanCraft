@@ -213,17 +213,6 @@ void ABaseCharacter::InitInventoryUI()
 void ABaseCharacter::ToggleInventory()
 {
 	Widget->IToggleInventory();
-
-	//// If Inventory is on, disable character's movement input until the inventory panel it's closed
-	//if (Widget->IsDisplayingInventoryPanel())
-	//{
-	//	DisableInput(Cast<APlayerController>(GetController()));
-	//}
-	//// Gameplay stuff, enable movement input
-	//else
-	//{
-	//	EnableInput(Cast<APlayerController>(GetController()));
-	//}
 }
 
 void ABaseCharacter::ScrollInventoryUp()
@@ -244,9 +233,12 @@ void ABaseCharacter::UpdateInventoryUI(int32 Index)
 }
 
 void ABaseCharacter::LookUpAtRate(float Rate)
-{	
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+{
+	if (!Widget->IsDisplayingInventoryPanel())
+	{
+		// calculate delta for this frame from the rate information
+		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	}
 }
 
 // Called to bind functionality to input
@@ -372,25 +364,34 @@ void ABaseCharacter::OnResetVR()
 
 void ABaseCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (!Widget->IsDisplayingInventoryPanel())
 	{
-		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value);
+		if (Value != 0.0f)
+		{
+			// add movement in that direction
+			AddMovementInput(GetActorForwardVector(), Value);
+		}
 	}
 }
 
 void ABaseCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (!Widget->IsDisplayingInventoryPanel())
 	{
-		// add movement in that direction
-		AddMovementInput(GetActorRightVector(), Value);
+		if (Value != 0.0f)
+		{
+			// add movement in that direction
+			AddMovementInput(GetActorRightVector(), Value);
+		}
 	}
 }
 
 void ABaseCharacter::TurnAtRate(float Rate)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	if (!Widget->IsDisplayingInventoryPanel())
+	{ 
+		// calculate delta for this frame from the rate information
+		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	}
 }
 

@@ -4,13 +4,10 @@
 // A button used for InventoryUI widget
 
 #pragma once
+#include "UI/ZixuanCraftButton.h"
 
 #include "CoreMinimal.h"
-#include "Components/Button.h"
-#include "GameplayComponents/LootSlot.h"
 #include "ZixuanCraftInventoryButton.generated.h"
-
-class UTextBlock;
 
 /**
  * A button of inventory panel in the main game widget
@@ -18,19 +15,11 @@ class UTextBlock;
  * - If there is a item in the corresponding inventory button, it's background should show the loot slot item's image, and a number indicates the quantity of that loot
  */
 UCLASS()
-class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UButton
+class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UZixuanCraftButton
 {
 	GENERATED_BODY()
 	
 protected:
-	/** The quantity text of this loot */
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* CountText = nullptr;
-
-	/** Data for this button */
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	FLootSlot Data;
-
 	/** The index in the inventory panel */
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 Index = 0;

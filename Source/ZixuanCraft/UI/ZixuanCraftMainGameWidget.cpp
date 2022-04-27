@@ -68,17 +68,6 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 #endif
 }
 
-void UZixuanCraftMainGameWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-	Super::NativeTick(MyGeometry, InDeltaTime);
-
-	// Selected Item always follow mouse position
-	float MouseX = 0;
-	float MouseY = 0;
-	GetOwningPlayer()->GetMousePosition(MouseX, MouseY);
-	Cast<UCanvasPanelSlot>(SelectedItem_Panel->Slot)->SetDesiredPosition(FVector2D(MouseX, MouseY));
-}
-
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
 	// If the inventory crafting panel is showing, don't do anything
