@@ -213,6 +213,17 @@ void ABaseCharacter::InitInventoryUI()
 void ABaseCharacter::ToggleInventory()
 {
 	Widget->IToggleInventory();
+
+	// If Inventory is on, disable character's movement input until the inventory panel it's closed
+	if (Widget->IsDisplayingInventoryPanel())
+	{
+		DisableInput(Cast<APlayerController>(GetController()));
+	}
+	// Gameplay stuff, enable movement input
+	else
+	{
+		EnableInput(Cast<APlayerController>(GetController()));
+	}
 }
 
 void ABaseCharacter::ScrollInventoryUp()

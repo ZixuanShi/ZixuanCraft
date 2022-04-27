@@ -58,7 +58,7 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
 	// If the inventory crafting panel is showing, don't do anything
-	const bool bIsShowingInventoryCraftingPanel = InventoryCrafting_Panel->GetIsEnabled();
+	const bool bIsShowingInventoryCraftingPanel = IsDisplayingInventoryPanel();
 	if (bIsShowingInventoryCraftingPanel)
 	{
 		return;
@@ -86,12 +86,12 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 		}
 	}
 
-	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->Select();
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->OnSelected();
 }
 
 void UZixuanCraftMainGameWidget::ToggleInventory()
 {
-	const bool bIsShowingInventoryCraftingPanel = InventoryCrafting_Panel->GetIsEnabled();
+	const bool bIsShowingInventoryCraftingPanel = IsDisplayingInventoryPanel();
 	if (bIsShowingInventoryCraftingPanel)
 	{
 		for (UWidget* InventoryWidget : InventoryCrafting_Panel->GetAllChildren())

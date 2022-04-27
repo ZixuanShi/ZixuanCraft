@@ -33,4 +33,5 @@ public:
 	virtual int32 GetBottomInventoryNum() const { return InvalidIndex; }
 	virtual void ResetItemAt(int32 Index) {};
 	virtual void SetSelectIndex(int32 NeWIndex) {};
+	virtual bool IsDisplayingInventoryPanel() const { return false; }
 };

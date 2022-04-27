@@ -21,11 +21,11 @@ struct ZIXUANCRAFT_API FLootSlot
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLootData LootData;
 
 	/** How many loot of this type in this slot. If the loot is stackable, this will grow when inventory component wants to add that type until hit the MaxSlotCount. If the loot is not stackable, this can only be one */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Count = 0;
 
 	/**

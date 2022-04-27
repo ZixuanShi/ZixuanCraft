@@ -42,5 +42,5 @@ public:
 	void Reset();
 
 	UFUNCTION()
-	void Select();
+	void OnSelected();
 };

@@ -22,7 +22,7 @@ void UZixuanCraftInventoryButton::Init(int32 NewIndex)
 	WidgetStyle.Pressed.TintColor = PressedColor;
 
 	CountText = Cast<UTextBlock>(GetChildAt(0));
-	OnPressed.AddDynamic(this, &UZixuanCraftInventoryButton::Select);
+	OnPressed.AddDynamic(this, &UZixuanCraftInventoryButton::OnSelected);
 }
 
 void UZixuanCraftInventoryButton::Update(const FLootSlot& InSlot)
@@ -55,7 +55,7 @@ void UZixuanCraftInventoryButton::Reset()
 	WidgetStyle.Normal.TintColor = NormalColor;
 }
 
-void UZixuanCraftInventoryButton::Select()
+void UZixuanCraftInventoryButton::OnSelected()
 {
 	// Data
 	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
@@ -72,8 +72,7 @@ void UZixuanCraftInventoryButton::Select()
 	Widget->ResetItemAt(SelectedIndex);		
 
 	int32 SwapItemThreshold = Widget->GetBottomInventoryNum();
-	if (Index >= SwapItemThreshold &&
-		SelectedIndex != InvalidIndex)
+	if (SelectedIndex != InvalidIndex)
 	{
 		UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 		PlayerInventoryComponent->SwapLoot(Index, SelectedIndex);
@@ -85,7 +84,9 @@ void UZixuanCraftInventoryButton::Select()
 	else
 	{
 		Widget->SetSelectIndex(Index);
+		Highlight();
 	}
+
 	Character->SetObjectInHand(Data.LootData);
 }
 

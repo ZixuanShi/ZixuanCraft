@@ -18,6 +18,7 @@ class UImage;
 class UPanelWidget;
 class ALoot;
 class UZixuanCraftInventoryButton;
+class UTextBlock;
 
 /**
  * User Widget used for main game.
@@ -34,7 +35,6 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 protected:
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
-	/** Gameplay Widgets Panel */
 	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
 	UPanelWidget* Gameplay_Panel = nullptr;
 
@@ -48,7 +48,6 @@ protected:
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Inventory & Crafting
-	/** Panel for crafting and all inventory */
 	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
 	UPanelWidget* InventoryCrafting_Panel = nullptr;
 
@@ -64,8 +63,20 @@ protected:
 	int32 SelectIndex = InvalidIndex;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
-	// Mobile
-	/** Mobile dedicated UI */
+	// PC/Console dedicated inventory UI 
+	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
+	UPanelWidget* SelectedItem_Panel = nullptr;
+
+	/** Image of the item got selected */
+	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
+	UImage* SelectedItem_Image = nullptr;
+
+	/** Text of the count of the selected item */
+	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
+	UTextBlock* SelectedItem_TextBlock = nullptr;
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Mobile dedicated UI
 	UPROPERTY(BlueprintReadWrite, Category = Mobile, meta = (BindWidget))
 	UPanelWidget* Mobile_Panel = nullptr;
 
@@ -82,30 +93,30 @@ protected:
 	UButton* ToggleInventory_Mobile_Button = nullptr;
 
 public:
+	virtual void NativeConstruct() override final;
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Genearl APIs
 	/**
 	 * Update the button in the inventory at Index
 	 * @param InSlot		The data to update in the inventory
 	 * @param Index			Where the data is in the inventory
 	 */
 	virtual void IUpdateInventory(const FLootSlot& InSlot, int32 Index) override final;
-
-	virtual void UpdateHealthBarPercent(float Percent) override final { HealthBar_ProgressBar->SetPercent(Percent); }
 	virtual void ScrollInventory(bool bIsScrollingDown) override final;
 	virtual void IToggleInventory() override final { ToggleInventory(); }
-	virtual void IOnJumpButtonPressed() override final { OnJumpButtonPressed(); }
-	virtual void IOnJumpButtonReleased() override final { OnJumpButtonReleased(); }
-	virtual void IOnDestoryAttackButtonPressed() override final { OnDestoryAttackButtonPressed(); }
-	virtual void IOnPlaceUseItemButtonPressed() override final { OnPlaceUseItemButtonPressed(); }
 	virtual void ResetItemAt(int32 Index) override final;
 
-	virtual int32 GetBottomInventoryNum() const override final { return GameplayInventoryItems_Panel->GetAllChildren().Num(); }
-	virtual int32 IGetSelectIndex() const override final { return SelectIndex; }
-	virtual void SetSelectIndex(int32 Index) override final { SelectIndex = Index; }
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Gameplay
+	virtual void UpdateHealthBarPercent(float Percent) override final { HealthBar_ProgressBar->SetPercent(Percent); }
+	
+	UFUNCTION()
+	void OnDestoryAttackButtonPressed();
 
-public:
-	virtual void NativeConstruct() override final;
+	UFUNCTION()
+	void OnPlaceUseItemButtonPressed();
 
-	/** Turn on and off Inventory and Crafting panel */
 	UFUNCTION()
 	void ToggleInventory();
 
@@ -115,11 +126,18 @@ public:
 	UFUNCTION()
 	void OnJumpButtonReleased();
 
-	UFUNCTION()
-	void OnDestoryAttackButtonPressed();
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Mobile
+	virtual void IOnJumpButtonPressed() override final { OnJumpButtonPressed(); }
+	virtual void IOnJumpButtonReleased() override final { OnJumpButtonReleased(); }
+	virtual void IOnDestoryAttackButtonPressed() override final { OnDestoryAttackButtonPressed(); }
+	virtual void IOnPlaceUseItemButtonPressed() override final { OnPlaceUseItemButtonPressed(); }
 
-	UFUNCTION()
-	void OnPlaceUseItemButtonPressed();
-
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Getter Setters
+	virtual int32 GetBottomInventoryNum() const override final { return GameplayInventoryItems_Panel->GetAllChildren().Num(); }
+	virtual int32 IGetSelectIndex() const override final { return SelectIndex; }
+	virtual void SetSelectIndex(int32 Index) override final { SelectIndex = Index; }
+	virtual bool IsDisplayingInventoryPanel() const override final { return InventoryCrafting_Panel->GetIsEnabled(); }
 	UZixuanCraftInventoryButton* GetSelectedInventory() const;
 };
