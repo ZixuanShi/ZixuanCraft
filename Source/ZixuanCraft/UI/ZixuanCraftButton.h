@@ -3,7 +3,6 @@
 #pragma once
 #include "GameplayComponents/LootSlot.h"
 
-#include "CoreMinimal.h"
 #include "Components/Button.h"
 #include "ZixuanCraftButton.generated.h"
 
@@ -40,5 +39,11 @@ protected:
 public:
 	UZixuanCraftButton();
 
+	void Init(int32 NewIndex);
+	void Update(const FLootSlot& InSlot);
+	void Highlight();
+	void Reset();
 
+	UFUNCTION()
+	void OnPressed();
 };

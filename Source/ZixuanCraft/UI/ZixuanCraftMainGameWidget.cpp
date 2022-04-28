@@ -99,7 +99,7 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 		}
 	}
 
-	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->OnSelected();
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->OnInventoryPressed();
 }
 
 void UZixuanCraftMainGameWidget::ToggleInventory()

@@ -6,7 +6,6 @@
 #pragma once
 #include "UI/ZixuanCraftButton.h"
 
-#include "CoreMinimal.h"
 #include "ZixuanCraftInventoryButton.generated.h"
 
 /**
@@ -18,11 +17,8 @@ class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UZixuanCraftButton
 	GENERATED_BODY()
 
 public:
-	void Init(int32 NewIndex);
-	void Update(const FLootSlot& InSlot);
-	void Highlight();
-	void Reset();
+	UZixuanCraftInventoryButton();
 
 	UFUNCTION()
-	void OnSelected();
+	void OnInventoryPressed();
 };

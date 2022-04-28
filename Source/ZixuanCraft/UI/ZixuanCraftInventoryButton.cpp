@@ -10,49 +10,12 @@
 
 PRAGMA_DISABLE_OPTIMIZATION
 
-void UZixuanCraftInventoryButton::Init(int32 NewIndex)
+UZixuanCraftInventoryButton::UZixuanCraftInventoryButton()
 {
-	Index = NewIndex;
-
-	WidgetStyle.Normal.TintColor = NormalColor;
-	WidgetStyle.Hovered.TintColor = HighlightColor;
-	WidgetStyle.Pressed.TintColor = PressedColor;
-
-	CountText = Cast<UTextBlock>(GetChildAt(0));
-	OnPressed.AddDynamic(this, &UZixuanCraftInventoryButton::OnSelected);
+	OnClicked.AddDynamic(this, &UZixuanCraftInventoryButton::OnInventoryPressed);
 }
 
-void UZixuanCraftInventoryButton::Update(const FLootSlot& InSlot)
-{
-	Data = InSlot;
-
-	// Count text
-	if (InSlot.Count > 0)
-	{
-		CountText->SetText(FText::AsNumber(InSlot.Count));
-	}
-	else
-	{
-		CountText->SetText(FText::FromString(""));
-	}
-
-	// Background Image
-	WidgetStyle.Normal.SetResourceObject(InSlot.LootData.Icon);
-	WidgetStyle.Hovered.SetResourceObject(InSlot.LootData.Icon);
-	WidgetStyle.Pressed.SetResourceObject(InSlot.LootData.Icon);
-}
-
-void UZixuanCraftInventoryButton::Highlight()
-{
-	WidgetStyle.Normal.TintColor = HighlightColor;
-}
-
-void UZixuanCraftInventoryButton::Reset()
-{
-	WidgetStyle.Normal.TintColor = NormalColor;
-}
-
-void UZixuanCraftInventoryButton::OnSelected()
+void UZixuanCraftInventoryButton::OnInventoryPressed()
 {
 	// Data
 	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();

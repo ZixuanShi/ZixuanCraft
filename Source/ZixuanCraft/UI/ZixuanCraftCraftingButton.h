@@ -13,7 +13,10 @@ UCLASS()
 class ZIXUANCRAFT_API UZixuanCraftCraftingButton : public UZixuanCraftButton
 {
 	GENERATED_BODY()
-	
-protected:
 
+public:
+	UZixuanCraftCraftingButton();
+
+	UFUNCTION()
+	void OnCraftingPressed();
 };

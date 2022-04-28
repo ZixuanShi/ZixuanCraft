@@ -8,7 +8,8 @@ Minecraft clone using Unreal Engine.
     - Chicken
 - Adding Cube
 - Removing Cube
-- Inventory system
+- Inventory System
+- Crafting System
  
 ## Target Platfroms
 - Windows
