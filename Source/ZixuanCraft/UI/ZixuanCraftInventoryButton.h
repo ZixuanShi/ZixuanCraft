@@ -16,11 +16,6 @@ UCLASS()
 class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UZixuanCraftButton
 {
 	GENERATED_BODY()
-	
-protected:
-	/** The index in the inventory panel */
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 Index = 0;
 
 public:
 	void Init(int32 NewIndex);

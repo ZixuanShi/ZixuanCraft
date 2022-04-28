@@ -10,10 +10,6 @@
 
 PRAGMA_DISABLE_OPTIMIZATION
 
-static const FSlateColor PressedColor = FSlateColor(FLinearColor(0.5f, 0.5f, 0.5f, 1.0f));
-static const FSlateColor NormalColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 0.8f));
-static const FSlateColor HighlightColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));	// On hover and selected
-
 void UZixuanCraftInventoryButton::Init(int32 NewIndex)
 {
 	Index = NewIndex;
@@ -91,11 +87,13 @@ void UZixuanCraftInventoryButton::OnSelected()
 		{
 			Widget->SetSelectedItem(Data);
 
-			// Clear the rendering data in the button
+			// Clear the rendering data in the button if we are not running on mobile
+#if !PLATFORM_ANDROID && !PLATFORM_IOS
 			WidgetStyle.Normal.SetResourceObject(nullptr);
 			WidgetStyle.Hovered.SetResourceObject(nullptr);
 			WidgetStyle.Pressed.SetResourceObject(nullptr);
 			CountText->SetText(FText::FromString(""));
+#endif
 		}
 
 		// If the selected button is in gameplay inventory, the character should hold that object in hand
