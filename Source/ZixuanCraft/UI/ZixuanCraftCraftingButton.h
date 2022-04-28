@@ -15,8 +15,5 @@ class ZIXUANCRAFT_API UZixuanCraftCraftingButton : public UZixuanCraftButton
 	GENERATED_BODY()
 
 public:
-	UZixuanCraftCraftingButton();
-
-	UFUNCTION()
-	void OnCraftingPressed();
+	virtual void OnPressedImpl() override final;
 };

@@ -25,6 +25,7 @@ class UTextBlock;
  * - Health
  * - Starveness
  * - Inventory
+ * - Crafting
  * - Mobile input if on Mobile
  */
 UCLASS()

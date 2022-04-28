@@ -17,8 +17,5 @@ class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UZixuanCraftButton
 	GENERATED_BODY()
 
 public:
-	UZixuanCraftInventoryButton();
-
-	UFUNCTION()
-	void OnInventoryPressed();
+	virtual void OnPressedImpl() override final;
 };

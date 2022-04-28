@@ -43,6 +43,7 @@ public:
 	void Update(const FLootSlot& InSlot);
 	void Highlight();
 	void Reset();
+	virtual void OnPressedImpl();
 
 	UFUNCTION()
 	void OnPressed();

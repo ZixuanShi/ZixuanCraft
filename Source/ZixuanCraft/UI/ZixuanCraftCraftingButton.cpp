@@ -3,12 +3,9 @@
 
 #include "UI/ZixuanCraftCraftingButton.h"
 
-UZixuanCraftCraftingButton::UZixuanCraftCraftingButton()
+void UZixuanCraftCraftingButton::OnPressedImpl()
 {
-	OnClicked.AddDynamic(this, &UZixuanCraftCraftingButton::OnCraftingPressed);
-}
+	Super::OnPressedImpl();
 
-void UZixuanCraftCraftingButton::OnCraftingPressed()
-{
 	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, "Clicked Crafting button");
 }
