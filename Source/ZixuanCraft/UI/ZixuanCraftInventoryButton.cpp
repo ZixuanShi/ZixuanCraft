@@ -42,6 +42,7 @@ void UZixuanCraftInventoryButton::OnSecondPressedImpl()
 	}
 
 	PlayerInventoryComponent->SwapLoot(PanelIndex, SelectedIndex);
+
 	Super::OnSecondPressedImpl();
 }
 PRAGMA_ENABLE_OPTIMIZATION

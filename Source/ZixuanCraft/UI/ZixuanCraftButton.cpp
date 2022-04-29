@@ -84,14 +84,25 @@ void UZixuanCraftButton::OnSecondPressedImpl()
 	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 
+	const int32 GameplayInventoryCount = Widget->GetGameplayInventoryNum();
 	const FLootSlot OtherLootSlot = Widget->GetButtonAt(SelectedIndex)->Data;
 	const FLootSlot ThisLootSlot = Data;
 
 	// Set this button data
 	Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex);
+	if (WidgetIndex >= GameplayInventoryCount && 
+		WidgetIndex < GameplayInventoryCount * 2)
+	{
+		Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex - GameplayInventoryCount);
+	}
 
 	// Set other button data
 	Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex);
+	if (SelectedIndex >= GameplayInventoryCount &&
+		SelectedIndex < GameplayInventoryCount * 2)
+	{
+		Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex - GameplayInventoryCount);
+	}
 
 	// Reset widget's selected index
 	Widget->ResetItemAt(WidgetIndex);
