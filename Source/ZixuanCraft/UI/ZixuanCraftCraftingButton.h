@@ -6,6 +6,8 @@
 #include "UI/ZixuanCraftButton.h"
 #include "ZixuanCraftCraftingButton.generated.h"
 
+class ACraftingManager;
+
 /**
  * Button used for crafting
  */
@@ -14,6 +16,12 @@ class ZIXUANCRAFT_API UZixuanCraftCraftingButton : public UZixuanCraftButton
 {
 	GENERATED_BODY()
 
+protected:
+	ACraftingManager* CraftingManager = nullptr;
+
 public:
-	virtual void OnPressedImpl() override final;
+	void SetCraftingManager(ACraftingManager* InCraftingManager) { CraftingManager = InCraftingManager; }
+
+	virtual void OnFirstPressedImpl() override final;
+	virtual void OnSecondPressedImpl() override final;
 };

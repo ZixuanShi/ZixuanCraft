@@ -1,40 +1,25 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Characters/ZixuanCraftCharacter.h"
+#include "GameObjects/Loot/CraftingManager.h"
 #include "UI/ZixuanCraftMainGameWidget.h"
 #include "UI/ZixuanCraftInventoryButton.h"
-#include "Characters/ZixuanCraftCharacter.h"
+#include "UI/ZixuanCraftCraftingButton.h"
 
 #include "Components/PanelWidget.h"
 #include "Components/Button.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 PRAGMA_DISABLE_OPTIMIZATION
 
 void UZixuanCraftMainGameWidget::NativeConstruct()
 {
-	// Blueprint class needs to add images to inventory_image
 	Super::NativeConstruct();
 
-	// For each inventory buttons, add event
-	int32 InventoryButtonIndex = 0;
-	const TArray<UWidget*>& BottomInventory = GameplayInventoryItems_Panel->GetAllChildren();
-	for (UWidget* InventoryButtons : BottomInventory)
-	{
-		UZixuanCraftInventoryButton* Button = Cast<UZixuanCraftInventoryButton>(InventoryButtons);
-		if (Button)
-		{
-			Button->Init(InventoryButtonIndex);
-			++InventoryButtonIndex;
-		}
-	}
-	InventoryButtonIndex = 0;
-	for (UWidget* InventoryButtons : AllInventoryItems_Panel->GetAllChildren())
-	{
-		Cast<UZixuanCraftInventoryButton>(InventoryButtons)->Init(InventoryButtonIndex);
-		++InventoryButtonIndex;
-	}
+	InitButtons();
 
 	// Initialize player's UI
 	AZixuanCraftCharacter* Player = Cast<AZixuanCraftCharacter>(GetOwningPlayerPawn());
@@ -42,30 +27,6 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 
 	// Hide the all inventory panel
 	ToggleInventory();
-
-	// Hide mobile UI if not on mobile platforms
-#if !PLATFORM_ANDROID && !PLATFORM_IOS
-	if (Mobile_Panel)
-	{
-		Mobile_Panel->SetIsEnabled(false);
-		Mobile_Panel->SetVisibility(ESlateVisibility::Hidden);
-	}
-	// If on mobile, bind events to the button clicks and kill PC/Console dedicated UI
-#else
-	// Disable PC/Console Dedicated UI
-	if (SelectedItem_Panel)
-	{
-		SelectedItem_Panel->SetIsEnabled(false);
-		SelectedItem_Panel->SetVisibility(ESlateVisibility::Hidden);
-	}
-
-	// Bind Mobile Button events
-	Jump_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonPressed);
-	Jump_Mobile_Button->OnReleased.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonReleased);
-	DestroyAttack_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed);
-	PlaceUseItem_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed);
-	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::ToggleInventory);
-#endif
 }
 
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
@@ -99,7 +60,7 @@ void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 		}
 	}
 
-	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->OnPressedImpl();
+	Cast<UZixuanCraftInventoryButton>(BottomInventory[NewIndex])->OnPressed();
 }
 
 void UZixuanCraftMainGameWidget::ToggleInventory()
@@ -133,23 +94,7 @@ void UZixuanCraftMainGameWidget::ToggleInventory()
 	Gameplay_Panel->SetIsEnabled(bIsShowingInventoryCraftingPanel);
 }
 
-void UZixuanCraftMainGameWidget::IUpdateInventory(const FLootSlot& InSlot, int32 Index)
-{
-	UZixuanCraftInventoryButton* InventoryButton = nullptr;
-
-	// Bottom Inventory
-	if (Index < GameplayInventoryItems_Panel->GetAllChildren().Num())
-	{
-		InventoryButton = Cast<UZixuanCraftInventoryButton>(GameplayInventoryItems_Panel->GetChildAt(Index));
-		InventoryButton->Update(InSlot);
-	}
-
-	// All inventory
-	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(Index));
-	InventoryButton->Update(InSlot);
-}
-
-void UZixuanCraftMainGameWidget::SetSelectedItem(const FLootSlot& LootSlot)
+void UZixuanCraftMainGameWidget::SetSelectedItemPanel(const FLootSlot& LootSlot)
 {
 	SelectedItem_Image->SetBrushResourceObject(LootSlot.LootData.Icon);
 
@@ -171,42 +116,122 @@ void UZixuanCraftMainGameWidget::SetSelectIndex(int32 Index)
 {
 	if (Index == InvalidIndex)
 	{
-		SetSelectedItem(FLootSlot{});
+		SetSelectedItemPanel(FLootSlot{});
 	}
 
 	SelectedIndex = Index;
 }
 
-UZixuanCraftInventoryButton* UZixuanCraftMainGameWidget::GetSelectedInventory() const
+UZixuanCraftButton* UZixuanCraftMainGameWidget::GetSelectedInventory() const
 {
 	if (SelectedIndex == InvalidIndex)
 	{
 		return nullptr;
 	}
 
-	const TArray<UWidget*>& AllInventory = AllInventoryItems_Panel->GetAllChildren();
+	const TArray<UWidget*>& AllInventory = BackpackInventoryItems_Panel->GetAllChildren();
 	return Cast<UZixuanCraftInventoryButton>(AllInventory[SelectedIndex]);
 }
 
-void UZixuanCraftMainGameWidget::ResetItemAt(int32 Index)
+void UZixuanCraftMainGameWidget::InitButtons()
 {
-	if (Index == InvalidIndex)
+	int32 WidgetIndex = 0;
+
+	// Gameplay inventory
+	for (int32 PanelIndex = 0; PanelIndex < GameplayInventoryItems_Panel->GetAllChildren().Num(); ++PanelIndex)
+	{
+		Cast<UZixuanCraftInventoryButton>(GameplayInventoryItems_Panel->GetAllChildren()[PanelIndex])->Init(WidgetIndex, PanelIndex);
+		++WidgetIndex;
+	}
+
+	// Backpack
+	for (int32 PanelIndex = 0; PanelIndex < BackpackInventoryItems_Panel->GetAllChildren().Num(); ++PanelIndex)
+	{
+		Cast<UZixuanCraftInventoryButton>(BackpackInventoryItems_Panel->GetAllChildren()[PanelIndex])->Init(WidgetIndex, PanelIndex);
+		++WidgetIndex;
+	}
+
+	// Crafting
+	CraftingManager = Cast<ACraftingManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACraftingManager::StaticClass()));
+	for (int32 PanelIndex = 0; PanelIndex < Crafting_Panel->GetAllChildren().Num(); ++PanelIndex)
+	{
+		Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->Init(WidgetIndex, PanelIndex);
+		Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->SetCraftingManager(CraftingManager);
+		++WidgetIndex;
+	}
+
+	// Hide mobile UI if not on mobile platforms
+#if !PLATFORM_ANDROID && !PLATFORM_IOS
+	if (Mobile_Panel)
+	{
+		Mobile_Panel->SetIsEnabled(false);
+		Mobile_Panel->SetVisibility(ESlateVisibility::Hidden);
+	}
+	// If on mobile, bind events to the button clicks and kill PC/Console dedicated UI
+#else
+	// Disable PC/Console Dedicated UI
+	if (SelectedItem_Panel)
+	{
+		SelectedItem_Panel->SetIsEnabled(false);
+		SelectedItem_Panel->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	// Bind Mobile Button events
+	Jump_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonPressed);
+	Jump_Mobile_Button->OnReleased.AddDynamic(this, &UZixuanCraftMainGameWidget::OnJumpButtonReleased);
+	DestroyAttack_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed);
+	PlaceUseItem_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed);
+	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::ToggleInventory);
+#endif
+}
+
+UZixuanCraftButton* UZixuanCraftMainGameWidget::GetButtonAt(int32 WidgetIndex) const
+{
+	if (WidgetIndex == InvalidIndex)
+	{
+		return nullptr;
+	}
+
+	// Gameplay Inventory
+	if (WidgetIndex < GetGameplayInventoryNum())
+	{
+		return Cast<UZixuanCraftButton>(GameplayInventoryItems_Panel->GetChildAt(WidgetIndex));
+	}
+	// backpack inventory
+	else if (WidgetIndex >= GetGameplayInventoryNum() &&
+		WidgetIndex < GetTotalInventoryNum())
+	{
+		return Cast<UZixuanCraftButton>(BackpackInventoryItems_Panel->GetChildAt(ToBackpackIndex(WidgetIndex)));
+	}
+	// Crafting
+	else if (WidgetIndex >= GetTotalInventoryNum() &&
+		WidgetIndex < GetTotalInventoryNum() + Crafting_Panel->GetAllChildren().Num())
+	{
+		return Cast<UZixuanCraftButton>(Crafting_Panel->GetChildAt(ToCraftingIndex(WidgetIndex)));
+	}
+
+	ensureMsgf(false, TEXT("Invalid index for retreiving a button"));
+	return nullptr;
+}
+
+void UZixuanCraftMainGameWidget::SetButtonDataAt(const FLootSlot& Data, int32 WidgetIndex)
+{
+	if (WidgetIndex == InvalidIndex)
 	{
 		return;
 	}
 
-	UZixuanCraftInventoryButton* InventoryButton = nullptr;
+	GetButtonAt(WidgetIndex)->SetData(Data);
+}
 
-	// Bottom Inventory
-	if (Index < GameplayInventoryItems_Panel->GetAllChildren().Num())
+void UZixuanCraftMainGameWidget::ResetItemAt(int32 WidgetIndex)
+{
+	if (WidgetIndex == InvalidIndex)
 	{
-		InventoryButton = Cast<UZixuanCraftInventoryButton>(GameplayInventoryItems_Panel->GetChildAt(Index));
-		InventoryButton->Reset();
+		return;
 	}
 
-	// All inventory
-	InventoryButton = Cast<UZixuanCraftInventoryButton>(AllInventoryItems_Panel->GetChildAt(Index));
-	InventoryButton->Reset();
+	GetButtonAt(WidgetIndex)->Reset();
 }
 
 void UZixuanCraftMainGameWidget::OnJumpButtonPressed()

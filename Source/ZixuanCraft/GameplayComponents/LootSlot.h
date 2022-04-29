@@ -4,9 +4,6 @@
 // A struct represents a slot in inventory UI and component
 
 #pragma once
-
-#include "CoreMinimal.h"
-#include "Containers/StaticArray.h"
 #include "GameObjects/ObjectEnums.h"
 #include "GameObjects/Loot/LootData.h"
 #include "LootSlot.generated.h"

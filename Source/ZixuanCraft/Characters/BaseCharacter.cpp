@@ -4,9 +4,9 @@
 #include "Characters/BaseCharacter.h"
 #include "UI/ZixuanCraftWidgetBase.h"
 #include "GameplayComponents/InventoryComponent.h"
+#include "GameObjects/ZixuanCraftProjectile.h"
 #include "Utils/TypeDefs.h"
 
-#include "GameObjects/ZixuanCraftProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -205,14 +205,19 @@ void ABaseCharacter::InitInventoryUI()
 	int32 Index = 0;
 	for (const FLootSlot& Slot : InventoryComponent->GetInventory())
 	{
-		Widget->IUpdateInventory(Slot, Index);
+		if (Index < Widget->GetGameplayInventoryNum())
+		{
+			Widget->SetButtonDataAt(Slot, Index);
+		}
+
+		Widget->SetButtonDataAt(Slot, Index + Widget->GetGameplayInventoryNum());
 		++Index;
 	}
 }
 
 void ABaseCharacter::ToggleInventory()
 {
-	Widget->IToggleInventory();
+	Widget->IToggleInventoryCrafting();
 }
 
 void ABaseCharacter::ScrollInventoryUp()
@@ -229,7 +234,7 @@ void ABaseCharacter::UpdateInventoryUI(int32 Index)
 {
 	check(Index != InvalidIndex);
 	const TArray<FLootSlot>& Inventory = InventoryComponent->GetInventory();
-	Widget->IUpdateInventory(Inventory[Index], Index);
+	Widget->SetButtonDataAt(Inventory[Index], Index);
 }
 
 void ABaseCharacter::LookUpAtRate(float Rate)

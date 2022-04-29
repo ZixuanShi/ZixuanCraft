@@ -83,7 +83,7 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 			{
 				ObjectInHand.Reset();
 			}
-			Widget->IUpdateInventory(InventoryComponent->GetLootSlot(SelectedIndex), SelectedIndex);
+			Widget->SetButtonDataAt(InventoryComponent->GetLootSlot(SelectedIndex), SelectedIndex);
 		}
 
 		const FVector UnitDirection = (Start - HitResult.Location).GetSafeNormal() * OffsetMultiplier;

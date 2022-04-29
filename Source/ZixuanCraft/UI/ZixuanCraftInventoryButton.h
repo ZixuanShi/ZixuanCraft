@@ -17,5 +17,7 @@ class ZIXUANCRAFT_API UZixuanCraftInventoryButton : public UZixuanCraftButton
 	GENERATED_BODY()
 
 public:
-	virtual void OnPressedImpl() override final;
+	/** On clicked, update player's inventory component if needed */
+	virtual void OnFirstPressedImpl() override final;
+	virtual void OnSecondPressedImpl() override final;
 };

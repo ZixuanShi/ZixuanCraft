@@ -3,9 +3,14 @@
 
 #include "UI/ZixuanCraftCraftingButton.h"
 
-void UZixuanCraftCraftingButton::OnPressedImpl()
+void UZixuanCraftCraftingButton::OnFirstPressedImpl()
 {
-	Super::OnPressedImpl();
 
+	Super::OnFirstPressedImpl();
 	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, "Clicked Crafting button");
+}
+
+void UZixuanCraftCraftingButton::OnSecondPressedImpl()
+{
+	Super::OnSecondPressedImpl();
 }
