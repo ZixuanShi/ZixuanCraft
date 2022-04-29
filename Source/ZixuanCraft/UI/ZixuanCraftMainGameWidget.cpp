@@ -29,6 +29,26 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 	ToggleInventory();
 }
 
+FReply UZixuanCraftMainGameWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	{
+		bRightMouseButtonDown = true;
+	}
+
+	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+}
+
+FReply UZixuanCraftMainGameWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	{
+		bRightMouseButtonDown = false;
+	}
+
+	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+}
+
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
 	// If the inventory crafting panel is showing, don't do anything

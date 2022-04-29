@@ -35,6 +35,8 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 	GENERATED_BODY()
 	
 protected:
+	bool bRightMouseButtonDown = false;
+
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
 	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
@@ -99,6 +101,8 @@ protected:
 
 public:
 	virtual void NativeConstruct() override final;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override final;
+	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override final;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
@@ -172,6 +176,7 @@ public:
 	virtual bool IsDisplayingInventoryPanel() const override final { return InventoryCrafting_Panel->GetIsEnabled(); }
 	virtual void SetButtonDataAt(const FLootSlot& Data, int32 Index) override final;
 	virtual UZixuanCraftButton* GetButtonAt(int32 WidgetIndex) const override final;
+	virtual bool RightMouseButtonDown() const override final { return bRightMouseButtonDown; }
 	UZixuanCraftButton* GetSelectedInventory() const;
 
 private:

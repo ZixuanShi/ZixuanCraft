@@ -40,4 +40,5 @@ public:
 	virtual UZixuanCraftButton* GetButtonAt(int32 WidgetIndex) const { return nullptr; }
 	virtual int32 ToBackpackIndex(int32 WidgetIndex) const { return InvalidIndex; }
 	virtual int32 ToCraftingIndex(int32 WidgetIndex) const { return InvalidIndex; }
+	virtual bool RightMouseButtonDown() const { return false; }
 };

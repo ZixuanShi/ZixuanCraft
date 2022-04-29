@@ -33,15 +33,19 @@ void UZixuanCraftInventoryButton::OnSecondPressedImpl()
 {		
 	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
 	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
-	UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 	int32 SelectedIndex = Widget->IGetSelectIndex();
 
-	if (SelectedIndex > Widget->GetGameplayInventoryNum())
+	if (SelectedIndex < Widget->GetTotalInventoryNum())
 	{
-		SelectedIndex = Widget->ToBackpackIndex(SelectedIndex);
-	}
+		UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 
-	PlayerInventoryComponent->SwapLoot(PanelIndex, SelectedIndex);
+		if (SelectedIndex > Widget->GetGameplayInventoryNum())
+		{
+			SelectedIndex = Widget->ToBackpackIndex(SelectedIndex);
+		}
+
+		PlayerInventoryComponent->SwapLoot(PanelIndex, SelectedIndex);
+	}
 
 	Super::OnSecondPressedImpl();
 }

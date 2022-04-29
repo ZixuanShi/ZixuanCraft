@@ -10,7 +10,7 @@
 
 UZixuanCraftButton::UZixuanCraftButton()
 {
-	ClickMethod = EButtonClickMethod::Type::PreciseClick;
+	ClickMethod = EButtonClickMethod::Type::DownAndUp;
 	WidgetStyle.Normal.TintColor = NormalColor;
 	WidgetStyle.Hovered.TintColor = HighlightColor;
 	WidgetStyle.Pressed.TintColor = PressedColor;
@@ -111,7 +111,7 @@ void UZixuanCraftButton::OnSecondPressedImpl()
 
 void UZixuanCraftButton::OnPressed()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Cyan, GetName());
+
 
 	// Data
 	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
