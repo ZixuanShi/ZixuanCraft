@@ -34,7 +34,8 @@ void UZixuanCraftInventoryButton::OnSecondPressedImpl()
 	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
 	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 	int32 SelectedIndex = Widget->IGetSelectIndex();
-
+	 
+	// If two clicks happened between two inventory buttons. Perform a swap in inventory component as well
 	if (SelectedIndex < Widget->GetTotalInventoryNum())
 	{
 		UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
@@ -45,6 +46,11 @@ void UZixuanCraftInventoryButton::OnSecondPressedImpl()
 		}
 
 		PlayerInventoryComponent->SwapLoot(PanelIndex, SelectedIndex);
+	}
+	// If it's from crafting to inventory, we want to update this clicked inventory index and clear the previous one
+	else
+	{
+
 	}
 
 	Super::OnSecondPressedImpl();
