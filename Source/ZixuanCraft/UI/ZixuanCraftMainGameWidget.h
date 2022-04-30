@@ -69,6 +69,9 @@ protected:
 	/** The index to select an item */
 	int32 SelectedIndex = InvalidIndex;
 
+	/** :( shhhhhh this will be refactored once I have time */
+	int32 TempHackIndex = InvalidIndex;
+
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// PC/Console dedicated inventory UI 
 	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
@@ -178,6 +181,10 @@ public:
 	virtual UZixuanCraftButton* GetButtonAt(int32 WidgetIndex) const override final;
 	virtual bool RightMouseButtonDown() const override final { return bRightMouseButtonDown; }
 	UZixuanCraftButton* GetSelectedInventory() const;
+
+	// TempHack
+	virtual int32 IGetTempHackSelectIndex() const override final { return TempHackIndex; }
+	virtual void SetTempHackSelectIndex(int32 Index) override final { TempHackIndex = Index; }
 
 private:
 	void InitButtons();

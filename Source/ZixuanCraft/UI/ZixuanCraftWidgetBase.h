@@ -28,6 +28,8 @@ public:
 	virtual void IOnDestoryAttackButtonPressed() {}
 	virtual void IOnPlaceUseItemButtonPressed() {}
 	virtual int32 IGetSelectIndex() const { return InvalidIndex; }
+	virtual int32 IGetTempHackSelectIndex() const { return InvalidIndex; }
+	virtual void SetTempHackSelectIndex(int32 Index) {}
 	virtual void UpdateHealthBarPercent(float Percent) {}
 	virtual void ScrollInventory(bool bIsScrollingDown) {};
 	virtual int32 GetGameplayInventoryNum() const { return InvalidIndex; }
