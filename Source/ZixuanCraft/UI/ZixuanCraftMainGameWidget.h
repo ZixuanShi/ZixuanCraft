@@ -172,18 +172,25 @@ public:
 	virtual void IOnPlaceUseItemButtonPressed() override final { OnPlaceUseItemButtonPressed(); }
 
 	//------------------------------------------------------------------------------------------------------------------------------------
-	// Getter Setters
+	// Utils
 	virtual int32 GetGameplayInventoryNum() const override final { return GameplayInventoryItems_Panel->GetAllChildren().Num(); }
 	virtual int32 GetTotalInventoryNum() const override final { return GetGameplayInventoryNum() + BackpackInventoryItems_Panel->GetAllChildren().Num(); }
-	virtual int32 IGetSelectIndex() const override final { return SelectedIndex; }	
-	virtual void SetSelectIndex(int32 Index) override final;
 	virtual bool IsDisplayingInventoryPanel() const override final { return InventoryCrafting_Panel->GetIsEnabled(); }
-	virtual void SetButtonDataAt(const FLootSlot& Data, int32 Index) override final;
 	virtual UZixuanCraftButton* GetButtonAt(int32 WidgetIndex) const override final;
+	virtual bool IsGameplayInventory(int32 WidgetIndex) const { return WidgetIndex >= 0 && WidgetIndex < GetGameplayInventoryNum(); }
+	virtual bool IsBackpackInventory(int32 WidgetIndex) const { return WidgetIndex >= GetGameplayInventoryNum() && WidgetIndex < GetTotalInventoryNum(); }
+	virtual bool IsCraftingButton(int32 WidgetIndex) const { return WidgetIndex >= GetTotalInventoryNum(); }
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Getter Setters
 	UZixuanCraftButton* GetSelectedInventory() const;
+	virtual void SetSelectIndex(int32 Index) override final;
+	virtual int32 IGetSelectIndex() const override final { return SelectedIndex; }	
+	virtual void SetButtonDataAt(const FLootSlot& Data, int32 Index) override final;
 	virtual UZixuanCraftButton* GetLastHoveredButton() const override final { return LastHoveredButton; }
 	virtual void SetLastHoveredButton(UZixuanCraftButton* Button)  override final { LastHoveredButton = Button; }
 	virtual const FLootSlot& GetSelectedSlotData() const { return SelectedSlot; }
+	virtual FLootSlot& GetSelectedSlotData() { return SelectedSlot; }
 	virtual int32 IGetTempHackSelectIndex() const override final { return LastClickedInventoryButtonIndex; }
 	virtual void SetLastSelectedInventoryIndex(int32 Index) override final { LastClickedInventoryButtonIndex = Index; }
 

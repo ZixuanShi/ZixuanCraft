@@ -47,4 +47,8 @@ public:
 	virtual int32 ToBackpackIndex(int32 WidgetIndex) const { return InvalidIndex; }
 	virtual int32 ToCraftingIndex(int32 WidgetIndex) const { return InvalidIndex; }
 	virtual const FLootSlot& GetSelectedSlotData() const { return TempHack; }
+	virtual bool IsGameplayInventory(int32 WidgetIndex) const { return false; }
+	virtual bool IsBackpackInventory(int32 WidgetIndex) const { return false; }
+	virtual bool IsCrafting(int32 WidgetIndex) const { return false; }
+	virtual FLootSlot& GetSelectedSlotData() { return TempHack; }
 };

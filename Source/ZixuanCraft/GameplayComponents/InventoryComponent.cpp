@@ -62,8 +62,14 @@ void UInventoryComponent::SwapLoot(int32 LeftIndex, int32 RightIndex)
 	Inventory.Swap(LeftIndex, RightIndex);
 }
 
-void UInventoryComponent::AddLootAt(const FLootSlot& LootSlot, int32 Index)
+void UInventoryComponent::SetLootAt(const FLootSlot& LootSlot, int32 Index)
 {
 	check(Index < MaxSize);
 	Inventory[Index] = LootSlot;
+}
+
+void UInventoryComponent::ResetLootAt(int32 Index)
+{
+	check(Index < MaxSize);
+	Inventory[Index].Reset();
 }

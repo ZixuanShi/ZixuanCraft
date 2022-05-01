@@ -54,7 +54,13 @@ public:
 	 * @param LootSlot		New loot slot we are trying to add
 	 * @param Index			Index at Inventory to add
 	 */
-	void AddLootAt(const FLootSlot& LootSlot, int32 Index);
+	void SetLootAt(const FLootSlot& LootSlot, int32 Index);
+
+	/**
+	 * Reset the loot at index position. This won't shrink the array, just remove the element at that place
+	 * @param Index		The index to remove loot
+	 */
+	void ResetLootAt(int32 Index);
 
 	const TArray<FLootSlot>& GetInventory() const { return Inventory; }
 	const FLootSlot& GetData(int32 Index) const { return Inventory[Index]; }

@@ -7,6 +7,8 @@
 #include "ZixuanCraftButton.generated.h"
 
 class UTextBlock;
+class UZixuanCraftWidgetBase;
+class AZixuanCraftCharacter;
 
 /**
  * Base class for UI button widget used in the game UI system
@@ -38,10 +40,16 @@ protected:
 	/** This button's index in it's parent panel */
 	int32 PanelIndex = 0;
 
+	/** Back reference to the widget owner */
+	UZixuanCraftWidgetBase* Widget = nullptr;
+	
+	/** Back reference to the widget owner player character */
+	AZixuanCraftCharacter* Character = nullptr;
+
 public:
 	UZixuanCraftButton();
 
-	void Init(int32 InWidgetIndex, int32 InPanelIndex);
+	void Init(int32 InWidgetIndex, int32 InPanelIndex, UZixuanCraftWidgetBase* InWidget, AZixuanCraftCharacter* InCharacter);
 	void Highlight();
 	void Reset();
 
@@ -60,8 +68,11 @@ public:
 	UFUNCTION()
 	void OnButtonUnhovered();
 
+	/** The behavior to perform when this button got clicked by right mouse button */
+	virtual void OnRightMousePressed();
+
 protected:
-	/** The behavior to perform when this button got clicked for the first time*/
-	virtual void OnFirstPressedImpl();
-	virtual void OnSecondPressedImpl();
+	/** The behavior to perform when this button got clicked by left mouse */
+	virtual void OnLeftMouseFirstPressedImpl();
+	virtual void OnLeftMouseSecondPressedImpl();
 };

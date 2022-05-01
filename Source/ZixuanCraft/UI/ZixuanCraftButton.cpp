@@ -21,10 +21,12 @@ UZixuanCraftButton::UZixuanCraftButton()
 	OnUnhovered.AddDynamic(this, &UZixuanCraftButton::OnButtonUnhovered);
 }
 
-void UZixuanCraftButton::Init(int32 InWidgetIndex, int32 InPanelIndex)
+void UZixuanCraftButton::Init(int32 InWidgetIndex, int32 InPanelIndex, UZixuanCraftWidgetBase* InWidget, AZixuanCraftCharacter* InCharacter)
 {
 	WidgetIndex = InWidgetIndex;
 	PanelIndex = InPanelIndex;
+	Widget = InWidget;
+	Character = InCharacter;
 	CountText = Cast<UTextBlock>(GetChildAt(0));
 }
 
@@ -58,11 +60,8 @@ void UZixuanCraftButton::Reset()
 	WidgetStyle.Normal.TintColor = NormalColor;
 }
 
-void UZixuanCraftButton::OnFirstPressedImpl()
+void UZixuanCraftButton::OnLeftMouseFirstPressedImpl()
 {
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
-
 	// If we are displaying inventory panel, make the item follows the mouse
 	if (Widget->IsDisplayingInventoryPanel())
 	{
@@ -81,10 +80,8 @@ void UZixuanCraftButton::OnFirstPressedImpl()
 	Highlight();
 }
 
-void UZixuanCraftButton::OnSecondPressedImpl()
+void UZixuanCraftButton::OnLeftMouseSecondPressedImpl()
 {		
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 
 	const int32 GameplayInventoryCount = Widget->GetGameplayInventoryNum();
@@ -114,10 +111,6 @@ void UZixuanCraftButton::OnSecondPressedImpl()
 
 void UZixuanCraftButton::OnPressed()
 {
-	// Data
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
-
 	// Don't do anything if we don't have selected other button, and this button is empty
 	if (Widget->IGetSelectIndex() == InvalidIndex && Data.Count == 0)
 	{
@@ -132,28 +125,43 @@ void UZixuanCraftButton::OnPressed()
 	if (SelectedIndex != InvalidIndex &&
 		Widget->IsDisplayingInventoryPanel())
 	{
-		OnSecondPressedImpl();
+		OnLeftMouseSecondPressedImpl();
 	}
 	// We clicked an item for the first time, we want to select this item
 	else
 	{
-		OnFirstPressedImpl();
+		OnLeftMouseFirstPressedImpl();
 	}
 }
 
 void UZixuanCraftButton::OnButtonHovered()
 {
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 	Widget->SetLastHoveredButton(this);
 }
 
 void UZixuanCraftButton::OnButtonUnhovered()
 {
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 	if (Widget->GetLastHoveredButton() == this)
 	{
 		Widget->SetLastHoveredButton(nullptr);
 	}
+}
+
+void UZixuanCraftButton::OnRightMousePressed()
+{
+	// Data
+	FLootSlot& SelectedSlot = Widget->GetSelectedSlotData();
+
+	// Add 1 to the this button
+	// If clicked button is empty, we need to copy selected slot data to it too
+	if (Data.Count == 0)
+	{
+		Data.LootData = Widget->GetSelectedSlotData().LootData;
+	}
+	++Data.Count;
+	SetData(Data);
+
+	// Substract 1 count from selected item
+	--SelectedSlot.Count;
+	Widget->SetSelectedItemPanel(SelectedSlot);
 }

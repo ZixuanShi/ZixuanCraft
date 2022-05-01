@@ -3,12 +3,12 @@
 
 #include "UI/ZixuanCraftCraftingButton.h"
 
-void UZixuanCraftCraftingButton::OnFirstPressedImpl()
+void UZixuanCraftCraftingButton::OnLeftMouseFirstPressedImpl()
 {
-	Super::OnFirstPressedImpl();
+	Super::OnLeftMouseFirstPressedImpl();
 }
 
-void UZixuanCraftCraftingButton::OnSecondPressedImpl()
+void UZixuanCraftCraftingButton::OnLeftMouseSecondPressedImpl()
 {
-	Super::OnSecondPressedImpl();
+	Super::OnLeftMouseSecondPressedImpl();
 }

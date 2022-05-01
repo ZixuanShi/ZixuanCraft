@@ -10,10 +10,48 @@
 
 PRAGMA_DISABLE_OPTIMIZATION
 
-void UZixuanCraftInventoryButton::OnFirstPressedImpl()
+void UZixuanCraftInventoryButton::OnRightMousePressed()
+{
+	Super::OnRightMousePressed();
+
+	// Data
+	FLootSlot& SelectedSlot = Widget->GetSelectedSlotData();
+	UInventoryComponent* InventoryComponent = Character->GetInventoryComponent();
+	const int32 SelectedIndex = Widget->IGetSelectIndex();
+	UZixuanCraftInventoryButton* SelectedInventoryButton = Cast<UZixuanCraftInventoryButton>(Widget->GetButtonAt(SelectedIndex));
+
+	// Set inventory component at panel index to this button's data
+	InventoryComponent->SetLootAt(Data, PanelIndex);
+	if (PanelIndex < Widget->GetGameplayInventoryNum())
+	{
+		Widget->GetButtonAt(PanelIndex)->SetData(Data);
+	}
+
+	// Previous selected button was an inventory too
+	if (SelectedInventoryButton)
+	{
+		// If it rans out Count, reset it
+		if (SelectedSlot.Count == 0)
+		{
+			InventoryComponent->ResetLootAt(Widget->ToBackpackIndex(SelectedIndex));
+			Widget->SetSelectIndex(InvalidIndex);
+			SelectedInventoryButton->Reset();
+			SelectedInventoryButton->GetData().Reset();
+			if (SelectedInventoryButton->GetPanelIndex() < Widget->GetGameplayInventoryNum())
+			{
+				Widget->GetButtonAt(SelectedInventoryButton->GetPanelIndex())->SetData(SelectedInventoryButton->GetData());
+			}
+		}
+		else
+		{
+			InventoryComponent->SetLootAt(Widget->GetSelectedSlotData(), Widget->ToBackpackIndex(SelectedIndex));
+		}
+	}
+}
+
+void UZixuanCraftInventoryButton::OnLeftMouseFirstPressedImpl()
 {	
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
+	UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 
 	// If the selected button is in gameplay inventory, the character should hold that object in hand
@@ -27,38 +65,37 @@ void UZixuanCraftInventoryButton::OnFirstPressedImpl()
 		Character->SetObjectInHand(FLootData());
 	}
 
+	if (Widget->IsDisplayingInventoryPanel())
+	{
+		// Remove loot from inventory
+		PlayerInventoryComponent->ResetLootAt(PanelIndex);
+	}
+
+	Super::OnLeftMouseFirstPressedImpl();
 	Widget->SetLastSelectedInventoryIndex(WidgetIndex);
-	Super::OnFirstPressedImpl();
 }
 
-void UZixuanCraftInventoryButton::OnSecondPressedImpl()
+void UZixuanCraftInventoryButton::OnLeftMouseSecondPressedImpl()
 {		
-	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
-	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
 	UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 	int32 SelectedIndex = Widget->IGetSelectIndex();
 
-	// If two clicks happened between two inventory buttons. Perform a swap in inventory component as well
+	// If two clicks happened between two inventory buttons. Perform a swap in inventory component
 	if (SelectedIndex < Widget->GetTotalInventoryNum())
 	{
 		if (SelectedIndex > Widget->GetGameplayInventoryNum())
 		{
 			SelectedIndex = Widget->ToBackpackIndex(SelectedIndex);
 		}
-
-		PlayerInventoryComponent->SwapLoot(PanelIndex, SelectedIndex);
+		PlayerInventoryComponent->SetLootAt(Data, SelectedIndex);
+		PlayerInventoryComponent->SetLootAt(Widget->GetSelectedSlotData(), PanelIndex);
 	}
-	// If it's from crafting to inventory, we want to update this clicked inventory index and clear the previous one
-	else
+	// If it's from a crafting button to here
+	else if (SelectedIndex >= Widget->GetTotalInventoryNum())
 	{
-		int32 LastClickedInventoryButtonIndex = Widget->IGetTempHackSelectIndex();
-		if (LastClickedInventoryButtonIndex > Widget->GetGameplayInventoryNum())
-		{
-			LastClickedInventoryButtonIndex = Widget->ToBackpackIndex(LastClickedInventoryButtonIndex);
-		}
-		PlayerInventoryComponent->SwapLoot(PanelIndex, LastClickedInventoryButtonIndex);
+		PlayerInventoryComponent->SetLootAt(Widget->GetSelectedSlotData(), PanelIndex);
 	}
 
-	Super::OnSecondPressedImpl();
+	Super::OnLeftMouseSecondPressedImpl();
 }
 PRAGMA_ENABLE_OPTIMIZATION
