@@ -20,8 +20,10 @@ class ZIXUANCRAFT_API UZixuanCraftWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
 
+	FLootSlot TempHack;
+
 public:
-	// Interface
+	// Interfaces
 	virtual void IToggleInventoryCrafting() {}
 	virtual void IOnJumpButtonPressed() {}
 	virtual void IOnJumpButtonReleased() {}
@@ -29,7 +31,7 @@ public:
 	virtual void IOnPlaceUseItemButtonPressed() {}
 	virtual int32 IGetSelectIndex() const { return InvalidIndex; }
 	virtual int32 IGetTempHackSelectIndex() const { return InvalidIndex; }
-	virtual void SetTempHackSelectIndex(int32 Index) {}
+	virtual void SetLastSelectedInventoryIndex(int32 Index) {}
 	virtual void UpdateHealthBarPercent(float Percent) {}
 	virtual void ScrollInventory(bool bIsScrollingDown) {};
 	virtual int32 GetGameplayInventoryNum() const { return InvalidIndex; }
@@ -40,7 +42,9 @@ public:
 	virtual void SetSelectedItemPanel(const FLootSlot& InSlot) {};
 	virtual void SetButtonDataAt(const FLootSlot& Data, int32 Index) {};
 	virtual UZixuanCraftButton* GetButtonAt(int32 WidgetIndex) const { return nullptr; }
+	virtual UZixuanCraftButton* GetLastHoveredButton() const { return nullptr; }
+	virtual void SetLastHoveredButton(UZixuanCraftButton* Button) {  }
 	virtual int32 ToBackpackIndex(int32 WidgetIndex) const { return InvalidIndex; }
 	virtual int32 ToCraftingIndex(int32 WidgetIndex) const { return InvalidIndex; }
-	virtual bool RightMouseButtonDown() const { return false; }
+	virtual const FLootSlot& GetSelectedSlotData() const { return TempHack; }
 };

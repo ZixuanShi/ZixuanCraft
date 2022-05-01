@@ -11,10 +11,14 @@
 UZixuanCraftButton::UZixuanCraftButton()
 {
 	ClickMethod = EButtonClickMethod::Type::DownAndUp;
+
 	WidgetStyle.Normal.TintColor = NormalColor;
 	WidgetStyle.Hovered.TintColor = HighlightColor;
 	WidgetStyle.Pressed.TintColor = PressedColor;
+
 	OnClicked.AddDynamic(this, &UZixuanCraftButton::OnPressed);
+	OnHovered.AddDynamic(this, &UZixuanCraftButton::OnButtonHovered);
+	OnUnhovered.AddDynamic(this, &UZixuanCraftButton::OnButtonUnhovered);
 }
 
 void UZixuanCraftButton::Init(int32 InWidgetIndex, int32 InPanelIndex)
@@ -62,10 +66,9 @@ void UZixuanCraftButton::OnFirstPressedImpl()
 	// If we are displaying inventory panel, make the item follows the mouse
 	if (Widget->IsDisplayingInventoryPanel())
 	{
-		Widget->SetSelectedItemPanel(Data);
-
 		// Clear the rendering data in the button if we are not running on mobile
 #if !PLATFORM_ANDROID && !PLATFORM_IOS
+		Widget->SetSelectedItemPanel(Data);
 		WidgetStyle.Normal.SetResourceObject(nullptr);
 		WidgetStyle.Hovered.SetResourceObject(nullptr);
 		WidgetStyle.Pressed.SetResourceObject(nullptr);
@@ -85,16 +88,8 @@ void UZixuanCraftButton::OnSecondPressedImpl()
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 
 	const int32 GameplayInventoryCount = Widget->GetGameplayInventoryNum();
-	const FLootSlot OtherLootSlot = Widget->GetButtonAt(SelectedIndex)->Data;
+	const FLootSlot OtherLootSlot = Widget->GetSelectedSlotData();
 	const FLootSlot ThisLootSlot = Data;
-
-	// Set this button data
-	Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex);
-	if (WidgetIndex >= GameplayInventoryCount && 
-		WidgetIndex < GameplayInventoryCount * 2)
-	{
-		Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex - GameplayInventoryCount);
-	}
 
 	// Set other button data
 	Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex);
@@ -104,6 +99,14 @@ void UZixuanCraftButton::OnSecondPressedImpl()
 		Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex - GameplayInventoryCount);
 	}
 
+	// Set this button data
+	Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex);
+	if (WidgetIndex >= GameplayInventoryCount && 
+		WidgetIndex < GameplayInventoryCount * 2)
+	{
+		Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex - GameplayInventoryCount);
+	}
+
 	// Reset widget's selected index
 	Widget->ResetItemAt(WidgetIndex);
 	Widget->SetSelectIndex(InvalidIndex);
@@ -111,8 +114,6 @@ void UZixuanCraftButton::OnSecondPressedImpl()
 
 void UZixuanCraftButton::OnPressed()
 {
-
-
 	// Data
 	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
 	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
@@ -137,5 +138,22 @@ void UZixuanCraftButton::OnPressed()
 	else
 	{
 		OnFirstPressedImpl();
+	}
+}
+
+void UZixuanCraftButton::OnButtonHovered()
+{
+	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
+	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
+	Widget->SetLastHoveredButton(this);
+}
+
+void UZixuanCraftButton::OnButtonUnhovered()
+{
+	AZixuanCraftCharacter* Character = GetOwningPlayer()->GetPawn<AZixuanCraftCharacter>();
+	UZixuanCraftWidgetBase* Widget = Character->GetWidget();
+	if (Widget->GetLastHoveredButton() == this)
+	{
+		Widget->SetLastHoveredButton(nullptr);
 	}
 }

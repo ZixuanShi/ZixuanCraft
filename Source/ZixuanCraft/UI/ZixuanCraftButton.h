@@ -25,6 +25,7 @@ protected:
 
 protected:
 	/** Data for this button */
+	UPROPERTY(BlueprintReadWrite)
 	FLootSlot Data;
 
 	/** The quantity text of this loot */
@@ -41,14 +42,26 @@ public:
 	UZixuanCraftButton();
 
 	void Init(int32 InWidgetIndex, int32 InPanelIndex);
-	void SetData(const FLootSlot& InSlot);
 	void Highlight();
 	void Reset();
 
-	/** The behavior to perform when this button got clicked for the first time*/
-	virtual void OnFirstPressedImpl();
-	virtual void OnSecondPressedImpl();
+	int32 GetWidgetIndex() const { return WidgetIndex; }
+	int32 GetPanelIndex() const { return PanelIndex; }
+	const FLootSlot& GetData() const { return Data; }
+	FLootSlot& GetData() { return Data; }
+	void SetData(const FLootSlot& InSlot);
 
 	UFUNCTION()
 	void OnPressed();
+
+	UFUNCTION()
+	void OnButtonHovered();
+
+	UFUNCTION()
+	void OnButtonUnhovered();
+
+protected:
+	/** The behavior to perform when this button got clicked for the first time*/
+	virtual void OnFirstPressedImpl();
+	virtual void OnSecondPressedImpl();
 };

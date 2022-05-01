@@ -5,8 +5,6 @@
 #include "GameObjects/Loot/Loot.h"
 #include "Utils/TypeDefs.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 UInventoryComponent::UInventoryComponent(const FObjectInitializer& ObjectInitializer)
 	: Super{ ObjectInitializer }
 {
@@ -64,4 +62,8 @@ void UInventoryComponent::SwapLoot(int32 LeftIndex, int32 RightIndex)
 	Inventory.Swap(LeftIndex, RightIndex);
 }
 
-PRAGMA_ENABLE_OPTIMIZATION
+void UInventoryComponent::AddLootAt(const FLootSlot& LootSlot, int32 Index)
+{
+	check(Index < MaxSize);
+	Inventory[Index] = LootSlot;
+}

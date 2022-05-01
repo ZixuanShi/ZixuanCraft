@@ -5,6 +5,7 @@
 #include "UI/ZixuanCraftCraftingButton.h"
 #include "Characters/ZixuanCraftCharacter.h"
 #include "GameObjects/Loot/CraftingManager.h"
+#include "GameplayComponents/InventoryComponent.h"
 
 #include "Components/PanelWidget.h"
 #include "Components/Button.h"
@@ -31,19 +32,55 @@ void UZixuanCraftMainGameWidget::NativeConstruct()
 
 FReply UZixuanCraftMainGameWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	// If right mouse button clicked on a button, and we have something selected
+	// we substract 1 count from the selected item to the button clicked if they are the same type
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton &&		// Right mouse button down
+		LastHoveredButton &&	// Available button hovered
+		SelectedSlot.Count > 0 &&	// We have selected a slot
+		(SelectedSlot.LootData.Type == LastHoveredButton->GetData().LootData.Type || LastHoveredButton->GetData().LootData.Type == EObjectType::Empty) &&		// They are the same type or clicked is empty
+		LastHoveredButton->GetData().Count < MaxSlotCount &&	// The clicked button is not full
+		IsDisplayingInventoryPanel())	// We are displaying inventory/crafting panel
 	{
-		bRightMouseButtonDown = true;
-	}
+		// Data
+		UZixuanCraftInventoryButton* SelectedInventoryButton = Cast<UZixuanCraftInventoryButton>(GetButtonAt(SelectedIndex));
+		UZixuanCraftInventoryButton* ClickedInventoryButton = Cast<UZixuanCraftInventoryButton>(LastHoveredButton);
+		AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetOwningPlayerPawn());
+		UInventoryComponent* InventoryComponent = Character->GetInventoryComponent();
+		
+		// Add 1 to the clicked button
+		// If clicked button is empty, we need to copy selected slot data to it too
+		if (LastHoveredButton->GetData().Count == 0)
+		{
+			FLootSlot Copy = SelectedSlot;
+			Copy.Count = 0;
+			LastHoveredButton->SetData(Copy);
+		}
+		++LastHoveredButton->GetData().Count;
+		LastHoveredButton->SetData(LastHoveredButton->GetData());
+		if (ClickedInventoryButton)
+		{
+			InventoryComponent->AddLootAt(ClickedInventoryButton->GetData(), ClickedInventoryButton->GetPanelIndex());
+			if (LastHoveredButton->GetPanelIndex() < GetGameplayInventoryNum())
+			{
+				GetButtonAt(LastHoveredButton->GetPanelIndex())->SetData(LastHoveredButton->GetData());
+			}
+		}
 
-	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-}
-
-FReply UZixuanCraftMainGameWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
-	{
-		bRightMouseButtonDown = false;
+		// Substract 1 count from selected item
+		--SelectedSlot.Count;
+		SetSelectedItemPanel(SelectedSlot);
+		if (SelectedInventoryButton)
+		{
+			if (InventoryComponent->SubtractItem(ToBackpackIndex(SelectedIndex)))
+			{
+				SelectedInventoryButton->GetData().Reset();
+				SetSelectIndex(InvalidIndex);
+				if (SelectedInventoryButton->GetPanelIndex() < GetGameplayInventoryNum())
+				{
+					GetButtonAt(SelectedInventoryButton->GetPanelIndex())->SetData(SelectedInventoryButton->GetData());
+				}
+			}
+		}
 	}
 
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
@@ -96,6 +133,10 @@ void UZixuanCraftMainGameWidget::ToggleInventory()
 		{
 			GameplayWidget->SetVisibility(ESlateVisibility::Visible);
 		}
+		if (AZixuanCraftCharacter* Character = Cast<AZixuanCraftCharacter>(GetOwningPlayerPawn()))
+		{
+			Character->SetObjectInHand(FLootData());
+		}
 	}
 	else
 	{
@@ -116,6 +157,7 @@ void UZixuanCraftMainGameWidget::ToggleInventory()
 
 void UZixuanCraftMainGameWidget::SetSelectedItemPanel(const FLootSlot& LootSlot)
 {
+	SelectedSlot = LootSlot;
 	SelectedItem_Image->SetBrushResourceObject(LootSlot.LootData.Icon);
 
 	// If there is something to show, enable the RGBA

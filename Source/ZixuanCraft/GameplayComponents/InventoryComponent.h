@@ -49,6 +49,13 @@ public:
 	 */
 	void SwapLoot(int32 LeftIndex, int32 RightIndex);
 
+	/**
+	 * Force adding a loot slot at index. Note this will overwrite what's in the inventory at Index already
+	 * @param LootSlot		New loot slot we are trying to add
+	 * @param Index			Index at Inventory to add
+	 */
+	void AddLootAt(const FLootSlot& LootSlot, int32 Index);
+
 	const TArray<FLootSlot>& GetInventory() const { return Inventory; }
-	const FLootSlot& GetLootSlot(int32 Index) const { return Inventory[Index]; }
+	const FLootSlot& GetData(int32 Index) const { return Inventory[Index]; }
 };

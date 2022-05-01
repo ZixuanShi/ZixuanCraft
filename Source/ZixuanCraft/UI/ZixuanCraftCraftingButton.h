@@ -22,6 +22,7 @@ protected:
 public:
 	void SetCraftingManager(ACraftingManager* InCraftingManager) { CraftingManager = InCraftingManager; }
 
+protected:
 	virtual void OnFirstPressedImpl() override final;
 	virtual void OnSecondPressedImpl() override final;
 };

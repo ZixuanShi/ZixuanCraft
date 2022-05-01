@@ -35,8 +35,6 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 	GENERATED_BODY()
 	
 protected:
-	bool bRightMouseButtonDown = false;
-
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
 	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
@@ -66,11 +64,13 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = Crafting)
 	ACraftingManager* CraftingManager = nullptr;
 
+	UZixuanCraftButton* LastHoveredButton = nullptr;
+
 	/** The index to select an item */
 	int32 SelectedIndex = InvalidIndex;
 
 	/** :( shhhhhh this will be refactored once I have time */
-	int32 TempHackIndex = InvalidIndex;
+	int32 LastClickedInventoryButtonIndex = InvalidIndex;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// PC/Console dedicated inventory UI 
@@ -84,6 +84,8 @@ protected:
 	/** Text of the count of the selected item */
 	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
 	UTextBlock* SelectedItemCount_TextBlock = nullptr;
+
+	FLootSlot SelectedSlot;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Mobile dedicated UI
@@ -105,7 +107,6 @@ protected:
 public:
 	virtual void NativeConstruct() override final;
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override final;
-	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override final;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
@@ -179,12 +180,12 @@ public:
 	virtual bool IsDisplayingInventoryPanel() const override final { return InventoryCrafting_Panel->GetIsEnabled(); }
 	virtual void SetButtonDataAt(const FLootSlot& Data, int32 Index) override final;
 	virtual UZixuanCraftButton* GetButtonAt(int32 WidgetIndex) const override final;
-	virtual bool RightMouseButtonDown() const override final { return bRightMouseButtonDown; }
 	UZixuanCraftButton* GetSelectedInventory() const;
-
-	// TempHack
-	virtual int32 IGetTempHackSelectIndex() const override final { return TempHackIndex; }
-	virtual void SetTempHackSelectIndex(int32 Index) override final { TempHackIndex = Index; }
+	virtual UZixuanCraftButton* GetLastHoveredButton() const override final { return LastHoveredButton; }
+	virtual void SetLastHoveredButton(UZixuanCraftButton* Button)  override final { LastHoveredButton = Button; }
+	virtual const FLootSlot& GetSelectedSlotData() const { return SelectedSlot; }
+	virtual int32 IGetTempHackSelectIndex() const override final { return LastClickedInventoryButtonIndex; }
+	virtual void SetLastSelectedInventoryIndex(int32 Index) override final { LastClickedInventoryButtonIndex = Index; }
 
 private:
 	void InitButtons();
