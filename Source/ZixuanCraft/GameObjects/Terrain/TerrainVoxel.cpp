@@ -208,7 +208,7 @@ void ATerrainVoxel::ModifyCube(FVector CubeLocation, FVector SpawnLootLocation, 
 	UpdateMesh();
 
 	// Create a loot
-	if (OriginalType > EObjectType::TreeTrunk || OriginalType == EObjectType::Empty)
+	if (OriginalType > EObjectType::WoodPlank || OriginalType == EObjectType::Empty)
 	{
 		return;
 	}
@@ -242,7 +242,7 @@ void ATerrainVoxel::HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const EObjectT
 		const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + bMasks[CubeSideIndex].Y, 0, TerrainManager->CubeCountXY - 1);
 		bool bShouldAddVertices = false;
 
-		if (ObjectType > EObjectType::TreeTrunk)
+		if (ObjectType > EObjectType::WoodPlank)
 		{
 			bShouldAddVertices = true;
 		}

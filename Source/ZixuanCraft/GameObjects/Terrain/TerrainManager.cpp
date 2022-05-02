@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TerrainManager.h"
-#include "TerrainVoxel.h"
+#include "GameObjects/Terrain/TerrainManager.h"
+#include "GameObjects/Terrain/TerrainVoxel.h"
 #include "Utils/RNG.h"
 
 // Sets default values

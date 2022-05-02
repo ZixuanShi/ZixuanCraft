@@ -8,7 +8,7 @@
 /** Maximum count for a single slot can hold. Used for the loot that can stack in the inventory */
 static constexpr int32 MaxSlotCount = 64;
 
-/** The order must perfectly match the ATerrainManager::Materials */
+/** The order MUST perfectly match the ATerrainManager::Materials */
 UENUM(BlueprintType)
 enum class EObjectType : uint8
 {
@@ -19,6 +19,7 @@ enum class EObjectType : uint8
 	Dirt			UMETA(DisplayName = "Dirt"),
 	Stone			UMETA(DisplayName = "Stone"),
 	TreeTrunk		UMETA(DisplayName = "TreeTruck"),
+	WoodPlank		UMETA(DisplayName = "WoodPlank"),
 
 	// Not solid, drop loot depending on the specific type
 	TreeLeaves		UMETA(DisplayName = "TreeLeaves"),
@@ -29,5 +30,6 @@ enum class EObjectType : uint8
 	// Non-Stackable starts here
 
 	// Weapons
-	Sword			UMETA(DisplayName = "Sword"),
+	Stick			UMETA(DisplayName = "Stick"),
+	Wooden_Sword	UMETA(DisplayName = "Wooden_Sword"),
 };

@@ -233,8 +233,10 @@ void ABaseCharacter::ScrollInventoryDown()
 void ABaseCharacter::UpdateInventoryUI(int32 Index)
 {
 	check(Index != InvalidIndex);
+	check(Widget->IsGameplayInventory(Index));
 	const TArray<FLootSlot>& Inventory = InventoryComponent->GetInventory();
 	Widget->SetButtonDataAt(Inventory[Index], Index);
+	Widget->SetButtonDataAt(Inventory[Index], Index + Widget->GetGameplayInventoryNum());
 }
 
 void ABaseCharacter::LookUpAtRate(float Rate)

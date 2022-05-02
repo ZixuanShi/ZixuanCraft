@@ -6,3 +6,4 @@
 #include "Math/NumericLimits.h"
 
 static constexpr int32 InvalidIndex = TNumericLimits<int32>::Max();
+static constexpr int32 CraftingPanelSize = 9;

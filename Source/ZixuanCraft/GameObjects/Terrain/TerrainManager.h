@@ -25,11 +25,11 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<ATerrainVoxel*> Terrains;
 
-	/** Materials' order must perfectly match EObjectType in TerrainVoxel.h */
+	/** Materials' order MUST perfectly match EObjectType in TerrainVoxel.h */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<UMaterialInterface*> Materials;
 
-	/** Icons' order must perfectly match EObjectType in TerrainVoxel.h */
+	/** Icons' order MUST perfectly match EObjectType in TerrainVoxel.h */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<UTexture2D*> Icons;
 

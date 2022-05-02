@@ -8,8 +8,6 @@
 
 #include "Components/TextBlock.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 void UZixuanCraftInventoryButton::OnRightMousePressed()
 {
 	Super::OnRightMousePressed();
@@ -18,34 +16,12 @@ void UZixuanCraftInventoryButton::OnRightMousePressed()
 	FLootSlot& SelectedSlot = Widget->GetSelectedSlotData();
 	UInventoryComponent* InventoryComponent = Character->GetInventoryComponent();
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
-	UZixuanCraftInventoryButton* SelectedInventoryButton = Cast<UZixuanCraftInventoryButton>(Widget->GetButtonAt(SelectedIndex));
 
 	// Set inventory component at panel index to this button's data
 	InventoryComponent->SetLootAt(Data, PanelIndex);
 	if (PanelIndex < Widget->GetGameplayInventoryNum())
 	{
 		Widget->GetButtonAt(PanelIndex)->SetData(Data);
-	}
-
-	// Previous selected button was an inventory too
-	if (SelectedInventoryButton)
-	{
-		// If it rans out Count, reset it
-		if (SelectedSlot.Count == 0)
-		{
-			InventoryComponent->ResetLootAt(Widget->ToBackpackIndex(SelectedIndex));
-			Widget->SetSelectIndex(InvalidIndex);
-			SelectedInventoryButton->Reset();
-			SelectedInventoryButton->GetData().Reset();
-			if (SelectedInventoryButton->GetPanelIndex() < Widget->GetGameplayInventoryNum())
-			{
-				Widget->GetButtonAt(SelectedInventoryButton->GetPanelIndex())->SetData(SelectedInventoryButton->GetData());
-			}
-		}
-		else
-		{
-			InventoryComponent->SetLootAt(Widget->GetSelectedSlotData(), Widget->ToBackpackIndex(SelectedIndex));
-		}
 	}
 }
 
@@ -98,4 +74,3 @@ void UZixuanCraftInventoryButton::OnLeftMouseSecondPressedImpl()
 
 	Super::OnLeftMouseSecondPressedImpl();
 }
-PRAGMA_ENABLE_OPTIMIZATION

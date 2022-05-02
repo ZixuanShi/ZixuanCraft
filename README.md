@@ -68,6 +68,8 @@ Minecraft clone using Unreal Engine.
 - More terrains like sand, river, mountain
 - May 11th, Control menu
 - Performance when creating a new chunk
+- Video
+- BGM
 
 ## Known Issues
 - There are some tree leaves in the air which don't attach to any tree trunks.

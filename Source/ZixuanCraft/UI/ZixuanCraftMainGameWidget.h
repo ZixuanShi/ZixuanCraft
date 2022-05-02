@@ -14,6 +14,7 @@
 class AZixuanCraftCharacter;
 class ACraftingManager;
 class ALoot;
+class UZixuanCraftCraftingResultButton;
 
 class UPanelWidget;
 class UButton;
@@ -63,6 +64,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = Crafting)
 	ACraftingManager* CraftingManager = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Category = Crafting, meta = (BindWidget))
+	UZixuanCraftCraftingResultButton* CraftingResult_Button = nullptr;
 
 	UZixuanCraftButton* LastHoveredButton = nullptr;
 
@@ -193,6 +197,7 @@ public:
 	virtual FLootSlot& GetSelectedSlotData() { return SelectedSlot; }
 	virtual int32 IGetTempHackSelectIndex() const override final { return LastClickedInventoryButtonIndex; }
 	virtual void SetLastSelectedInventoryIndex(int32 Index) override final { LastClickedInventoryButtonIndex = Index; }
+	virtual UPanelWidget* GetCraftingPanel() const override final { return Crafting_Panel; }
 
 private:
 	void InitButtons();

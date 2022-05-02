@@ -3,6 +3,7 @@
 
 #include "UI/ZixuanCraftButton.h"
 #include "UI/ZixuanCraftMainGameWidget.h"
+#include "UI/ZixuanCraftInventoryButton.h"
 #include "Characters/ZixuanCraftCharacter.h"
 #include "GameplayComponents/InventoryComponent.h"
 
@@ -164,4 +165,34 @@ void UZixuanCraftButton::OnRightMousePressed()
 	// Substract 1 count from selected item
 	--SelectedSlot.Count;
 	Widget->SetSelectedItemPanel(SelectedSlot);
+
+	// Previous selected button was an inventory too
+	const int32 SelectedIndex = Widget->IGetSelectIndex();
+	UZixuanCraftButton* SelectedButton = Widget->GetButtonAt(SelectedIndex);
+	UInventoryComponent* InventoryComponent = Character->GetInventoryComponent();
+	if (SelectedButton)
+	{
+		// If it rans out Count, reset it
+		if (SelectedSlot.Count == 0)
+		{
+			if (SelectedButton->IsA<UZixuanCraftInventoryButton>())
+			{
+				InventoryComponent->ResetLootAt(Widget->ToBackpackIndex(SelectedIndex));
+			}
+			SelectedButton->Reset();
+			SelectedButton->GetData().Reset();
+			if (SelectedButton->GetPanelIndex() < Widget->GetGameplayInventoryNum())
+			{
+				Widget->GetButtonAt(SelectedButton->GetPanelIndex())->SetData(SelectedButton->GetData());
+			}
+			Widget->SetSelectIndex(InvalidIndex);
+		}
+		else
+		{
+			if (SelectedButton->IsA<UZixuanCraftInventoryButton>())
+			{
+				InventoryComponent->SetLootAt(Widget->GetSelectedSlotData(), Widget->ToBackpackIndex(SelectedIndex));
+			}
+		}
+	}
 }

@@ -3,8 +3,9 @@
 #include "UI/ZixuanCraftMainGameWidget.h"
 #include "UI/ZixuanCraftInventoryButton.h"
 #include "UI/ZixuanCraftCraftingButton.h"
+#include "UI/ZixuanCraftCraftingResultButton.h"
 #include "Characters/ZixuanCraftCharacter.h"
-#include "GameObjects/Loot/CraftingManager.h"
+#include "GameObjects/Crafting/CraftingManager.h"
 #include "GameplayComponents/InventoryComponent.h"
 
 #include "Components/PanelWidget.h"
@@ -184,6 +185,9 @@ void UZixuanCraftMainGameWidget::InitButtons()
 		Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->SetCraftingManager(CraftingManager);
 		++WidgetIndex;
 	}
+	CraftingResult_Button->Init(WidgetIndex, 0, this, Character);
+	CraftingResult_Button->SetCraftingManager(CraftingManager);
+	CraftingManager->Init(this, CraftingResult_Button->GetWidgetIndex());
 
 	// Hide mobile UI if not on mobile platforms
 #if !PLATFORM_ANDROID && !PLATFORM_IOS
@@ -233,6 +237,10 @@ UZixuanCraftButton* UZixuanCraftMainGameWidget::GetButtonAt(int32 WidgetIndex) c
 		WidgetIndex < GetTotalInventoryNum() + Crafting_Panel->GetAllChildren().Num())
 	{
 		return Cast<UZixuanCraftButton>(Crafting_Panel->GetChildAt(ToCraftingIndex(WidgetIndex)));
+	}
+	else if (WidgetIndex == CraftingResult_Button->GetWidgetIndex())
+	{
+		return CraftingResult_Button;
 	}
 
 	ensureMsgf(false, TEXT("Invalid index for retreiving a button"));

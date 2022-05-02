@@ -20,9 +20,14 @@ protected:
 	ACraftingManager* CraftingManager = nullptr;
 
 public:
+	virtual void OnRightMousePressed() override;
+	
 	void SetCraftingManager(ACraftingManager* InCraftingManager) { CraftingManager = InCraftingManager; }
 
 protected:
-	virtual void OnLeftMouseFirstPressedImpl() override final;
-	virtual void OnLeftMouseSecondPressedImpl() override final;
+	virtual void OnLeftMouseFirstPressedImpl() override;
+	virtual void OnLeftMouseSecondPressedImpl() override;
+
+	/** Update the crafting manager to the latest crafting panel status */
+	void NotifyCraftingManager();
 };
