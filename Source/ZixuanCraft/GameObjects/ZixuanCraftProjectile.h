@@ -25,6 +25,9 @@ class AZixuanCraftProjectile : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UStaticMeshComponent* BodyMesh = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float Damage = 30.0f;
 

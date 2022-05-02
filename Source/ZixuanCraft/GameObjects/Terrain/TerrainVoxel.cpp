@@ -128,7 +128,10 @@ void ATerrainVoxel::GenerateChunk()
 						RadiusSquard < (LeavesWidth / 2.0f))	// But don't wipe out the leaves close to the center
 					{
 						const int32 Index = GetIndexFromXYZ(TreeRoot.X + X, TreeRoot.Y + Y, TreeRoot.Z + Z + TreeHeight, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared);
-						AllCubes[Index] = EObjectType::TreeLeaves;
+						if (Index < AllCubes.Num())
+						{
+							AllCubes[Index] = EObjectType::TreeLeaves;
+						}
 					}
 				}
 			}

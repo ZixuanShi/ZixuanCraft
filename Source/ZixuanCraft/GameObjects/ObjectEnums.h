@@ -5,9 +5,6 @@
 
 #include "CoreMinimal.h"
 
-/** Maximum count for a single slot can hold. Used for the loot that can stack in the inventory */
-static constexpr int32 MaxSlotCount = 64;
-
 /** The order MUST perfectly match the ATerrainManager::Materials */
 UENUM(BlueprintType)
 enum class EObjectType : uint8

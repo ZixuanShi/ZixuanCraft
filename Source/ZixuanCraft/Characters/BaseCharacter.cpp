@@ -48,7 +48,7 @@ ABaseCharacter::ABaseCharacter()
 
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 100.0f, -10.6f));
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun 
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
@@ -145,7 +145,7 @@ void ABaseCharacter::Attack()
 	// try and play the sound if specified
 	if (FireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), 0.1f);
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation(), 0.05f);
 	}
 
 	// try and play a firing animation if specified
@@ -169,14 +169,7 @@ void ABaseCharacter::Sprint()
 void ABaseCharacter::SlowDown()
 {
 	GetCharacterMovement()->MaxWalkSpeed /= SpeedMultiplier;
-	GetCharacterMovement()->MaxStepHeight /= 2.0f;
-}
-
-// Called every frame
-void ABaseCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	GetCharacterMovement()->MaxStepHeight /= 2.0f; 
 }
 
 float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

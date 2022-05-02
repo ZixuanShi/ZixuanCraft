@@ -86,20 +86,30 @@ void UZixuanCraftButton::OnLeftMouseSecondPressedImpl()
 	const int32 SelectedIndex = Widget->IGetSelectIndex();
 
 	const int32 GameplayInventoryCount = Widget->GetGameplayInventoryNum();
-	const FLootSlot OtherLootSlot = Widget->GetSelectedSlotData();
+	FLootSlot OtherLootSlot = Widget->GetSelectedSlotData();
 	const FLootSlot ThisLootSlot = Data;
 
-	// Set other button data
-	Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex);
-	if (SelectedIndex >= GameplayInventoryCount &&
-		SelectedIndex < GameplayInventoryCount * 2)
+	// If they are the same type and count doesn't exceed max after merging, merge them
+	if (ThisLootSlot.LootData.Type == OtherLootSlot.LootData.Type &&
+		ThisLootSlot.Count + OtherLootSlot.Count <= MaxSlotCount)
 	{
-		Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex - GameplayInventoryCount);
+		OtherLootSlot.Count += ThisLootSlot.Count;
+	}
+	// Swap them if merging doesn't work
+	else
+	{
+		// Set other button data
+		Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex);
+		if (SelectedIndex >= GameplayInventoryCount &&
+			SelectedIndex < GameplayInventoryCount * 2)
+		{
+			Widget->SetButtonDataAt(ThisLootSlot, SelectedIndex - GameplayInventoryCount);
+		}
 	}
 
 	// Set this button data
 	Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex);
-	if (WidgetIndex >= GameplayInventoryCount && 
+	if (WidgetIndex >= GameplayInventoryCount &&
 		WidgetIndex < GameplayInventoryCount * 2)
 	{
 		Widget->SetButtonDataAt(OtherLootSlot, WidgetIndex - GameplayInventoryCount);

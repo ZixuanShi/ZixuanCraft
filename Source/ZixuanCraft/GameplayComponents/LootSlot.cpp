@@ -3,6 +3,7 @@
 
 #include "LootSlot.h"
 #include "GameObjects/Loot/Loot.h"
+#include "Utils/TypeDefs.h"
 
 bool FLootSlot::TryAppend(ALoot* NewLoot)
 {

@@ -56,7 +56,6 @@ void UZixuanCraftInventoryButton::OnLeftMouseSecondPressedImpl()
 	UInventoryComponent* PlayerInventoryComponent = Character->GetInventoryComponent();
 	int32 SelectedIndex = Widget->IGetSelectIndex();
 
-	// If two clicks happened between two inventory buttons. Perform a swap in inventory component
 	if (SelectedIndex < Widget->GetTotalInventoryNum())
 	{
 		if (SelectedIndex > Widget->GetGameplayInventoryNum())
