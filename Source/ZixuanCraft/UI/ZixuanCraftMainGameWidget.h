@@ -37,6 +37,11 @@ class ZIXUANCRAFT_API UZixuanCraftMainGameWidget : public UZixuanCraftWidgetBase
 	
 protected:
 	//------------------------------------------------------------------------------------------------------------------------------------
+	// Instructions
+	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
+	UPanelWidget* Instructions_Panel = nullptr;
+
+	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay
 	UPROPERTY(BlueprintReadWrite, Category = Gameplay, meta = (BindWidget))
 	UPanelWidget* Gameplay_Panel = nullptr;
@@ -111,6 +116,10 @@ protected:
 public:
 	virtual void NativeConstruct() override final;
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override final;
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+	// Instructions
+	virtual void ToggleInstructions() override final;
 
 	//------------------------------------------------------------------------------------------------------------------------------------
 	// Gameplay

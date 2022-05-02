@@ -52,4 +52,5 @@ public:
 	virtual bool IsCraftingButton(int32 WidgetIndex) const { return false; }
 	virtual FLootSlot& GetSelectedSlotData() { return TempHack; }
 	virtual UPanelWidget* GetCraftingPanel() const { return nullptr; }
+	virtual void ToggleInstructions() {};
 };

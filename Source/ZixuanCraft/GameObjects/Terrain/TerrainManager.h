@@ -23,7 +23,7 @@ class ZIXUANCRAFT_API ATerrainManager : public AActor
 private:
 	/** Stores all the voxels */
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<ATerrainVoxel*> Terrains;
+	TArray<class ATerrainVoxel*> Terrains;
 
 	/** Materials' order MUST perfectly match EObjectType in TerrainVoxel.h */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

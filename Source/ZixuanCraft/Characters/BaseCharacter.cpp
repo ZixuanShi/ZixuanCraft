@@ -213,6 +213,11 @@ void ABaseCharacter::ToggleInventory()
 	Widget->IToggleInventoryCrafting();
 }
 
+void ABaseCharacter::ToggleInstructions()
+{
+	Widget->ToggleInstructions();
+}
+
 void ABaseCharacter::ScrollInventoryUp()
 {
 	Widget->ScrollInventory(false);
@@ -274,7 +279,9 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ABaseCharacter::LookUpAtRate);
 
-	// Inventory UI
+	// UI
+	PlayerInputComponent->BindAction("ToggleInstructions", IE_Pressed, this, &ABaseCharacter::ToggleInstructions);
+	PlayerInputComponent->BindAction("ToggleInstructions", IE_Released, this, &ABaseCharacter::ToggleInstructions);
 	PlayerInputComponent->BindAction("ShowInventory", IE_Pressed, this, &ABaseCharacter::ToggleInventory);
 	PlayerInputComponent->BindAction("ScrollInventoryDown", IE_Pressed, this, &ABaseCharacter::ScrollInventoryDown);
 	PlayerInputComponent->BindAction("ScrollInventoryUp", IE_Pressed, this, &ABaseCharacter::ScrollInventoryUp);

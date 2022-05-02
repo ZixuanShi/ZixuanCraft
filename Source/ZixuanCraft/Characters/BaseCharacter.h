@@ -133,6 +133,7 @@ public:
 	void UpdateHealthUI();
 	void InitInventoryUI();
 	void ToggleInventory();
+	void ToggleInstructions();
 	void ScrollInventoryUp();
 	void ScrollInventoryDown();
 

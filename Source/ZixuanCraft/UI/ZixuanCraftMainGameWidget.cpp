@@ -49,6 +49,19 @@ FReply UZixuanCraftMainGameWidget::NativeOnMouseButtonDown(const FGeometry& InGe
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 }
 
+void UZixuanCraftMainGameWidget::ToggleInstructions()
+{
+	Instructions_Panel->SetIsEnabled(!Instructions_Panel->bIsEnabled);
+	if (Instructions_Panel->bIsEnabled)
+	{
+		Instructions_Panel->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		Instructions_Panel->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
 void UZixuanCraftMainGameWidget::ScrollInventory(bool bIsScrollingDown)
 {
 	// If the inventory crafting panel is showing, don't do anything
