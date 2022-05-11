@@ -10,5 +10,12 @@ public class ZixuanCraftTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("ZixuanCraft");
+
+		if (Target.Platform == UnrealTargetPlatform.Android)
+		{
+			ExtraModuleNames.Add("OnlineSubsystemGooglePlay");
+			ExtraModuleNames.Add("OnlineSubsystem");
+			ExtraModuleNames.Add("AndroidAdvertising");
+		}
 	}
 }

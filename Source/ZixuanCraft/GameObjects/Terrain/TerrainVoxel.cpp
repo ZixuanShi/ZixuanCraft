@@ -114,9 +114,9 @@ void ATerrainVoxel::GenerateChunk()
 			{
 				for (int32 Z = -LeavesLegnthMax; Z <= LeavesLegnthMax; ++Z)
 				{
-					const bool bValidX = UKismetMathLibrary::InRange_IntInt(X + TreeRoot.X, 0, TerrainManager->CubeCountXY);
-					const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + TreeRoot.Y, 0, TerrainManager->CubeCountXY);
-					const bool bValidZ = UKismetMathLibrary::InRange_IntInt(Z + TreeRoot.Z + TreeHeight, 0, TerrainManager->CubeCountZ);
+					const bool bValidX = UKismetMathLibrary::InRange_IntInt(X + TreeRoot.X, 0, TerrainManager->CubeCountXY - 1);
+					const bool bValidY = UKismetMathLibrary::InRange_IntInt(Y + TreeRoot.Y, 0, TerrainManager->CubeCountXY - 1);
+					const bool bValidZ = UKismetMathLibrary::InRange_IntInt(Z + TreeRoot.Z + TreeHeight, 0, TerrainManager->CubeCountZ - 1);
 					if (!bValidX || !bValidY || !bValidZ)
 					{
 						continue;	

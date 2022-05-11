@@ -17,9 +17,7 @@ class UProceduralMeshComponent;
 class ATerrainManager;
 
 /**
- * Voxel holding the terrain cubes
- * - If there is a terrain manager, follow it's data
- * - If there is no terrain manager, create a plane
+ * Voxel holding the terrain cubes meshes
  */
 UCLASS()
 class ZIXUANCRAFT_API ATerrainVoxel : public AActor
@@ -27,17 +25,21 @@ class ZIXUANCRAFT_API ATerrainVoxel : public AActor
 	GENERATED_BODY()
 
 private:
+	/** All the cubes info been managed by this TerrainVoxel */
 	TArray<EObjectType> AllCubes;
+
+	/** Stores Perlin-Noise Results for generating the cubes */
 	TArray<int32> NoiseResult;
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<AActor*> SpawnedObjects;
-
+	/** Mesh renderer component that magically makes my game runs at 90 FPS */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UProceduralMeshComponent* ProceduralMeshComponent;
+	UProceduralMeshComponent* ProceduralMeshComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	ATerrainManager* TerrainManager = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TArray<AActor*> SpawnedObjects;
 
 	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	int32 VoxelX = 0;

@@ -12,6 +12,9 @@
 
 class ALoot;
 
+/** 
+ * Actor Component for Inventory
+ */
 UCLASS(BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ZIXUANCRAFT_API UInventoryComponent : public UActorComponent
 {

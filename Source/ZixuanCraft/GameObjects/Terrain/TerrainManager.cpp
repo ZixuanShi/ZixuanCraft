@@ -5,7 +5,6 @@
 #include "GameObjects/Terrain/TerrainVoxel.h"
 #include "Utils/RNG.h"
 
-// Sets default values
 ATerrainManager::ATerrainManager()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -15,7 +14,10 @@ void ATerrainManager::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	FRNG::Global().SetSeed(Seed);
+	if (Seed != TNumericLimits<int32>::Max())
+	{
+		FRNG::Global().SetSeed(Seed);
+	}
 	CubeCountXYSquared = CubeCountXY * CubeCountXY;
 	CubeLengthHalf = CubeLength / 2.0f;
 	VoxelLength = static_cast<float>(CubeCountXY * CubeLength);
@@ -34,9 +36,9 @@ void ATerrainManager::Tick(float DeltaTime)
 
 bool ATerrainManager::UpdatedPosition()
 {
-	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	int32 FloorX = FMath::Floor(PlayerLocation.X / static_cast<int32>(VoxelLength));
-	int32 FloorY = FMath::Floor(PlayerLocation.Y / static_cast<int32>(VoxelLength));
+	const FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	const int32 FloorX = FMath::Floor(PlayerLocation.X / static_cast<int32>(VoxelLength));
+	const int32 FloorY = FMath::Floor(PlayerLocation.Y / static_cast<int32>(VoxelLength));
 
 	// If the player moves to the other cube
 	if (PlayerAtCubeX != FloorX || PlayerAtCubeY != FloorY)
@@ -63,7 +65,7 @@ void ATerrainManager::AddChunk()
 		for (int32 X = PlayerAtCubeX - RenderRadius; X < PlayerAtCubeX + RenderRadius; ++X)
 		{
 			// Location of the candidate voxel to spawn
-			FVector VoxelLocation{ static_cast<float>(X * VoxelLength), static_cast<float>(Y * VoxelLength), 0.0f };
+			const FVector VoxelLocation{ static_cast<float>(X * VoxelLength), static_cast<float>(Y * VoxelLength), 0.0f };
 
 			// If this location is not in the TerrainLocations map
 			if (!TerrainLocations.Contains(VoxelLocation))
@@ -79,15 +81,15 @@ void ATerrainManager::AddChunk()
 void ATerrainManager::RemoveChunk()
 {
 	// Remove cubes out of radius range
-	FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	FVector2D PlayerLocation2D{ PlayerLocation.X, PlayerLocation.Y };
+	const FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	const FVector2D PlayerLocation2D{ PlayerLocation.X, PlayerLocation.Y };
 	for (int32 i = 0; i < Terrains.Num();)
 	{
-		FVector2D VoxelLocation2D{ Terrains[i]->GetActorLocation().X, Terrains[i]->GetActorLocation().Y };
-		float DistanceToPlayer = FVector2D::Distance(VoxelLocation2D, PlayerLocation2D);
+		const FVector2D VoxelLocation2D{ Terrains[i]->GetActorLocation().X, Terrains[i]->GetActorLocation().Y };
+		const float DistanceToPlayer = FVector2D::Distance(VoxelLocation2D, PlayerLocation2D);
 		if (DistanceToPlayer > RenderRadius * 2 * VoxelLength)
 		{
-			FVector VoxelLocation = Terrains[i]->GetActorLocation() * FVector(1.0f, 1.0f, 0.0f);
+			const FVector VoxelLocation = Terrains[i]->GetActorLocation() * FVector(1.0f, 1.0f, 0.0f);
 			TerrainLocations.Remove(VoxelLocation);
 
 			Swap(Terrains[i], Terrains.Last());

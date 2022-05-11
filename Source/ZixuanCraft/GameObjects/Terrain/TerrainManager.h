@@ -10,7 +10,7 @@
 #include "TerrainManager.generated.h"
 
 /**
- * Responsible for generating terrains. Should be only one instance in the world
+ * Responsible for generating endless terrains. 
  */
 UCLASS()
 class ZIXUANCRAFT_API ATerrainManager : public AActor
@@ -52,7 +52,7 @@ private:
 
 	/** Custom seed for generating the terrains */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 Seed = 19990726;
+	int32 Seed = TNumericLimits<int32>::Max();
 
 	/** How many voxels to render in X/Y coordinates at runtime */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -60,7 +60,7 @@ private:
 
 	/** How many cubes in XY coordinate for a voxel to hold */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 CubeCountXY = 20;
+	int32 CubeCountXY = 10;
 
 	UPROPERTY(BlueprintReadonly, meta = (AllowPrivateAccess = "true"))
 	int32 CubeCountXYSquared = 0;

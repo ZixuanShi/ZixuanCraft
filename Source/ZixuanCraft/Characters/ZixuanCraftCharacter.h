@@ -11,6 +11,9 @@
 
 class ATerrainManager;
 
+/**
+ * Character class in gameplay
+ */
 UCLASS(config=Game)
 class AZixuanCraftCharacter : public ABaseCharacter
 {
@@ -19,14 +22,16 @@ class AZixuanCraftCharacter : public ABaseCharacter
 	static constexpr float OffsetHelper = 5.0f;		// Use this value to find the cube's location when interacting with voxel
 
 private:
+	/** Player character can place/destroy any cubes within this distance */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float CubeInteractDistance = 700.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	ATerrainManager* TerrainManager = nullptr;
-
+	/** The object in hand currently. Used for placing cubes */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FLootData ObjectInHand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	ATerrainManager* TerrainManager = nullptr;
 
 public:
 	virtual void BeginPlay() override final;

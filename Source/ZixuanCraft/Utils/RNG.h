@@ -27,13 +27,15 @@ public:
 	 * @param Min	Minimum value inclusive
 	 * @param Max	Maximum value inclusive
 	 */
-	template<typename Type = uint32> Type RandInRange(Type Min, Type Max);
+	template<typename Type = uint32> 
+	Type RandInRange(Type Min, Type Max);
 
 	/**
 	 * Returns a random integral value within max range
 	 * @param Max	Largest possible value (inclusive)
 	 */
-	template<typename Type = uint32> Type RandInMax(Type Max);
+	template<typename Type = uint32> 
+	Type RandInMax(Type Max = TNumericLimits<Type>::Max());
 
 	/**
 	* Returns a random floating point from 0 to 1 inclusive
@@ -97,7 +99,7 @@ inline Type FRNG::RandInRange(Type Min, Type Max)
 }
 
 template<typename Type>
-inline Type FRNG::RandInMax(Type Max)
+inline Type FRNG::RandInMax(Type Max /* = TNumericLimits<Type>::Max()*/)
 {
 	return RandInRange<Type>(0, Max);
 }

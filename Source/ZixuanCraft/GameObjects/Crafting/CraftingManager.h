@@ -44,7 +44,7 @@ struct FCraftingInput
 	}
 
 	/** Hash function for CraftingInput */
-	friend FORCEINLINE uint32 GetTypeHash(const FCraftingInput& Key)
+	friend uint32 GetTypeHash(const FCraftingInput& Key)
 	{
 		uint32 Hash = 0;
 		for (EObjectType ObjectType : Key.Input)
@@ -69,7 +69,7 @@ struct FCraftingRules : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLootSlot Result;
 
-	FCraftingRules() {};
+	FCraftingRules() = default;
 };
 
 /**

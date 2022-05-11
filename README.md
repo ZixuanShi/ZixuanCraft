@@ -30,7 +30,7 @@ Minecraft clone using Unreal Engine.
 | Attack           | F Key               | Press              |
 | Sprint           | Left Shift Key      | Hold               |
 | Destroy Cube     | F Key               | Hold               |
-| Place Cube       | R Key               | Press              |
+| Place Cube       | Right mouse button  | Press              |
 | Quit Game        | Escape              | Press              |
 | Toggle Inventory | E Key               | Press              |
 | Scroll Inventory | Mouse Wheel         | Scroll             |
@@ -66,13 +66,7 @@ Minecraft clone using Unreal Engine.
 ## Future Plans
 - Add village
 - More terrains like sand, river, mountain
-- May 11th, Control menu
-- Performance when creating a new chunk
-- Video
-- BGM
 
 ## Known Issues
-- There are some tree leaves in the air which don't attach to any tree trunks.
-- UI inventory is not exactly working as I want to
 - Controller can't manipulate all inventory UI mouse
 - The NavMesh is limited, if the player walk towards one direction for ~15 mins, the NPC won't be able to find a path.
