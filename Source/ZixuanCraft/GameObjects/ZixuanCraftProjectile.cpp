@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ZixuanCraftProjectile.h"
+
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Characters/SpawnableCharacter.h"
 
 AZixuanCraftProjectile::AZixuanCraftProjectile() 
 {
@@ -46,10 +46,8 @@ void AZixuanCraftProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	// If the other actor is a spawnable, apply damage
 	if (OtherActor && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		if (OtherActor->IsA<ASpawnableCharacter>())
-		{
-			UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigator()->GetController(), GetOwner(), UDamageType::StaticClass());
-		}
+		UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigator()->GetController(), GetOwner(), UDamageType::StaticClass());
+
 		if (OtherComp->IsSimulatingPhysics())
 		{
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
