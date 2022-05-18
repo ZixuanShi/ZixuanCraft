@@ -10,8 +10,8 @@
 #include "SpawnableCharacter.generated.h"
 
 /**
-* Base character class for all spawnable objects in the game
-*/
+ * Base character class for all spawnable objects in the game
+ */
 UCLASS()
 class ZIXUANCRAFT_API ASpawnableCharacter : public ACharacter
 {
@@ -23,11 +23,11 @@ protected:
 	EAgentState AgentState = EAgentState::Idle;
 
 	/** Current & Max health */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 30.0f;
 
 	/** How long to destroy the mesh after death. Used for playing the death animation */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DeathLifeSpan = 2.0f;
 
 public:

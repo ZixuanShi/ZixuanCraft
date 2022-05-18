@@ -189,7 +189,10 @@ void ABaseCharacter::InitWidget(UZixuanCraftWidgetBase* InWidget)
 
 void ABaseCharacter::UpdateHealthUI()
 {
-	Widget->UpdateHealthBarPercent(Health / MaxHealth);
+	if (Widget)
+	{
+		Widget->UpdateHealthBarPercent(Health / MaxHealth);
+	}
 }
 
 void ABaseCharacter::InitInventoryUI()
@@ -210,22 +213,34 @@ void ABaseCharacter::InitInventoryUI()
 
 void ABaseCharacter::ToggleInventory()
 {
-	Widget->IToggleInventoryCrafting();
+	if (Widget)
+	{
+		Widget->IToggleInventoryCrafting();
+	}
 }
 
 void ABaseCharacter::ToggleInstructions()
 {
-	Widget->ToggleInstructions();
+	if (Widget)
+	{
+		Widget->ToggleInstructions();
+	}
 }
 
 void ABaseCharacter::ScrollInventoryUp()
 {
-	Widget->ScrollInventory(false);
+	if (Widget)
+	{
+		Widget->ScrollInventory(false);
+	}
 }
 
 void ABaseCharacter::ScrollInventoryDown()
 {
-	Widget->ScrollInventory(true);
+	if (Widget)
+	{
+		Widget->ScrollInventory(true);
+	}
 }
 
 void ABaseCharacter::UpdateInventoryUI(int32 Index)
@@ -239,7 +254,7 @@ void ABaseCharacter::UpdateInventoryUI(int32 Index)
 
 void ABaseCharacter::LookUpAtRate(float Rate)
 {
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		// calculate delta for this frame from the rate information
 		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
@@ -371,7 +386,7 @@ void ABaseCharacter::OnResetVR()
 
 void ABaseCharacter::MoveForward(float Value)
 {
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		if (Value != 0.0f)
 		{
@@ -383,7 +398,7 @@ void ABaseCharacter::MoveForward(float Value)
 
 void ABaseCharacter::MoveRight(float Value)
 {
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		if (Value != 0.0f)
 		{
@@ -395,7 +410,7 @@ void ABaseCharacter::MoveRight(float Value)
 
 void ABaseCharacter::TurnAtRate(float Rate)
 {
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{ 
 		// calculate delta for this frame from the rate information
 		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());

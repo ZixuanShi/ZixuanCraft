@@ -29,7 +29,7 @@ void AZixuanCraftCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AZixuanCraftCharacter::DestroyBlock()
 {
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		InteractVoxel(EObjectType::Empty, -OffsetHelper);
 	}
@@ -37,14 +37,14 @@ void AZixuanCraftCharacter::DestroyBlock()
 void AZixuanCraftCharacter::UseItem()
 {
 	// TODO: Use item like roasted chicken
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Use Item");
 	}
 }
 void AZixuanCraftCharacter::PlaceBlock()
 {
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		if (ObjectInHand.Type < EObjectType::TreeLeaves &&	// Valid terrain cube
 			ObjectInHand.Type != EObjectType::Empty)			// Not empty
@@ -57,7 +57,7 @@ void AZixuanCraftCharacter::PlaceBlock()
 void AZixuanCraftCharacter::Attack()
 {
 	// TODO replace by Minecraft style attack
-	if (!Widget->IsDisplayingInventoryPanel())
+	if (!Widget || !Widget->IsDisplayingInventoryPanel())
 	{
 		Super::Attack();
 	}
