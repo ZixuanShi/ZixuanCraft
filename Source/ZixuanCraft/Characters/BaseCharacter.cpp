@@ -20,6 +20,8 @@
 
 ABaseCharacter::ABaseCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(45.0f, 96.0f);
 
