@@ -30,6 +30,19 @@
 				"Win64",
 				"Linux"
 			]
+		},
+		{
+			"Name": "MobileHelper",
+			"Enabled": false
+		},
+		{
+			"Name": "GooglePlayGoodies",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/ed6dc1c7026b4e3fbcbacf51298b17a0"
+		},
+		{
+			"Name": "OnlineSubsystemGoogle",
+			"Enabled": true
 		}
 	]
 }
