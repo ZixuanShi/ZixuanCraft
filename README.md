@@ -23,7 +23,7 @@ Minecraft clone using Unreal Engine.
 ## Controls
 #### Keyboard & Mouse
 | Action           | Keyboard & Mouse    | Status             |
-|:----------------:| :------------------:|:------------------:|
+|:----------------:|:-------------------:|:------------------:|
 | Move             | WASD                | Hold               |
 | Rotate Camera    | Mouse X & Y axis    | Hold               |
 | Jump             | Space bar           | Press              |
