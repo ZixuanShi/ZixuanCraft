@@ -5,9 +5,12 @@
 
 #pragma once
 #include "Utils/Enums.h"
+#include "Characters/NPC/Animations/NPCAnimInstance.h"
 
 #include "GameFramework/Character.h"
 #include "SpawnableCharacter.generated.h"
+
+class UNPCAnimInstance;
 
 /**
  * Base character class for all spawnable objects in the game
@@ -18,10 +21,6 @@ class ZIXUANCRAFT_API ASpawnableCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
-	/** State used for AI */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EAgentState AgentState = EAgentState::Idle;
-
 	/** Current & Max health */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Health = 30.0f;
@@ -35,9 +34,12 @@ public:
 
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override final;
 
-	void SetState(EAgentState InState) { AgentState = InState; }
-	EAgentState GetState() const { return AgentState; }
+	UFUNCTION(BlueprintCallable)
+	void SetState(EAgentState InState);
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void Attack(AActor* Target);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EAgentState GetAgentState() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UNPCAnimInstance* GetNPCAnimInstance() const { return Cast<UNPCAnimInstance>(GetMesh()->GetAnimInstance()); }
 };

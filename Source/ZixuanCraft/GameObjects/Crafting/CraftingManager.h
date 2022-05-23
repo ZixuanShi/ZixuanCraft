@@ -44,10 +44,10 @@ struct FCraftingInput
 	}
 
 	/** Hash function for CraftingInput */
-	friend uint32 GetTypeHash(const FCraftingInput& Key)
+	friend uint32 GetTypeHash(const FCraftingInput& TargetKey)
 	{
 		uint32 Hash = 0;
-		for (EObjectType ObjectType : Key.Input)
+		for (EObjectType ObjectType : TargetKey.Input)
 		{
 			Hash = HashCombine(Hash, GetTypeHash(ObjectType));
 		}
@@ -81,11 +81,11 @@ class ZIXUANCRAFT_API ACraftingManager : public AActor
 	GENERATED_BODY()
 	
 private:
-	/** Hash Map used for looking up crafting data. Key uses a matrix, Value as the result */
+	/** Hash Map used for looking up crafting data. TargetKey uses a matrix, Value as the result */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<FCraftingInput, FLootSlot> CraftingMap;
 
-	/** Hash Map used for looking up crafting data. Key uses a matrix, Value as the result */
+	/** Hash Map used for looking up crafting data. TargetKey uses a matrix, Value as the result */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UDataTable* CraftingDataTable = nullptr;
 

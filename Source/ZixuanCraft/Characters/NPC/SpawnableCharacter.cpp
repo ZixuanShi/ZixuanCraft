@@ -3,8 +3,10 @@
 
 #include "SpawnableCharacter.h"
 
+#include "AIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 ASpawnableCharacter::ASpawnableCharacter()
 {
@@ -19,17 +21,30 @@ float ASpawnableCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEv
 {
 	Health -= Damage;
 
+	UBlackboardComponent* Blackboard = Cast<AAIController>(GetController())->GetBlackboardComponent();
 	if (Health < 0.0f)
 	{
-		AgentState = EAgentState::Dead;
+		SetState(EAgentState::Dead);
 		SetLifeSpan(DeathLifeSpan);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	else
 	{
-		AgentState = EAgentState::Engaged;
+		SetState(EAgentState::Engaged);
 	}
 
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ASpawnableCharacter::SetState(EAgentState InState)
+{
+	UBlackboardComponent* Blackboard = Cast<AAIController>(GetController())->GetBlackboardComponent();
+	Blackboard->SetValueAsEnum(FName("AgentState"), static_cast<uint8>(InState));
+}
+
+EAgentState ASpawnableCharacter::GetAgentState() const
+{
+	UBlackboardComponent* Blackboard = Cast<AAIController>(GetController())->GetBlackboardComponent();
+	return static_cast<EAgentState>(Blackboard->GetValueAsEnum(FName("AgentState")));
 }

@@ -4,7 +4,7 @@
 #include "UI/ZixuanCraftInventoryButton.h"
 #include "UI/ZixuanCraftCraftingButton.h"
 #include "UI/ZixuanCraftCraftingResultButton.h"
-#include "Characters/ZixuanCraftCharacter.h"
+#include "Characters/Player/ZixuanCraftCharacter.h"
 #include "GameObjects/Crafting/CraftingManager.h"
 #include "GameplayComponents/InventoryComponent.h"
 

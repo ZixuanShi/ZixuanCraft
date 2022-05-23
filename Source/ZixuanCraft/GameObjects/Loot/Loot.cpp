@@ -4,7 +4,7 @@
 #include "Loot.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
-#include "Characters/ZixuanCraftCharacter.h"
+#include "Characters/Player/ZixuanCraftCharacter.h"
 #include "GameplayComponents/InventoryComponent.h"
 
 ALoot::ALoot()

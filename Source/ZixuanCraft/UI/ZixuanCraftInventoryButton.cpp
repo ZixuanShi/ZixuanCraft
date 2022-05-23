@@ -3,7 +3,7 @@
 
 #include "UI/ZixuanCraftInventoryButton.h"
 #include "UI/ZixuanCraftMainGameWidget.h"
-#include "Characters/ZixuanCraftCharacter.h"
+#include "Characters/Player/ZixuanCraftCharacter.h"
 #include "GameplayComponents/InventoryComponent.h"
 
 #include "Components/TextBlock.h"

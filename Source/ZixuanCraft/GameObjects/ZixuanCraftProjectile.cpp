@@ -46,8 +46,10 @@ void AZixuanCraftProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	// If the other actor is a spawnable, apply damage
 	if (OtherActor && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigator()->GetController(), GetOwner(), UDamageType::StaticClass());
-
+		if (OtherActor != GetOwner())
+		{
+			UGameplayStatics::ApplyDamage(OtherActor, Damage, GetInstigator()->GetController(), GetOwner(), UDamageType::StaticClass());
+		}
 		if (OtherComp->IsSimulatingPhysics())
 		{
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
