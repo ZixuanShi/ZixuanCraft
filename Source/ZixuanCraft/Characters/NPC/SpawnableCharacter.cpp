@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 ASpawnableCharacter::ASpawnableCharacter()
@@ -28,9 +29,21 @@ float ASpawnableCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEv
 		SetLifeSpan(DeathLifeSpan);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetNPCAnimInstance()->SetDead(true);
+		if (OnDeadSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, OnDeadSound, GetActorLocation(), 1.0f);
+		}
 	}
 	else
 	{
+		if (bCanPlaySound && OnHitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, OnHitSound, GetActorLocation(), 1.0f);
+
+			bCanPlaySound = false;
+			GetWorld()->GetTimerManager().SetTimer(HitSoundTimerHandle, [this]() {	bCanPlaySound = true; }, OnHitSound->GetDuration(), false);
+		}
 		SetState(EAgentState::Engaged);
 	}
 

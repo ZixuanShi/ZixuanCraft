@@ -192,15 +192,18 @@ void UZixuanCraftMainGameWidget::InitButtons()
 
 	// Crafting
 	CraftingManager = Cast<ACraftingManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACraftingManager::StaticClass()));
-	for (int32 PanelIndex = 0; PanelIndex < Crafting_Panel->GetAllChildren().Num(); ++PanelIndex)
+	if (CraftingManager)
 	{
-		Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->Init(WidgetIndex, PanelIndex, this, Character);
-		Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->SetCraftingManager(CraftingManager);
-		++WidgetIndex;
+		for (int32 PanelIndex = 0; PanelIndex < Crafting_Panel->GetAllChildren().Num(); ++PanelIndex)
+		{
+			Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->Init(WidgetIndex, PanelIndex, this, Character);
+			Cast<UZixuanCraftCraftingButton>(Crafting_Panel->GetAllChildren()[PanelIndex])->SetCraftingManager(CraftingManager);
+			++WidgetIndex;
+		}
+		CraftingResult_Button->Init(WidgetIndex, 0, this, Character);
+		CraftingResult_Button->SetCraftingManager(CraftingManager);
+		CraftingManager->Init(this, CraftingResult_Button->GetWidgetIndex());
 	}
-	CraftingResult_Button->Init(WidgetIndex, 0, this, Character);
-	CraftingResult_Button->SetCraftingManager(CraftingManager);
-	CraftingManager->Init(this, CraftingResult_Button->GetWidgetIndex());
 
 	// Hide mobile UI if not on mobile platforms
 #if !PLATFORM_ANDROID && !PLATFORM_IOS

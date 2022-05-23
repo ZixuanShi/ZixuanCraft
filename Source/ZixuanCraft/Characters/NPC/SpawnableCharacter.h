@@ -29,6 +29,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DeathLifeSpan = 2.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCanPlaySound = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* OnHitSound = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* OnDeadSound = nullptr;
+
+	FTimerHandle HitSoundTimerHandle;
+
 public:
 	ASpawnableCharacter();
 

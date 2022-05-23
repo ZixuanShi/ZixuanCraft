@@ -2,6 +2,11 @@
 
 
 #include "GameplayComponents/AggressiveComponent.h"
+#include "Characters/NPC/SpawnableCharacter.h"
+#include "Characters/NPC/Animations/NPCAnimInstance.h"
+
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 void UAggressiveComponent::Attack(AActor* Target)
 {
@@ -10,11 +15,14 @@ void UAggressiveComponent::Attack(AActor* Target)
 	{
 		return;
 	}
+
 	bCanAttack = false;
+	Cast<ASpawnableCharacter>(GetOwner())->GetNPCAnimInstance()->SetAttacking(true);
 
 	GetWorld()->GetTimerManager().SetTimer(AttackHandle, [this]()
 		{
 			bCanAttack = true;
+			Cast<ASpawnableCharacter>(GetOwner())->GetNPCAnimInstance()->SetAttacking(false);
 		},
 		AttackCooldown, false);
 

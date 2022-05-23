@@ -30,9 +30,12 @@ void AAIC_NPC::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (UAggressiveComponent* AggressiveComponent = GetPawn()->FindComponentByClass<UAggressiveComponent>())
+	if (IsValid(this) && GetPawn())
 	{
-		GetBlackboardComponent()->SetValueAsFloat(FName("AttackRange"), AggressiveComponent->GetAttackRange());
+		if (UAggressiveComponent* AggressiveComponent = GetPawn()->FindComponentByClass<UAggressiveComponent>())
+		{
+			GetBlackboardComponent()->SetValueAsFloat(FName("AttackRange"), AggressiveComponent->GetAttackRange());
+		}
 	}
 }
 

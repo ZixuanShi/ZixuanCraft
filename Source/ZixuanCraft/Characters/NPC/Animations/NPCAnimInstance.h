@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsFalling = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 RandomInt = 0;
+
 public:
 	void SetHitReact(bool bValue) { bHitReact = bValue; }
 	void SetDead(bool bValue) { bDead = bValue; }

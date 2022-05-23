@@ -6,8 +6,6 @@
 
 #include "Kismet/GameplayStatics.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 void ACraftingManager::BeginPlay()
 {
 	Super::BeginPlay();
@@ -42,5 +40,3 @@ void ACraftingManager::Init(UZixuanCraftWidgetBase* InCraftingWidget, int32 InCr
 	Widget = InCraftingWidget;
 	CraftingResultButtonIndex = InCraftingResultButtonIndex;
 }
-
-PRAGMA_ENABLE_OPTIMIZATION
