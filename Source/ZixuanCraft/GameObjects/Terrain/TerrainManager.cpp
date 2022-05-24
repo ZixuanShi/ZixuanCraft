@@ -3,6 +3,7 @@
 
 #include "GameObjects/Terrain/TerrainManager.h"
 #include "GameObjects/Terrain/TerrainVoxel.h"
+#include "Characters/NPC/NPCFactory.h"
 #include "Utils/RNG.h"
 
 ATerrainManager::ATerrainManager()
@@ -22,6 +23,13 @@ void ATerrainManager::OnConstruction(const FTransform& Transform)
 	CubeLengthHalf = CubeLength / 2.0f;
 	VoxelLength = static_cast<float>(CubeCountXY * CubeLength);
 	Terrains.Reserve(RenderRadius * CubeCountXY);
+}
+
+void ATerrainManager::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(NPCFactory);
 }
 
 void ATerrainManager::Tick(float DeltaTime)

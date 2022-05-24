@@ -2,6 +2,7 @@
 
 
 #include "SpawnableCharacter.h"
+#include "Debugging/Debugger.h"
 
 #include "AIController.h"
 #include "GameFramework/CharacterMovementComponent.h"

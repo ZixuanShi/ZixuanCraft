@@ -11,6 +11,7 @@
 #include "SpawnableCharacter.generated.h"
 
 class UNPCAnimInstance;
+class ATerrainManager;
 
 /**
  * Base character class for all spawnable objects in the game
@@ -39,6 +40,7 @@ protected:
 	USoundBase* OnDeadSound = nullptr;
 
 	FTimerHandle HitSoundTimerHandle;
+	ATerrainManager* TerrainManager = nullptr;
 
 public:
 	ASpawnableCharacter();

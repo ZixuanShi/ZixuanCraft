@@ -13,6 +13,7 @@
 #include "Utils/RNG.h"
 #include "TerrainVoxel.generated.h"
 
+class ASpawnableCharacter;
 class UProceduralMeshComponent;
 class ATerrainManager;
 
@@ -39,7 +40,7 @@ private:
 	ATerrainManager* TerrainManager = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<AActor*> SpawnedObjects;
+	TArray<ASpawnableCharacter*> SpawnedObjects;
 
 	UPROPERTY(BlueprintReadonly, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	int32 VoxelX = 0;
@@ -70,7 +71,4 @@ private:
 	
 	/** Calculate perlin noise value for terrain generation */
 	void CalculateNoise();
-
-	/** Spawning */
-	void SpawnNPC(FVector Location);
 };
