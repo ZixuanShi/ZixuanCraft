@@ -33,6 +33,8 @@ public:
 	virtual void BeginPlay() override final;
 	virtual void Tick(float DeltaSeconds) override final;
 
+	void InitBlackboardData();
+
 	UFUNCTION()
 	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 

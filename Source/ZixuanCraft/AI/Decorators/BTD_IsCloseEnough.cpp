@@ -16,6 +16,7 @@ UBTD_IsCloseEnough::UBTD_IsCloseEnough()
 	CloseDistanceKey.AddIntFilter(this, GET_MEMBER_NAME_CHECKED(UBTD_IsCloseEnough, CloseDistanceKey));
 
 	bNotifyBecomeRelevant = true;
+	bNotifyCeaseRelevant = true;
 	bNotifyTick = true;
 	FlowAbortMode = EBTFlowAbortMode::Self;
 }

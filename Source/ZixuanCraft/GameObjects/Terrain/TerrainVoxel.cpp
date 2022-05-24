@@ -2,6 +2,7 @@
 
 
 #include "TerrainVoxel.h"
+#include "Characters/NPC/AI/AIC_NPC.h"
 #include "GameObjects/Terrain/TerrainManager.h"
 #include "GameObjects/Terrain/TerrainCubeData.h"
 #include "GameObjects/Loot/TerrainCubeLoot.h"
@@ -48,6 +49,21 @@ void ATerrainVoxel::OnConstruction(const FTransform& Transform)
 
 	GenerateChunk();
 	UpdateMesh();
+}
+
+void ATerrainVoxel::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	for (AActor* Actor : SpawnedObjects)
+	{
+		if (Actor)
+		{
+			GetWorld()->DestroyActor(Actor);
+		}
+	}
+
+	SpawnedObjects.Empty();
 }
 
 void ATerrainVoxel::GenerateChunk()
@@ -380,6 +396,32 @@ void ATerrainVoxel::CalculateNoise()
 			Result = 0.0f;
 		}
 	}
+}
+
+void ATerrainVoxel::SpawnNPC(FVector Location)
+{
+	// Spawn a NPC by weighted random in TerrainManager's SpawnNPCChances map
+	const float RandFloat = FRNG::Global().FRand();  // Get a random float within 0-1
+	float TotalWeight = 0.0f;
+	UClass* NPCToSpawn = nullptr;
+
+	// Weighted random
+	for (const FNPCSpawnData& NPCSpawnData : TerrainManager->SpawnNPCChances)
+	{
+		const float CurrentWeight = NPCSpawnData.Chance;
+		TotalWeight += CurrentWeight;
+
+		if (RandFloat <= TotalWeight)
+		{
+			NPCToSpawn = NPCSpawnData.Class;
+			break;
+		}
+	}
+
+	APawn* SpawnedNPC = Cast<APawn>(GetWorld()->SpawnActor(NPCToSpawn, &Location, &FRotator::ZeroRotator));
+	SpawnedNPC->SpawnDefaultController();
+	Cast<AAIC_NPC>(SpawnedNPC->Controller)->InitBlackboardData();
+	SpawnedObjects.Emplace(SpawnedNPC);
 }
 
 PRAGMA_ENABLE_OPTIMIZATION

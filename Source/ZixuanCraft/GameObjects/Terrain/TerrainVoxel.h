@@ -51,6 +51,7 @@ public:
 	ATerrainVoxel();
 
 	virtual void OnConstruction(const FTransform& Transform) override final;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override final;
 
 	void ModifyCube(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType);
 
@@ -66,13 +67,10 @@ private:
 	/** Vertices */
 	void HandleNonEmptyCube(int32 X, int32 Y, int32 Z, const EObjectType ObjectType, TArray<FMeshSection>& MeshSections);
 	void AddVertices(TArray<FVector>& Vertices, TArray<FVector>& Normals, int32 X, int32 Y, int32 Z, int32 CubeSideIndex);
-
-protected:
+	
 	/** Calculate perlin noise value for terrain generation */
-	UFUNCTION(BlueprintCallable)
 	void CalculateNoise();
 
 	/** Spawning */
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SpawnNPC(FVector Location);
 };

@@ -9,6 +9,18 @@
 #include "GameFramework/Actor.h"
 #include "TerrainManager.generated.h"
 
+USTRUCT(BlueprintType)
+struct FNPCSpawnData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Chance = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UClass* Class = nullptr;
+};
+
 /**
  * Responsible for generating endless terrains. 
  */
@@ -32,6 +44,10 @@ private:
 	/** Icons' order MUST perfectly match EObjectType in TerrainVoxel.h */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<UTexture2D*> Icons;
+
+	/** Spawning NPC chances for weighted random. The sum of floats must be 1.0f */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TArray<FNPCSpawnData> SpawnNPCChances;
 
 	/**
 	 * FVector for the voxel's location as key, int32 as the index in Terrains TArray as value.
