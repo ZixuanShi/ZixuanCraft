@@ -8,17 +8,24 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+void UAggressiveComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearTimer(AttackHandle);
+}
+
 void UAggressiveComponent::Attack(AActor* Target)
 {
 	// Attack cooldown
-	if (!bCanAttack)
+	if (!bCanAttack || !GetOwner())
 	{
 		return;
 	}
-
 	bCanAttack = false;
 	Cast<ASpawnableCharacter>(GetOwner())->GetNPCAnimInstance()->SetAttacking(true);
 
+	// Reset can attack after cooldown
 	GetWorld()->GetTimerManager().SetTimer(AttackHandle, [this]()
 		{
 			bCanAttack = true;

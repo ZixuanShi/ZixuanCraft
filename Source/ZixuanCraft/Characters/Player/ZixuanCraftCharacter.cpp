@@ -3,7 +3,7 @@
 #include "ZixuanCraftCharacter.h"
 #include "GameObjects/Terrain/TerrainManager.h"
 #include "GameplayComponents/InventoryComponent.h"
-#include "UI/ZixuanCraftWidgetBase.h"
+#include "UI/Gameplay/Widgets/ZixuanCraftWidgetBase.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"

@@ -1,11 +1,11 @@
 #include "NPCFactory.h"
 #include "Characters/NPC/AI/AIC_NPC.h"
 #include "Utils/RNG.h"
-#include "Debugging/Debugger.h"
+#include "GameObjects/Debugging/Debugger.h"
 
 #include "Kismet/GameplayStatics.h"
 
-ASpawnableCharacter* ANPCFactory::SpawnNPC(FVector Location)
+ASpawnableCharacter* ANPCFactory::SpawnRandomNPC(FVector Location)
 {
 	// Spawn a NPC by weighted random in TerrainManager's SpawnNPCChances map
 	const float RandFloat = FRNG::Global().FRand();  // Get a random float within 0-1
@@ -25,8 +25,13 @@ ASpawnableCharacter* ANPCFactory::SpawnNPC(FVector Location)
 		}
 	}
 
+	return SpawnNPC(Location, NPCToSpawn);
+}
+
+ASpawnableCharacter* ANPCFactory::SpawnNPC(FVector Location, UClass* NPCClass)
+{
 	// Create Spawned Pawn's AIController and run behavior tree
-	ASpawnableCharacter* SpawnedNPC = Cast<ASpawnableCharacter>(GetWorld()->SpawnActor(NPCToSpawn, &Location, &FRotator::ZeroRotator));
+	ASpawnableCharacter* SpawnedNPC = Cast<ASpawnableCharacter>(GetWorld()->SpawnActor(NPCClass, &Location, &FRotator::ZeroRotator));
 	SpawnedNPC->SpawnDefaultController();
 	Cast<AAIC_NPC>(SpawnedNPC->Controller)->InitBlackboardData();
 

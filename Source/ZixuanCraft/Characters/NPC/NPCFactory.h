@@ -33,6 +33,7 @@ private:
 	TArray<FNPCSpawnData> SpawnNPCChances;
 
 public:
-	ASpawnableCharacter* SpawnNPC(FVector Location);
+	ASpawnableCharacter* SpawnRandomNPC(FVector Location);
+	ASpawnableCharacter* SpawnNPC(FVector Location, UClass* NPCClass);
 };
 

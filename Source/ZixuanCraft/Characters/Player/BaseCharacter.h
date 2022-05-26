@@ -126,6 +126,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	void HealToMaxHealth();
+
 	/** UI */
 	UFUNCTION(BlueprintCallable)
 	void InitWidget(UZixuanCraftWidgetBase* InWidget);

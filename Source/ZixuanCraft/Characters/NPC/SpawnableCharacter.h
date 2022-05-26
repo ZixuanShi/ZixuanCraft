@@ -24,7 +24,7 @@ class ZIXUANCRAFT_API ASpawnableCharacter : public ACharacter
 protected:
 	/** Current & Max health */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health = 30.0f;
+	float Health = 50.0f;
 
 	/** How long to destroy the mesh after death. Used for playing the death animation */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -47,12 +47,44 @@ public:
 
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override final;
 
-	UFUNCTION(BlueprintCallable)
+	/** 
+	 * @template TDataClass			Blackboard Key's class (i.e. UBlackboardKeyType_Float)
+	 * @template TDataType			Blackboard Key's value (i.e. float for UBlackboardKeyType_Float)
+	 * @param PropertyName			The name of the property we are trying to get
+	 * @return						Blackboard value associated with the given key's name
+	 */
+	template<class TDataClass, class TDataType>
+	TDataType GetProperty(const FName& PropertyName) const;
+
+	/**
+	 * Set a value in blackboard
+	 * @template TDataClass			Blackboard Key's class (i.e. UBlackboardKeyType_Float)
+	 * @template TDataType			Blackboard Key's value (i.e. float for UBlackboardKeyType_Float)
+	 * @param PropertyName			The name of the property we are trying to set
+	 */
+	template<class TDataClass, class TDataType>
+	void SetProperty(const FName& PropertyName, TDataType NewValue);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void SetState(EAgentState InState);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	EAgentState GetAgentState() const;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UNPCAnimInstance* GetNPCAnimInstance() const { return Cast<UNPCAnimInstance>(GetMesh()->GetAnimInstance()); }
+
+	float GetHealth() const { return Health; }
+	void SetHealth(float NewHealth) { Health = NewHealth; }
 };
+
+template<class TDataClass, class TDataType>
+inline TDataType ASpawnableCharacter::GetProperty(const FName& PropertyName) const
+{
+	UBlackboardComponent* Blackboard = Cast<AAIController>(GetController())->GetBlackboardComponent();
+	return Blackboard->GetValue<TDataClass>(PropertyName);
+}
+
+template<class TDataClass, class TDataType>
+inline void ASpawnableCharacter::SetProperty(const FName& PropertyName, TDataType NewValue)
+{
+	UBlackboardComponent* Blackboard = Cast<AAIController>(GetController())->GetBlackboardComponent();
+	Blackboard->SetValue<TDataClass>(PropertyName, NewValue);
+}

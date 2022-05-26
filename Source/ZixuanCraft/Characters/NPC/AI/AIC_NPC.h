@@ -7,6 +7,7 @@
 #include "Perception/AIPerceptionTypes.h"
 #include "AIC_NPC.generated.h"
 
+class UAISenseConfig_Sight;
 class UAIPerceptionComponent;
 
 /**
@@ -27,6 +28,8 @@ protected:
 
 	float RelaxTimer = 0.0f;
 
+	UAISenseConfig_Sight* SightConfig = nullptr;
+
 public: 
 	AAIC_NPC();
 
@@ -34,6 +37,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override final;
 
 	void InitBlackboardData();
+	UAISenseConfig_Sight* GetAIPerceptionSightConfig() const { return SightConfig; }
 
 	UFUNCTION()
 	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);

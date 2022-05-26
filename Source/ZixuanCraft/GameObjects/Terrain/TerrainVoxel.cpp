@@ -15,8 +15,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
-PRAGMA_DISABLE_OPTIMIZATION
-
 ATerrainVoxel::ATerrainVoxel()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -58,7 +56,10 @@ void ATerrainVoxel::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	for (ASpawnableCharacter* NPC : SpawnedObjects)
 	{
-		GetWorld()->DestroyActor(NPC);
+		if (NPC->IsValidLowLevel())
+		{
+			GetWorld()->DestroyActor(NPC);
+		}
 	}
 
 	SpawnedObjects.Empty();
@@ -83,7 +84,7 @@ void ATerrainVoxel::GenerateChunk()
 					FRNG::Global().FRand() < TerrainManager->SpawnObjectChance)
 				{
 					FVector Location{ X * TerrainManager->CubeLength, Y * TerrainManager->CubeLength, Z * TerrainManager->CubeLength };
-					ASpawnableCharacter* SpawnedNPC = TerrainManager->NPCFactory->SpawnNPC(Location + GetActorLocation());
+					ASpawnableCharacter* SpawnedNPC = TerrainManager->NPCFactory->SpawnRandomNPC(Location + GetActorLocation());
 					SpawnedObjects.Emplace(SpawnedNPC);
 				}
 				else if (Z == TerrainManager->GrassThreshold + NoiseResult[X + Y * TerrainManager->CubeCountXY] &&

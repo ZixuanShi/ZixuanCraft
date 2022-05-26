@@ -16,7 +16,7 @@ AAIC_NPC::AAIC_NPC()
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 
 	// Sight config
-	UAISenseConfig_Sight* SightConfig = NewObject<UAISenseConfig_Sight>();
+	SightConfig = NewObject<UAISenseConfig_Sight>();
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -79,12 +79,14 @@ void AAIC_NPC::OnSightPerceptionUpdated(AActor* Actor, const FAIStimulus& Stimul
 		{
 			RelaxTimer = RelaxTime;
 			GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), Actor);
+			GetPawn<ASpawnableCharacter>()->SetState(EAgentState::Engaged);
 		}
 		// Lost target, should move to last known player location
 		else
 		{
 			GetBlackboardComponent()->ClearValue(FName("TargetActor"));
 			GetBlackboardComponent()->SetValueAsVector(FName("TargetLocation"), Actor->GetActorLocation());
+			GetPawn<ASpawnableCharacter>()->SetState(EAgentState::Searching);
 		}
 
 		GetBlackboardComponent()->SetValueAsBool(FName("bIsChasingPlayer"), true);

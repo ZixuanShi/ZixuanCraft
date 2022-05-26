@@ -2,7 +2,7 @@
 
 
 #include "Characters/Player/BaseCharacter.h"
-#include "UI/ZixuanCraftWidgetBase.h"
+#include "UI/Gameplay/Widgets/ZixuanCraftWidgetBase.h"
 #include "GameplayComponents/InventoryComponent.h"
 #include "GameObjects/ZixuanCraftProjectile.h"
 #include "Utils/TypeDefs.h"
@@ -50,7 +50,7 @@ ABaseCharacter::ABaseCharacter()
 
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 100.0f, -10.6f));
+	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, FP_Gun, and VR_Gun 
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
@@ -118,29 +118,23 @@ void ABaseCharacter::Attack()
 	// try and fire a projectile
 	if (ProjectileClass != nullptr)
 	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.Instigator = GetInstigator();
-			ActorSpawnParams.Owner = this;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		//Set Spawn Collision Handling Override
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.Instigator = GetInstigator();
+		ActorSpawnParams.Owner = this;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			if (bUsingMotionControllers)
-			{
-				const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
-				const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
-				World->SpawnActor<AZixuanCraftProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			}
-			else
-			{
-				const FRotator SpawnRotation = GetControlRotation();
-				// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-				const FVector SpawnLocation = FP_MuzzleLocation->GetComponentLocation();
-				// spawn the projectile at the muzzle
-				World->SpawnActor<AZixuanCraftProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			}
+		if (bUsingMotionControllers)
+		{
+			const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
+			const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
+			GetWorld()->SpawnActor<AZixuanCraftProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+		}
+		else
+		{
+			const FRotator SpawnRotation = GetControlRotation();
+			const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FVector(100.0f, 0.0f, 10.0f));
+			GetWorld()->SpawnActor<AZixuanCraftProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 		}
 	}
 
@@ -180,6 +174,12 @@ float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 	UpdateHealthUI();
 
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ABaseCharacter::HealToMaxHealth()
+{
+	Health = MaxHealth;
+	UpdateHealthUI();
 }
 
 void ABaseCharacter::InitWidget(UZixuanCraftWidgetBase* InWidget)

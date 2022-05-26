@@ -36,6 +36,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 RandomInt = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Direction = 0.0f;
+
 public:
 	void SetHitReact(bool bValue) { bHitReact = bValue; }
 	void SetDead(bool bValue) { bDead = bValue; }

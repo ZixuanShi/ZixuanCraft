@@ -2,7 +2,7 @@
 
 
 #include "GameObjects/Crafting/CraftingManager.h"
-#include "UI/ZixuanCraftWidgetBase.h"
+#include "UI/Gameplay/Widgets/ZixuanCraftWidgetBase.h"
 
 #include "Kismet/GameplayStatics.h"
 

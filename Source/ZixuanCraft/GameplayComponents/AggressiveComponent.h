@@ -39,6 +39,8 @@ protected:
 	FTimerHandle AttackHandle;
 
 public:
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override final;
+
 	UFUNCTION(BlueprintCallable)
 	void Attack(AActor* Target);
 
