@@ -18,10 +18,3 @@ enum class EMovementType : uint8
 	Runaway		UMETA(DisplayName = "Runaway"),
 	Random 		UMETA(DisplayName = "Random"),
 };
-
-UENUM(BlueprintType)
-enum class EBlackboardDataType : uint8
-{
-	Runaway		UMETA(DisplayName = "Runaway"),
-	Random 		UMETA(DisplayName = "Random"),
-};

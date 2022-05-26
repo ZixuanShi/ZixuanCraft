@@ -24,6 +24,9 @@ class ZIXUANCRAFT_API ALoot : public AActor
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true", AllowPrivateAccess = "true"))
 	FLootData LootData;
 
 	/** Can be stacked in inventory */
@@ -41,7 +44,10 @@ public:
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	void SetLootData(const FLootData& InLootData);
+
 	bool IsStackable() const { return bStackable; }
 	const FLootData& GetLootData() const { return LootData; }
 	FLootData& GetLootData() { return LootData; }
+	UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
 };

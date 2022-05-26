@@ -33,7 +33,10 @@ private:
 	TArray<FNPCSpawnData> SpawnNPCChances;
 
 public:
+	UFUNCTION(BlueprintCallable)
 	ASpawnableCharacter* SpawnRandomNPC(FVector Location);
+
+	UFUNCTION(BlueprintCallable)
 	ASpawnableCharacter* SpawnNPC(FVector Location, UClass* NPCClass);
 };
 

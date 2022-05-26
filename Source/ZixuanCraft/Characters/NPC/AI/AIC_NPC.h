@@ -11,7 +11,7 @@ class UAISenseConfig_Sight;
 class UAIPerceptionComponent;
 
 /**
- * 
+ * Base AI Controller for NPC
  */
 UCLASS()
 class ZIXUANCRAFT_API AAIC_NPC : public AAIController
@@ -36,12 +36,16 @@ public:
 	virtual void BeginPlay() override final;
 	virtual void Tick(float DeltaSeconds) override final;
 
-	void InitBlackboardData();
-	UAISenseConfig_Sight* GetAIPerceptionSightConfig() const { return SightConfig; }
+	virtual void InitBlackboardData() {}
 
 	UFUNCTION()
 	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
+	UAISenseConfig_Sight* GetAIPerceptionSightConfig() const { return SightConfig; }
+
 protected:
+	UFUNCTION(BlueprintNativeEvent)
 	void OnSightPerceptionUpdated(AActor* Actor, const FAIStimulus& Stimulus);
+
+	virtual void OnSightPerceptionUpdatedImpl(AActor* Actor, const FAIStimulus& Stimulus) {}
 };

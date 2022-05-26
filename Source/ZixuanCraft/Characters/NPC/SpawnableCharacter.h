@@ -45,7 +45,7 @@ protected:
 public:
 	ASpawnableCharacter();
 
-	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override final;
+	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	/** 
 	 * @template TDataClass			Blackboard Key's class (i.e. UBlackboardKeyType_Float)

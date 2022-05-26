@@ -9,7 +9,7 @@
 class AZixuanCraftProjectile;
 
 /**
- * Attach to SpawnableCharacter to make it able to attack other actors
+ * Attach to Actor to make it able to attack other actors
  */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ZIXUANCRAFT_API UAggressiveComponent : public UActorComponent

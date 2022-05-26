@@ -23,6 +23,7 @@ enum class EObjectType : uint8
 
 	// Gameplay loots
 	RoastedChicken	UMETA(DisplayName = "RoastedChicken"),
+	Ham				UMETA(DisplayName = "Ham"),
 
 	// Non-Stackable starts here
 

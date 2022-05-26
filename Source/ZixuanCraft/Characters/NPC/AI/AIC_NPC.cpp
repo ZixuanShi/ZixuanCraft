@@ -2,9 +2,6 @@
 
 
 #include "Characters/NPC/AI/AIC_NPC.h"
-#include "Characters/NPC/SpawnableCharacter.h"
-#include "Characters/Player/ZixuanCraftCharacter.h"
-#include "GameplayComponents/AggressiveComponent.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -40,17 +37,6 @@ void AAIC_NPC::Tick(float DeltaSeconds)
 	RelaxTimer -= DeltaSeconds;
 }
 
-void AAIC_NPC::InitBlackboardData()
-{
-	if (IsValid(this) && GetPawn())
-	{
-		if (UAggressiveComponent* AggressiveComponent = GetPawn()->FindComponentByClass<UAggressiveComponent>())
-		{
-			GetBlackboardComponent()->SetValueAsFloat(FName("AttackRange"), AggressiveComponent->GetAttackRange());
-		}
-	}
-}
-
 void AAIC_NPC::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
 	for (AActor* Actor : UpdatedActors)
@@ -69,26 +55,7 @@ void AAIC_NPC::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 	}
 }
 
-void AAIC_NPC::OnSightPerceptionUpdated(AActor* Actor, const FAIStimulus& Stimulus)
+void AAIC_NPC::OnSightPerceptionUpdated_Implementation(AActor* Actor, const FAIStimulus& Stimulus)
 {
-	// Sense a player
-	if (Actor->IsA<AZixuanCraftCharacter>())
-	{
-		// Seen
-		if (Stimulus.WasSuccessfullySensed())
-		{
-			RelaxTimer = RelaxTime;
-			GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), Actor);
-			GetPawn<ASpawnableCharacter>()->SetState(EAgentState::Engaged);
-		}
-		// Lost target, should move to last known player location
-		else
-		{
-			GetBlackboardComponent()->ClearValue(FName("TargetActor"));
-			GetBlackboardComponent()->SetValueAsVector(FName("TargetLocation"), Actor->GetActorLocation());
-			GetPawn<ASpawnableCharacter>()->SetState(EAgentState::Searching);
-		}
-
-		GetBlackboardComponent()->SetValueAsBool(FName("bIsChasingPlayer"), true);
-	}
+	OnSightPerceptionUpdatedImpl(Actor, Stimulus);
 }

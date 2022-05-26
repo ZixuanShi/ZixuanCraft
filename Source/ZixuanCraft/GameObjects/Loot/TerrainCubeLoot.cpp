@@ -7,7 +7,7 @@
 ATerrainCubeLoot::ATerrainCubeLoot()
 {
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cube(TEXT("/Engine/BasicShapes/Cube"));
-	LootData.MeshComponent->SetStaticMesh(Cube.Object);
-	LootData.MeshComponent->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
+	StaticMeshComponent->SetStaticMesh(Cube.Object);
+	StaticMeshComponent->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
 }
 

@@ -48,7 +48,6 @@ ADebugger::ADebugger()
 	TArray<FAssetData> AssetList;
 	AssetRegistry.GetAssets(Filter, AssetList);
 
-	TArray<TAssetSubclassOf<UObject>> Subclasses;
 	for (const FAssetData& Asset : AssetList)
 	{
 		// Get the the class this blueprint generates (this is stored as a full path)
@@ -64,14 +63,11 @@ ADebugger::ADebugger()
 				continue;
 			}
 
-			// Store using the path to the generated class
-			TAssetSubclassOf<UObject> Object = TAssetSubclassOf<UObject>(FStringAssetReference(ClassObjectPath));
-
 			// set default pawn class to our Blueprinted character
 			ConstructorHelpers::FClassFinder<ASpawnableCharacter> NPCFinder(*ClassObjectPath);
 			if (NPCFinder.Class != nullptr)
 			{
-				NPCBlueprints.Emplace(Object.GetAssetName(), NPCFinder.Class);
+				NPCBlueprints.Emplace("Spawn " + NPCFinder.Class->GetName(), NPCFinder.Class);
 			}
 		}
 	}
@@ -111,7 +107,7 @@ void ADebugger::Cheat_SpawnNPC(UClass* NPCClass)
 {
 	const ABaseCharacter* Player = GetWorld()->GetFirstPlayerController()->GetPawn<ABaseCharacter>();
 	const FVector PlayerLocation = Player->GetActorLocation() + FVector(0.0f, 0.0f, 200.0f);
-	const FVector SpawnNPCLocation = PlayerLocation + (Player->GetActorForwardVector() * 300.0f);
+	const FVector SpawnNPCLocation = PlayerLocation + (Player->GetActorForwardVector() * 1000.0f);
 
 	ANPCFactory* NPCFactory = Cast<ANPCFactory>(UGameplayStatics::GetActorOfClass(GetWorld(), ANPCFactory::StaticClass()));
 	NPCFactory->SpawnNPC(SpawnNPCLocation, NPCClass);

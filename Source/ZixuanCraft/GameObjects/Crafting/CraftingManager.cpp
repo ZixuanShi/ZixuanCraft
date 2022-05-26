@@ -15,8 +15,9 @@ void ACraftingManager::BeginPlay()
 	for (const FName& Name : CraftingDataTable->GetRowNames())
 	{
 		FCraftingRules* DataRow = CraftingDataTable->FindRow<FCraftingRules>(Name, "");
-		DataRow->Result.LootData.MeshComponent = NewObject<UStaticMeshComponent>();
-		SetStaticMeshFromType(DataRow->Result.LootData.Type, DataRow->Result.LootData.MeshComponent);
+		DataRow->Result.LootData.StaticMesh = NewObject<UStaticMesh>();
+		GetStaticMeshFromType(DataRow->Result.LootData.Type);
+		DataRow->Result.LootData.StaticMesh = OutStaticMeshToSet;
 		CraftingMap.Emplace(DataRow->Input, DataRow->Result);
 	}
 }

@@ -4,5 +4,5 @@ void FLootData::Reset()
 {
 	Type = EObjectType::Empty;
 	Icon = nullptr;
-	MeshComponent = nullptr;
+	StaticMesh = nullptr;
 }

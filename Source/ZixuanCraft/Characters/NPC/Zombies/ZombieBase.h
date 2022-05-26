@@ -13,5 +13,7 @@ UCLASS()
 class ZIXUANCRAFT_API AZombieBase : public ASpawnableCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override final;
 };

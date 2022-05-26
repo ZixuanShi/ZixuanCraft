@@ -13,11 +13,10 @@ ALoot::ALoot()
 	InitialLifeSpan = 60.0f;
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	LootData.MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	LootData.MeshComponent->SetCollisionProfileName("OverlapAllDynamic");
-	LootData.MeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALoot::OnBeginOverlap);
-	LootData.MeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALoot::OnOverlap);
-	RootComponent = LootData.MeshComponent;
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	StaticMeshComponent->SetCollisionProfileName("OverlapAllDynamic");
+	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALoot::OnBeginOverlap);
+	StaticMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALoot::OnOverlap);
 }
 
 void ALoot::Tick(float DeltaSeconds)
@@ -50,4 +49,10 @@ void ALoot::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 			Destroy();
 		}
 	}
+}
+
+void ALoot::SetLootData(const FLootData& InLootData)
+{
+	LootData = InLootData;
+	StaticMeshComponent->SetStaticMesh(LootData.StaticMesh);
 }

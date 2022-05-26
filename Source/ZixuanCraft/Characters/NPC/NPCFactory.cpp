@@ -32,8 +32,11 @@ ASpawnableCharacter* ANPCFactory::SpawnNPC(FVector Location, UClass* NPCClass)
 {
 	// Create Spawned Pawn's AIController and run behavior tree
 	ASpawnableCharacter* SpawnedNPC = Cast<ASpawnableCharacter>(GetWorld()->SpawnActor(NPCClass, &Location, &FRotator::ZeroRotator));
-	SpawnedNPC->SpawnDefaultController();
-	Cast<AAIC_NPC>(SpawnedNPC->Controller)->InitBlackboardData();
+	if (SpawnedNPC)
+	{
+		SpawnedNPC->SpawnDefaultController();
+		Cast<AAIC_NPC>(SpawnedNPC->Controller)->InitBlackboardData();
+	}
 
 	return SpawnedNPC;
 }

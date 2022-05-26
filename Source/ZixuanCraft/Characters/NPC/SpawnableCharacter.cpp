@@ -40,8 +40,6 @@ float ASpawnableCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEv
 	}
 	else
 	{
-		SetState(EAgentState::Engaged);
-
 		if (bCanPlaySound && OnHitSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, OnHitSound, GetActorLocation(), 1.0f);

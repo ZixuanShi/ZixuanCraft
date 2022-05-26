@@ -98,6 +98,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FCraftingInput CurrentInput;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UStaticMesh* OutStaticMeshToSet = nullptr;
+
 public:
 	virtual void BeginPlay() override final;
 
@@ -108,6 +111,6 @@ protected:
 	/**
 	 * Blueprint event to set NewLoot's static mesh
 	 */
-	UFUNCTION(BlueprintImplementableEvent)
-	void SetStaticMeshFromType(EObjectType ObjectType, UStaticMeshComponent* StaticMeshComponent);
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void GetStaticMeshFromType(EObjectType ObjectType);
 };
