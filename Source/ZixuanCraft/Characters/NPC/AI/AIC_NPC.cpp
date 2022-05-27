@@ -17,6 +17,7 @@ AAIC_NPC::AAIC_NPC()
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	SightConfig->PeripheralVisionAngleDegrees = 180.0f;
 	AIPerceptionComponent->ConfigureSense(*SightConfig);
 
 	// Bind function to AI perception
@@ -28,13 +29,6 @@ void AAIC_NPC::BeginPlay()
 	Super::BeginPlay();
 
 	InitBlackboardData();
-}
-
-void AAIC_NPC::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	RelaxTimer -= DeltaSeconds;
 }
 
 void AAIC_NPC::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)

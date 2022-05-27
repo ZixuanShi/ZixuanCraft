@@ -7,6 +7,10 @@
 #include "Utils/Enums.h"
 #include "Characters/NPC/Animations/NPCAnimInstance.h"
 
+#if PLATFORM_ANDROID
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#endif
 #include "GameFramework/Character.h"
 #include "SpawnableCharacter.generated.h"
 

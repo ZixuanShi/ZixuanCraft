@@ -5,6 +5,8 @@
 
 #include "Kismet/GameplayStatics.h"
 
+PRAGMA_DISABLE_OPTIMIZATION
+
 ASpawnableCharacter* ANPCFactory::SpawnRandomNPC(FVector Location)
 {
 	// Spawn a NPC by weighted random in TerrainManager's SpawnNPCChances map
@@ -40,3 +42,5 @@ ASpawnableCharacter* ANPCFactory::SpawnNPC(FVector Location, UClass* NPCClass)
 
 	return SpawnedNPC;
 }
+
+PRAGMA_ENABLE_OPTIMIZATION

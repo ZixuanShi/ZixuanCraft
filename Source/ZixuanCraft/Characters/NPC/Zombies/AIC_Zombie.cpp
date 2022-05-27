@@ -28,7 +28,6 @@ void AAIC_Zombie::OnSightPerceptionUpdatedImpl(AActor* Actor, const FAIStimulus&
 		// Seen
 		if (Stimulus.WasSuccessfullySensed())
 		{
-			RelaxTimer = RelaxTime;
 			GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), Actor);
 			GetPawn<ASpawnableCharacter>()->SetState(EAgentState::Engaged);
 		}

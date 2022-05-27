@@ -22,19 +22,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAIPerceptionComponent* AIPerceptionComponent;
 
-	/** Used for relaxing combat state from patrol state */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RelaxTime = 3.0f;
-
-	float RelaxTimer = 0.0f;
-
 	UAISenseConfig_Sight* SightConfig = nullptr;
 
 public: 
 	AAIC_NPC();
 
 	virtual void BeginPlay() override final;
-	virtual void Tick(float DeltaSeconds) override final;
 
 	virtual void InitBlackboardData() {}
 

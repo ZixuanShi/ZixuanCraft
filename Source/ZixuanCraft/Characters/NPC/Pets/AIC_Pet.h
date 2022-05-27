@@ -16,4 +16,7 @@ class ZIXUANCRAFT_API AAIC_Pet : public AAIC_NPC
 
 public:
 	virtual void InitBlackboardData() override final;
+
+protected:
+	virtual void OnSightPerceptionUpdatedImpl(AActor* Actor, const FAIStimulus& Stimulus) override final;
 };
