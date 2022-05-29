@@ -94,6 +94,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = Inventory, meta = (BindWidget))
 	UTextBlock* SelectedItemCount_TextBlock = nullptr;
 
+	/** Instruction prompt of input */
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* InstructionsPrompt_TextBlock = nullptr;
+
 	FLootSlot SelectedSlot;
 
 	//------------------------------------------------------------------------------------------------------------------------------------

@@ -219,19 +219,19 @@ void ATerrainVoxel::ApplyMaterials()
 	}
 }
 
-void ATerrainVoxel::ModifyCube(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType)
+void ATerrainVoxel::ModifyCube_Implementation(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType)
 {
 	const int32 Index = GetIndexFromLocation(CubeLocation, TerrainManager->CubeCountXY, TerrainManager->CubeCountXYSquared, TerrainManager->CubeLength);
 	EObjectType OriginalType = AllCubes[Index];
 	AllCubes[Index] = NewType;
 	UpdateMesh();
 
-	// Create a loot
-	if (OriginalType > EObjectType::WoodPlank || OriginalType == EObjectType::Empty)
+	if (OriginalType >= EObjectType::TreeLeaves || OriginalType == EObjectType::Empty)
 	{
 		return;
 	}
 
+	// Create a loot
 	ATerrainCubeLoot* TerrainCubeLoot = GetWorld()->SpawnActor<ATerrainCubeLoot>(SpawnLootLocation, FRotator::ZeroRotator);
 	TerrainCubeLoot->GetLootData().Type = OriginalType;
 	TerrainCubeLoot->GetLootData().Icon = TerrainManager->Icons[static_cast<int32>(OriginalType)];

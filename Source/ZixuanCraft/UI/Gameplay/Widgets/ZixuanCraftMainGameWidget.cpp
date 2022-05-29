@@ -225,6 +225,10 @@ void UZixuanCraftMainGameWidget::InitButtons()
 	DestroyAttack_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnDestoryAttackButtonPressed);
 	PlaceUseItem_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::OnPlaceUseItemButtonPressed);
 	ToggleInventory_Mobile_Button->OnPressed.AddDynamic(this, &UZixuanCraftMainGameWidget::ToggleInventory);
+
+	// Disable PC only stuff
+	InstructionsPrompt_TextBlock->SetIsEnabled(false);
+	InstructionsPrompt_TextBlock->SetVisibility(ESlateVisibility::Hidden);
 #endif
 }
 

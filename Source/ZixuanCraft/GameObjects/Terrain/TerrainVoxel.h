@@ -54,6 +54,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override final;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override final;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ModifyCube(FVector CubeLocation, FVector SpawnLootLocation, EObjectType NewType);
 
 private:

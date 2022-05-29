@@ -4,12 +4,14 @@ Minecraft clone using Unreal Engine.
 ## Implemented Features
 - Endless Terrain Generation
 - AI can react to the player
-    - Zombie
-    - Chicken
+    - Zombie (Normal, Skeleton, Creeper)
+    - Livestocks (Chicken, Cow)
+    - Pets (Dog)
 - Adding Cube
 - Removing Cube
 - Inventory System
 - Crafting System
+- GooglePlay Services for Android
  
 ## Target Platfroms
 - Windows
@@ -64,8 +66,13 @@ Minecraft clone using Unreal Engine.
 | Scroll Inventory | Touch               | Press              |
 
 ## Future Plans
-- Add village
 - More terrains like sand, river, mountain
+- Swimming
+- Fix away compiling warnings for Android
+- Minecraft Character instead of Unreal default Gun
+- Saving and Loading progress
+- Networking
+- Refactor UI code
 
 ## Known Issues
 - Controller can't manipulate all inventory UI mouse

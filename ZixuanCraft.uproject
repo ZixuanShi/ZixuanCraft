@@ -41,7 +41,7 @@
 		},
 		{
 			"Name": "GooglePlayGoodies",
-			"Enabled": true,
+			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/ed6dc1c7026b4e3fbcbacf51298b17a0"
 		}
 	]

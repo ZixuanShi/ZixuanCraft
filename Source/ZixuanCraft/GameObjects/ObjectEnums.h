@@ -18,6 +18,8 @@ enum class EObjectType : uint8
 	TreeTrunk		UMETA(DisplayName = "TreeTruck"),
 	WoodPlank		UMETA(DisplayName = "WoodPlank"),
 
+	// Anything considered as a terrain that can be destroyed/placed on voxel should be above this comment
+
 	// Not solid, drop loot depending on the specific type
 	TreeLeaves		UMETA(DisplayName = "TreeLeaves"),
 
