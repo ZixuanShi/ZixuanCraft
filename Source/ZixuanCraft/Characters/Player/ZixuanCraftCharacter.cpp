@@ -79,7 +79,7 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
 	// Do work if we hit a voxel to interact
-	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.Actor))
+	if (ATerrainVoxel* HitVoxel = Cast<ATerrainVoxel>(HitResult.GetActor()))
 	{
 		// If we are placing a cube
 		int32 SelectedIndex = Widget->IGetSelectIndex();
