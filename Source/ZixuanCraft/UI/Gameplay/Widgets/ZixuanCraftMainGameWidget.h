@@ -19,7 +19,6 @@ class UZixuanCraftCraftingResultButton;
 class UPanelWidget;
 class UButton;
 class UImage;
-class UPanelWidget;
 class UTextBlock;
 
 /**

@@ -18,9 +18,8 @@
 	],
 	"Plugins": [
 		{
-			"Name": "VoxelSandbox",
-			"Enabled": false,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/f5b91a7c3b1a461e9a9592902bdbf7e3"
+			"Name": "OnlineSubsystemGoogle",
+			"Enabled": true
 		},
 		{
 			"Name": "SteamVR",
@@ -32,17 +31,9 @@
 			]
 		},
 		{
-			"Name": "MobileHelper",
-			"Enabled": false
-		},
-		{
-			"Name": "OnlineSubsystemGoogle",
-			"Enabled": true
-		},
-		{
-			"Name": "GooglePlayGoodies",
-			"Enabled": false,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/ed6dc1c7026b4e3fbcbacf51298b17a0"
+			"Name": "SkyCreatorPlugin",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/b9aa540db8c54f7d928c61d3b30cb955"
 		}
 	]
 }

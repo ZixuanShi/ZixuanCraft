@@ -11,6 +11,10 @@ public class ZixuanCraft : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "SimplexNoise", "NavigationSystem" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "ProceduralMeshComponent", "Slate", "SlateCore", "OnlineSubsystem" });
 		PrivateIncludePaths.AddRange(new string[] {	"ZixuanCraft"	});
-		DynamicallyLoadedModuleNames.Add("OnlineSubsystemGooglePlay");
+
+		if (Target.Platform == UnrealTargetPlatform.Android)
+		{
+			DynamicallyLoadedModuleNames.Add("OnlineSubsystemGooglePlay");
+		}
 	}
 }
