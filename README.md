@@ -66,7 +66,6 @@ Minecraft clone using Unreal Engine.
 | Scroll Inventory | Touch               | Press              |
 
 ## Future Plans
-- Convert to UE5
 - More terrains like sand, river, mountain
 - Swimming
 - Fix away compiling warnings for Android
