@@ -1,11 +1,8 @@
 #include "NPCFactory.h"
 #include "Characters/NPC/AI/AIC_NPC.h"
 #include "Utils/RNG.h"
-#include "GameObjects/Debugging/Debugger.h"
 
 #include "Kismet/GameplayStatics.h"
-
-PRAGMA_DISABLE_OPTIMIZATION
 
 ASpawnableCharacter* ANPCFactory::SpawnRandomNPC(FVector Location)
 {
@@ -42,5 +39,3 @@ ASpawnableCharacter* ANPCFactory::SpawnNPC(FVector Location, UClass* NPCClass)
 
 	return SpawnedNPC;
 }
-
-PRAGMA_ENABLE_OPTIMIZATION
