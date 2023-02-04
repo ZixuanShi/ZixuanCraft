@@ -98,9 +98,5 @@ void AZixuanCraftCharacter::InteractVoxel(EObjectType NewType, float OffsetMulti
 		const FVector CubeLocation = RelativePostion + HitResult.Location + FVector(TerrainManager->GetCubeLengthHalf());
 		HitVoxel->ModifyCube(CubeLocation, HitResult.Location, NewType);
 	}
-
-	int32 l;
-	int r;
-	Swap(l, r);
 }
 
