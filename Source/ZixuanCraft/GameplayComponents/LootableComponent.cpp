@@ -3,7 +3,6 @@
 
 #include "GameplayComponents/LootableComponent.h"
 #include "GameObjects/Loot/Loot.h"
-PRAGMA_DISABLE_OPTIMIZATION
 
 void ULootableComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -21,4 +20,3 @@ void ULootableComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		}
 	}
 }
-PRAGMA_ENABLE_OPTIMIZATION

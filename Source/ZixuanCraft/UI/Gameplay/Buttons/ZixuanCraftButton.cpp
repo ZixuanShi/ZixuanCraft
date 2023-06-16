@@ -11,11 +11,13 @@
 
 UZixuanCraftButton::UZixuanCraftButton()
 {
-	ClickMethod = EButtonClickMethod::Type::DownAndUp;
+	SetClickMethod(EButtonClickMethod::Type::DownAndUp);
 
-	WidgetStyle.Normal.TintColor = NormalColor;
-	WidgetStyle.Hovered.TintColor = HighlightColor;
-	WidgetStyle.Pressed.TintColor = PressedColor;
+	FButtonStyle Style = GetStyle();
+	Style.Normal.TintColor = NormalColor;
+	Style.Hovered.TintColor = HighlightColor;
+	Style.Pressed.TintColor = PressedColor;
+	SetStyle(Style);
 
 	OnClicked.AddDynamic(this, &UZixuanCraftButton::OnPressed);
 	OnHovered.AddDynamic(this, &UZixuanCraftButton::OnButtonHovered);
@@ -46,19 +48,25 @@ void UZixuanCraftButton::SetData(const FLootSlot& InSlot)
 	}
 
 	// Background Image
-	WidgetStyle.Normal.SetResourceObject(InSlot.LootData.Icon);
-	WidgetStyle.Hovered.SetResourceObject(InSlot.LootData.Icon);
-	WidgetStyle.Pressed.SetResourceObject(InSlot.LootData.Icon);
+	FButtonStyle Style = GetStyle();
+	Style.Normal.SetResourceObject(InSlot.LootData.Icon);
+	Style.Hovered.SetResourceObject(InSlot.LootData.Icon);
+	Style.Pressed.SetResourceObject(InSlot.LootData.Icon);
+	SetStyle(Style);
 }
 
 void UZixuanCraftButton::Highlight()
 {
-	WidgetStyle.Normal.TintColor = HighlightColor;
+	FButtonStyle Style = GetStyle();
+	Style.Normal.TintColor = HighlightColor;
+	SetStyle(Style);
 }
 
 void UZixuanCraftButton::Reset()
 {
-	WidgetStyle.Normal.TintColor = NormalColor;
+	FButtonStyle Style = GetStyle();
+	Style.Normal.TintColor = NormalColor;
+	SetStyle(Style);
 }
 
 void UZixuanCraftButton::OnLeftMouseFirstPressedImpl()
@@ -69,9 +77,11 @@ void UZixuanCraftButton::OnLeftMouseFirstPressedImpl()
 		// Clear the rendering data in the button if we are not running on mobile
 #if !PLATFORM_ANDROID && !PLATFORM_IOS
 		Widget->SetSelectedItemPanel(Data);
-		WidgetStyle.Normal.SetResourceObject(nullptr);
-		WidgetStyle.Hovered.SetResourceObject(nullptr);
-		WidgetStyle.Pressed.SetResourceObject(nullptr);
+		FButtonStyle Style = GetStyle();
+		Style.Normal.SetResourceObject(nullptr);
+		Style.Hovered.SetResourceObject(nullptr);
+		Style.Pressed.SetResourceObject(nullptr);
+		SetStyle(Style);
 		CountText->SetText(FText::FromString(""));
 #endif
 	}
