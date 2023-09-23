@@ -8,7 +8,7 @@ public class ZixuanCraftTarget : TargetRules
 	public ZixuanCraftTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+		DefaultBuildSettings = BuildSettingsVersion.V4;
 		ExtraModuleNames.Add("ZixuanCraft");
 
 		if (Target.Platform == UnrealTargetPlatform.Android)

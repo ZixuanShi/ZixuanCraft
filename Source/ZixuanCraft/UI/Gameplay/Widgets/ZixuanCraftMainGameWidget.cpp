@@ -49,8 +49,8 @@ FReply UZixuanCraftMainGameWidget::NativeOnMouseButtonDown(const FGeometry& InGe
 
 void UZixuanCraftMainGameWidget::ToggleInstructions()
 {
-	Instructions_Panel->SetIsEnabled(!Instructions_Panel->bIsEnabled);
-	if (Instructions_Panel->bIsEnabled)
+	Instructions_Panel->SetIsEnabled(!Instructions_Panel->GetIsEnabled());
+	if (Instructions_Panel->GetIsEnabled())
 	{
 		Instructions_Panel->SetVisibility(ESlateVisibility::Visible);
 	}
