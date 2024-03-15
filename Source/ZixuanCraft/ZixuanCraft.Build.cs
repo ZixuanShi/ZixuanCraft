@@ -9,12 +9,7 @@ public class ZixuanCraft : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "SimplexNoise", "NavigationSystem" });
-		PrivateDependencyModuleNames.AddRange(new string[] { "ProceduralMeshComponent", "Slate", "SlateCore", "OnlineSubsystem" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "ProceduralMeshComponent", "Slate", "SlateCore" });
 		PrivateIncludePaths.AddRange(new string[] {	"ZixuanCraft"	});
-
-		if (Target.Platform == UnrealTargetPlatform.Android)
-		{
-			DynamicallyLoadedModuleNames.Add("OnlineSubsystemGooglePlay");
-		}
 	}
 }

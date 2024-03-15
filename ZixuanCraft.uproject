@@ -15,21 +15,5 @@
 				"AIModule"
 			]
 		}
-	],
-	"Plugins": [
-		{
-			"Name": "OnlineSubsystemGoogle",
-			"Enabled": true
-		},
-		{
-			"Name": "SkyCreatorPlugin",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/b9aa540db8c54f7d928c61d3b30cb955"
-		},
-		{
-			"Name": "AssetsCleaner",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/3caab7c6e81f449296989122c043ae21"
-		}
 	]
 }
