@@ -6,11 +6,8 @@
 #pragma once
 #include "Utils/Enums.h"
 #include "Characters/NPC/Animations/NPCAnimInstance.h"
-
-#if PLATFORM_ANDROID
-#include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#endif
+#include "AIController.h"
 #include "GameFramework/Character.h"
 #include "SpawnableCharacter.generated.h"
 
